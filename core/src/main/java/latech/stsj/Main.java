@@ -2,6 +2,7 @@ package latech.stsj;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -21,6 +22,8 @@ public class Main extends Game
     private MainMenuScreen mainMenuScreen;
     private GameScreen gameScreen;
     
+    private Music music;
+    
     
     //  Create
     @Override
@@ -31,6 +34,9 @@ public class Main extends Game
         atlas = new TextureAtlas(Gdx.files.internal("packed.atlas"));
         mainMenuScreen = new MainMenuScreen(this);
         gameScreen = new GameScreen(this);
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/Lord of the Land.mp3"));
+        
+        music.setLooping(true);
         setScreen(mainMenuScreen);
     }
     
@@ -43,6 +49,7 @@ public class Main extends Game
         atlas.dispose();
         mainMenuScreen.dispose();
         gameScreen.dispose();
+        music.dispose();
     }
     
     
@@ -96,5 +103,14 @@ public class Main extends Game
     public GameScreen getGameScreen()
     {
         return gameScreen;
+    }
+    
+    
+    /**
+     * @return Globally played music
+    */
+    public Music getMusic()
+    {
+        return music;
     }
 }

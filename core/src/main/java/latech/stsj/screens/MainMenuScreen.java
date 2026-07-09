@@ -40,6 +40,7 @@ public class MainMenuScreen implements Screen
         
         background = atlas.findRegion("bg");
         logo = atlas.findRegion("logo");
+        game.getMusic().play();
     }
     
     
