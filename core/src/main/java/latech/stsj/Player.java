@@ -14,6 +14,8 @@ public class Player
     public Sprite sprite;
     private float speed = 3 * 60f;
     
+    public boolean enableInput = false;
+    
     
     //  Constructor
     public Player(final Main game)
@@ -29,7 +31,10 @@ public class Player
      */
     public void input(float deltaSeconds)
     {
-        //  1.  Move
+        //  1.  Is input enabled
+        if (!enableInput) return;
+        
+        //  2.  Move
         final int xMax = Gdx.graphics.getWidth() - (int) (getScaledX());
         final int yMax = Gdx.graphics.getHeight() - (int) (getScaledY());
         
@@ -51,7 +56,7 @@ public class Player
             sprite.translateX(speed * deltaSeconds);
         }
         
-        //  2.  Prevent sprite from going off screen
+        //  3.  Prevent sprite from going off screen
         //  Position is acquired here because sprite may have moved
         final float x = sprite.getX();
         final float y = sprite.getY();

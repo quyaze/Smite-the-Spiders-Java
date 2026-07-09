@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.Main;
@@ -19,6 +20,8 @@ import latech.stsj.Player;
 public class GameScreen implements Screen
 {
     //  Fields
+    private final float ONE_THIRD = 1/3f;
+    
     private final Main game;
     private final Player player;
     
@@ -39,15 +42,27 @@ public class GameScreen implements Screen
     {
         TextureAtlas atlas = game.getAtlas();
         
+        game.getTimer().scheduleTask(
+            new Task()
+            {
+                public void run()
+                {
+                    player.enableInput = true;
+                }
+            },
+            0.8f
+        );
         background = atlas.findRegion("bg");
-        player.sprite.setPosition(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() / 3f);
+        player.sprite.setPosition((Gdx.graphics.getWidth() - player.getScaledX()) * 0.5f, Gdx.graphics.getHeight() * ONE_THIRD);
     }
     
     
     //  Hide
     @Override
     public void hide()
-    {}
+    {
+        player.enableInput = false;
+    }
     
     
     //  Pause

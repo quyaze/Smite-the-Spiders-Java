@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.screens.GameScreen;
@@ -22,6 +23,7 @@ public class Main extends Game
     private MainMenuScreen mainMenuScreen;
     private GameScreen gameScreen;
     
+    private Timer timer;
     private Music music;
     
     
@@ -34,6 +36,7 @@ public class Main extends Game
         atlas = new TextureAtlas(Gdx.files.internal("packed.atlas"));
         mainMenuScreen = new MainMenuScreen(this);
         gameScreen = new GameScreen(this);
+        timer = new Timer();
         music = Gdx.audio.newMusic(Gdx.files.internal("music/Lord of the Land.mp3"));
         
         music.setLooping(true);
@@ -103,6 +106,15 @@ public class Main extends Game
     public GameScreen getGameScreen()
     {
         return gameScreen;
+    }
+    
+    
+    /**
+     * @return Timer utility
+    */
+    public Timer getTimer()
+    {
+        return timer;
     }
     
     

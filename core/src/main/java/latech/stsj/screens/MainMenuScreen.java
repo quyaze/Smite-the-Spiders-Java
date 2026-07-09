@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.Main;
@@ -24,6 +26,11 @@ public class MainMenuScreen implements Screen
     private AtlasRegion background;
     private AtlasRegion logo;
     
+    private float logoPhase = 1f;
+    private boolean logoPhaseInverse = false;
+    
+    private boolean enableInput = false;
+    
     
     //  Constructor
     public MainMenuScreen(final Main game)
@@ -38,8 +45,19 @@ public class MainMenuScreen implements Screen
     {
         TextureAtlas atlas = game.getAtlas();
         
+        game.getTimer().scheduleTask(
+            new Task()
+            {
+                public void run()
+                {
+                    enableInput = true;
+                }
+            },
+            0.8f
+        );
         background = atlas.findRegion("bg");
         logo = atlas.findRegion("logo");
+        logoPhase = 0f;
         game.getMusic().play();
     }
     
@@ -47,7 +65,9 @@ public class MainMenuScreen implements Screen
     //  Hide
     @Override
     public void hide()
-    {}
+    {
+        enableInput = false;
+    }
     
     
     //  Pause
@@ -90,13 +110,19 @@ public class MainMenuScreen implements Screen
      */
     private void input(float deltaSeconds)
     {
+        //  1.  Is player exiting
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        {
+            Gdx.app.exit();
+        }
+        
+        //  2.  Is input enabled
+        if (!enableInput) return;
+        
+        //  3.  Proceed to main menu input processing
         if (Gdx.input.isButtonJustPressed(0))
         {
             game.setScreen(game.getGameScreen());
-        }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-        {
-            Gdx.app.exit();
         }
     }
     
@@ -119,12 +145,29 @@ public class MainMenuScreen implements Screen
         float width = Gdx.graphics.getWidth();
         float height =  Gdx.graphics.getHeight();
         
+        if (logoPhase != 1)
+        {
+            logoPhase = MathUtils.clamp(logoPhase + (logoPhaseInverse ? -deltaSeconds : deltaSeconds) * 0.8f, 0f, 1f);
+        }
+        
         ScreenUtils.clear(Color.BLACK);
         viewport.apply(true);
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.draw(background, 0, 0, width, height);
+        batch.setColor(1f, 1f, 1f, MathUtils.lerp(0f, 1f, logoPhase));
         batch.draw(logo, (width - logo.getRegionWidth() * LOGO_SCALE) * 0.5f, (height - logo.getRegionHeight() * LOGO_SCALE) * 0.5f, logo.getRegionWidth() * LOGO_SCALE, logo.getRegionHeight() * LOGO_SCALE);
+        batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
+    }
+    
+    
+    /**
+     * Enable/disable input processing as specified by <code>state</code>
+     * @param state
+     */
+    public void setScreenEnableInput(boolean state)
+    {
+        enableInput = state;
     }
 }
