@@ -1,0 +1,48 @@
+
+packed.png
+size: 1024, 1024
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+bg
+  rotate: false
+  xy: 2, 138
+  size: 800, 600
+  orig: 800, 600
+  offset: 0, 0
+  index: -1
+logo
+  rotate: false
+  xy: 2, 36
+  size: 420, 100
+  orig: 420, 100
+  offset: 0, 0
+  index: -1
+spell
+  rotate: false
+  xy: 804, 706
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+spider
+  rotate: false
+  xy: 804, 685
+  size: 27, 19
+  orig: 27, 19
+  offset: 0, 0
+  index: -1
+web
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+wizard
+  rotate: false
+  xy: 424, 105
+  size: 20, 31
+  orig: 20, 31
+  offset: 0, 0
+  index: -1
