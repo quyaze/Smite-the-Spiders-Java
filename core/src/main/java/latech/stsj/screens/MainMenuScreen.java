@@ -53,7 +53,7 @@ public class MainMenuScreen implements Screen
                     enableInput = true;
                 }
             },
-            0.8f
+            1f
         );
         background = atlas.findRegion("bg");
         logo = atlas.findRegion("logo");
@@ -72,7 +72,8 @@ public class MainMenuScreen implements Screen
     
     //  Pause
     @Override
-    public void pause() {}
+    public void pause()
+    {}
     
     
     //  Resume
@@ -149,7 +150,6 @@ public class MainMenuScreen implements Screen
         {
             logoPhase = MathUtils.clamp(logoPhase + (logoPhaseInverse ? -deltaSeconds : deltaSeconds) * 0.8f, 0f, 1f);
         }
-        
         ScreenUtils.clear(Color.BLACK);
         viewport.apply(true);
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -163,11 +163,19 @@ public class MainMenuScreen implements Screen
     
     
     /**
-     * Enable/disable input processing as specified by <code>state</code>
-     * @param state
+     * Enables input processing for the screen
      */
-    public void setScreenEnableInput(boolean state)
+    public void enableScreenInput()
     {
-        enableInput = state;
+        enableInput = true;
+    }
+    
+    
+    /**
+     * Disables input processing for the screen
+     */
+    public void disableScreenInput()
+    {
+        enableInput = false;
     }
 }

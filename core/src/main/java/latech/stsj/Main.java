@@ -110,7 +110,7 @@ public class Main extends Game
     
     
     /**
-     * @return Timer utility
+     * @return Timer and task scheduler utility
     */
     public Timer getTimer()
     {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -12,7 +13,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.Main;
-import latech.stsj.Player;
+import latech.stsj.gameplay.Player;
 
 /**
  * Screen for the gameplay
@@ -53,7 +54,7 @@ public class GameScreen implements Screen
             0.8f
         );
         background = atlas.findRegion("bg");
-        player.sprite.setPosition((Gdx.graphics.getWidth() - player.getScaledX()) * 0.5f, Gdx.graphics.getHeight() * ONE_THIRD);
+        player.getSprite().setPosition((Gdx.graphics.getWidth() - player.getTrueScaleX()) * 0.5f, Gdx.graphics.getHeight() * ONE_THIRD);
     }
     
     
@@ -135,13 +136,14 @@ public class GameScreen implements Screen
     {
         ScreenViewport viewport = game.getViewport();
         SpriteBatch batch = game.getBatch();
+        Sprite playerSprite = player.getSprite();
         
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(player.sprite, player.sprite.getX(), player.sprite.getY(), player.getScaledX(), player.getScaledY());
+        batch.draw(playerSprite, playerSprite.getX(), playerSprite.getY(), player.getTrueScaleX(), player.getTrueScaleY());
         batch.end();
     }
 }

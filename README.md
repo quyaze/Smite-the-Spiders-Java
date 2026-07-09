@@ -4,7 +4,7 @@ This project is a remake of "Shoot the Spiders." Originally written in Python us
 
 Requirements:
 <ul>
-    <li>JDK 26.0.1
+    <li><a href="https://www.oracle.com/java/technologies/downloads/#java26">JDK 26.0.1</a>.</li>
 </ul>
 
 <i>Made for Louisiana Tech University.</i>
