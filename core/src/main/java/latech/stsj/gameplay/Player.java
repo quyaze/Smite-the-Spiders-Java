@@ -1,9 +1,12 @@
+//  TODO: cast fireball
+
 package latech.stsj.gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 import latech.stsj.Main;
 
@@ -14,6 +17,8 @@ public class Player extends Entity
 {
     //  Fields
     public boolean enableInput = false;
+    private Vector2 movementAxis2d = Vector2.Zero;
+    private float movementSensitivity = 0.2f;
     
     
     //  Constructor
@@ -21,6 +26,7 @@ public class Player extends Entity
     {
         sprite = new Sprite(game.getAtlas().findRegion("wizard"));
         sprite.setScale(4f);
+        speed *= 6f;
     }
     
     
@@ -37,23 +43,28 @@ public class Player extends Entity
         final int xMax = Gdx.graphics.getWidth() - (int) (getTrueScaleX());
         final int yMax = Gdx.graphics.getHeight() - (int) (getTrueScaleY());
         
-        //  TODO: Advanced movement. Player is currently faster going diagnoal than straight.
+        movementAxis2d.setZero();
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP))
         {
-            sprite.translateY(speed * deltaSeconds);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        {
-            sprite.translateX(-speed * deltaSeconds);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        {
-            sprite.translateY(-speed * deltaSeconds);
+            movementAxis2d.add(0f, 1f);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT))
         {
-            sprite.translateX(speed * deltaSeconds);
+            movementAxis2d.add(1f, 0f);
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        {
+            movementAxis2d.sub(0f, 1f);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        {
+            movementAxis2d.sub(1f, 0f);
+        }
+        
+        //  Stop here if frozen or there is no input from the user
+        if (movementAxis2d.len2() < movementSensitivity || frozen) return;
+        direction = MathUtils.atan2(movementAxis2d.y, movementAxis2d.x);
+        sprite.translate(getSpeedX() * deltaSeconds, getSpeedY() * deltaSeconds);
         
         //  3.  Prevent sprite from going off screen
         //  Position is acquired here because sprite may have moved

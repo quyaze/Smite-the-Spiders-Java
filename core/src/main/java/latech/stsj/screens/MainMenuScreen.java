@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -28,14 +31,22 @@ public class MainMenuScreen implements Screen
     
     private float logoPhase = 1f;
     private boolean logoPhaseInverse = false;
-    
     private boolean enableInput = false;
+    
+    private BitmapFont subtitleText;
+    private GlyphLayout subtitleGlyph;
     
     
     //  Constructor
     public MainMenuScreen(final Main game)
     {
         this.game = game;
+        
+        FreeTypeFontParameter params = new FreeTypeFontParameter();
+        params.size = 36;
+        
+        subtitleText = game.getFontGeneric().generateFont(params);
+        subtitleGlyph = new GlyphLayout(subtitleText, "Click anywhere to play");
     }
     
     
@@ -102,7 +113,9 @@ public class MainMenuScreen implements Screen
     //  Dispose
     @Override
     public void dispose()
-    {}
+    {
+        subtitleText.dispose();
+    }
     
     
     /**
@@ -136,7 +149,7 @@ public class MainMenuScreen implements Screen
     
     
     /**
-     * Main menu asset rendering/drawing for every frame
+     * Main menu rendering/drawing for every frame
      * @param deltaSeconds Time (sec) since last frame
      */
     private void draw(float deltaSeconds)
@@ -158,6 +171,7 @@ public class MainMenuScreen implements Screen
         batch.setColor(1f, 1f, 1f, MathUtils.lerp(0f, 1f, logoPhase));
         batch.draw(logo, (width - logo.getRegionWidth() * LOGO_SCALE) * 0.5f, (height - logo.getRegionHeight() * LOGO_SCALE) * 0.5f, logo.getRegionWidth() * LOGO_SCALE, logo.getRegionHeight() * LOGO_SCALE);
         batch.setColor(1f, 1f, 1f, 1f);
+        if (enableInput) subtitleText.draw(batch, subtitleGlyph, (Gdx.graphics.getWidth() - subtitleGlyph.width) * 0.5f, (Gdx.graphics.getHeight() - subtitleGlyph.height) * 0.25f);
         batch.end();
     }
     

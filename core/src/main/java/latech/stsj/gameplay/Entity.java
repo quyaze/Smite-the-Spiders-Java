@@ -1,14 +1,16 @@
 package latech.stsj.gameplay;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Entity
 {
     //  Fields
     protected Sprite sprite;
-    protected float speed = 60f; // Speed: pixels per second
-    protected Vector2 directionAxis2d = new Vector2();
+    protected float speed = 60f; // pixels per second
+    protected float direction = 0;
+    public boolean frozen = true;
     
     
     /**
@@ -35,5 +37,33 @@ public class Entity
     public float getTrueScaleY()
     {
         return sprite.getHeight() * sprite.getScaleY();
+    }
+    
+    
+    /**
+     * @return Entity speed in the x-direction
+     */
+    public float getSpeedX()
+    {
+        return speed * MathUtils.cos(direction);
+    }
+    
+    
+    /**
+     * @return Entity speed in the y-direction
+     */
+    public float getSpeedY()
+    {
+        return speed * MathUtils.sin(direction);
+    }
+    
+    
+    /**
+     * Entity rendering/drawing for every frame. Only call inside batch.begin() and batch.end()
+     * @param batch SpriteBatch for drawing
+     */
+    public void draw(SpriteBatch batch)
+    {
+        batch.draw(sprite, sprite.getX(), sprite.getY(), getTrueScaleX(), getTrueScaleY());
     }
 }

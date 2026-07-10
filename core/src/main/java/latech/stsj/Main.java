@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -20,11 +21,12 @@ public class Main extends Game
     private SpriteBatch batch;
     private ScreenViewport viewport;
     private TextureAtlas atlas;
-    private MainMenuScreen mainMenuScreen;
-    private GameScreen gameScreen;
-    
     private Timer timer;
     private Music music;
+    private FreeTypeFontGenerator fontGeneric;
+    
+    private MainMenuScreen mainMenuScreen;
+    private GameScreen gameScreen;
     
     
     //  Create
@@ -34,10 +36,12 @@ public class Main extends Game
         batch = new SpriteBatch();
         viewport = new ScreenViewport();
         atlas = new TextureAtlas(Gdx.files.internal("packed.atlas"));
-        mainMenuScreen = new MainMenuScreen(this);
-        gameScreen = new GameScreen(this);
         timer = new Timer();
         music = Gdx.audio.newMusic(Gdx.files.internal("music/Lord of the Land.mp3"));
+        fontGeneric = new FreeTypeFontGenerator(Gdx.files.internal("fonts/generic.otf"));
+        
+        mainMenuScreen = new MainMenuScreen(this);
+        gameScreen = new GameScreen(this);
         
         music.setLooping(true);
         setScreen(mainMenuScreen);
@@ -53,6 +57,7 @@ public class Main extends Game
         mainMenuScreen.dispose();
         gameScreen.dispose();
         music.dispose();
+        fontGeneric.dispose();
     }
     
     
@@ -124,5 +129,15 @@ public class Main extends Game
     public Music getMusic()
     {
         return music;
+    }
+    
+    
+    /**
+     * 
+    */
+    public FreeTypeFontGenerator getFontGeneric()
+    {
+        //  TODO: javadoc
+        return fontGeneric;
     }
 }
