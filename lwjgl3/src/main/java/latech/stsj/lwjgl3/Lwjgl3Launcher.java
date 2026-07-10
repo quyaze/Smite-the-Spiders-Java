@@ -12,8 +12,13 @@ public class Lwjgl3Launcher {
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         
-        Settings settings = new Settings();
-        TexturePacker.process(settings, "./images", "./", "packed");
+        //  TexturePacker will do its thing.
+        //  Passing '--texture-packer' outside of development will cause directory issues
+        if (args.length == 1 && args[0].equals("--texture-packer"))
+        {
+            Settings settings = new Settings();
+            TexturePacker.process(settings, "./images", "./", "packed");
+        }
         
         createApplication();
     }

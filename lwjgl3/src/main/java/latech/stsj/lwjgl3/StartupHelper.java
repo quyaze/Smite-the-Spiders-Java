@@ -155,8 +155,7 @@ public class StartupHelper {
 			// There is no need for -XstartOnFirstThread on Graal native image
 			if (!System.getProperty("org.graalvm.nativeimage.imagecode", "").isEmpty()) return false;
 
-			// Checks if we are already on the main thread, such as from running via Construo.
-			//	CONSTRUO HAS BEEN OMITTED
+			// Checks if we are already on the main thread, such as from running via Construo. [Construo has been omitted]
 			long objcMsgSend = ObjCRuntime.getLibrary().getFunctionAddress("objc_msgSend");
 			long nsThread = ObjCRuntime.objc_getClass("NSThread");
 			long currentThread = JNI.invokePPP(nsThread, ObjCRuntime.sel_getUid("currentThread"), objcMsgSend);
@@ -176,7 +175,7 @@ public class StartupHelper {
 		// Spawn the child JVM process with updated environment variables or JVM args
 		List<String> jvmArgs = new ArrayList<>();
 		// The following line is used assuming you target Java 8, the minimum for LWJGL3.
-		String javaExecPath = System.getProperty("java.home") + "/bin/java";
+		String javaExecPath = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 		// If targeting Java 9 or higher, you could use the following instead of the above line:
 		//String javaExecPath = ProcessHandle.current().info().command().orElseThrow()
 		if (!(new File(javaExecPath).exists())) {

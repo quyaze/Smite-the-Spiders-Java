@@ -46,8 +46,21 @@ dependencies {
 
 def os = System.properties['os.name'].toLowerCase(Locale.ROOT)
 
-run {
+tasks.register('runTexturePacker') {
+  group('application')
+  doLast {
+    project.extensions.extraProperties.set('texturePackerEnabled', true)
+  }
+}
+
+run { 
+  dependsOn tasks.named('runTexturePacker')
   workingDir = rootProject.file('assets').path
+  doFirst {
+    if (project.extensions.extraProperties.has('texturePackerEnabled')) {
+      args += '--texture-packer'
+    }
+  }
 // You can uncomment the next line if your IDE claims a build failure even when the app closed properly.
   //setIgnoreExitValue(true)
   jvmArgs += "--enable-native-access=ALL-UNNAMED"
