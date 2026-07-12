@@ -1,4 +1,5 @@
-//  TODO: possible state system. Gameplay loop for round based gameplay to generate new spiders
+//  TODO: gameplay loop (round based) to generate new spiders
+//  TODO: pause menu
 
 package latech.stsj.screens;
 
@@ -7,12 +8,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.Main;
@@ -20,7 +18,7 @@ import latech.stsj.gameplay.Player;
 import latech.stsj.gameplay.Spider;
 
 /**
- * Screen for the gameplay
+ * Screen for the gameplay.
  */
 public class GameScreen implements Screen
 {
@@ -29,19 +27,20 @@ public class GameScreen implements Screen
     
     private final Main game;
     private final Player player;
-    private final Array<Spider> spiders;
+    private final Spider[] spiders;
     
     private AtlasRegion background;
+    private boolean paused = false;
     
     
     //  Constructor
     public GameScreen(final Main game)
     {
         this.game = game;
+        background = game.getAtlas().findRegion("bg");
         player = new Player(game);
-        spiders = new Array<Spider>();
-        
-        for (int i = 0; i < MathUtils.random(1, 3); i++) spiders.add(new Spider(game));
+        spiders =  new Spider[MathUtils.random(1, 3)];
+        for (int i = 0; i < spiders.length; i++) spiders[i] = new Spider(game);
     }
     
     
@@ -49,32 +48,17 @@ public class GameScreen implements Screen
     @Override
     public void show()
     {
-        TextureAtlas atlas = game.getAtlas();
-        
-        game.getTimer().scheduleTask(
-            new Task()
-            {
-                public void run()
-                {
-                    player.enableInput = true;
-                    player.frozen = false;
-                    for (Spider spider : spiders) spider.frozen = false;
-                }
-            },
-            1f
-        );
-        background = atlas.findRegion("bg");
-        player.getSprite().setPosition((Gdx.graphics.getWidth() - player.getTrueScaleX()) * 0.5f, Gdx.graphics.getHeight() * ONE_THIRD);
-        
-        for (int i = 0; i < spiders.size; i++)
+        paused = false;
+        player.sprite.setCenter(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * ONE_THIRD);
+        for (int i = 0; i < spiders.length; i++)
         {
-            Spider spider = spiders.get(i);
-            float spawnHeight = (Gdx.graphics.getHeight() - spider.getTrueScaleY()) * 0.8f;
+            Spider spider = spiders[i];
+            float spawnHeight = Gdx.graphics.getHeight() * 0.8f - spider.getTrueScaleY() * 0.5f;
             float width = Gdx.graphics.getWidth() - spider.getTrueScaleX();
             float spiderCenter = spider.getTrueScaleX() * 0.5f;
-            if (i == 0) spider.getSprite().setCenter(width * 0.5f - spiderCenter, spawnHeight);
-            else if (i == 1) spider.getSprite().setCenter(width * 0.25f - spiderCenter, spawnHeight);
-            else if (i == 2) spider.getSprite().setCenter(width * 0.75f - spiderCenter, spawnHeight);
+            if (i == 0) spider.sprite.setCenter(width * 0.5f - spiderCenter, spawnHeight);
+            else if (i == 1) spider.sprite.setCenter(width * 0.25f - spiderCenter, spawnHeight);
+            else if (i == 2) spider.sprite.setCenter(width * 0.75f - spiderCenter, spawnHeight);
             spider.refresh();
         }
     }
@@ -83,11 +67,7 @@ public class GameScreen implements Screen
     //  Hide
     @Override
     public void hide()
-    {
-        player.enableInput = false;
-        player.frozen = true;
-        for (Spider spider : spiders) spider.frozen = true;
-    }
+    {}
     
     
     //  Pause
@@ -127,17 +107,17 @@ public class GameScreen implements Screen
     
     
     /**
-     * Gameplay input to process every frame
+     * Gameplay input to process every frame.
      * @param deltaSeconds Time (sec) since last frame
      */
     private void input(float deltaSeconds)
     {
-        //  TODO: Pause menu panel.
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-        {
-            game.setScreen(game.getMainMenuScreen());
-            return;
-        }
+        //  GameScreen-specific input
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) paused = !paused;
+        if (paused && Gdx.input.isKeyJustPressed(Input.Keys.Q)) game.setScreen(game.getMainMenuScreen());
+        
+        //  Gameplay elements-specific input. Skipped altogether if paused
+        if (paused) return;
         player.input(deltaSeconds);
     }
     
@@ -148,6 +128,8 @@ public class GameScreen implements Screen
      */
     private void logic(float deltaSeconds)
     {
+        //  Gameplay elements-specific logic. Skipped altogether if paused
+        if (paused) return;
         player.logic(deltaSeconds);
         for (Spider spider : spiders) spider.logic(deltaSeconds);
     }

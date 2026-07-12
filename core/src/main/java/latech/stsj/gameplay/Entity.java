@@ -4,22 +4,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
+/**
+ * Entity class to represent characters and beings
+ */
 public class Entity
 {
     //  Fields
-    protected Sprite sprite;
-    protected float speed = 60f; // pixels per second
-    protected float direction = 0;
-    public boolean frozen = true;
-    
-    
-    /**
-     * @return Entity's sprite
-     */
-    public Sprite getSprite()
-    {
-        return sprite;
-    }
+    public Sprite sprite;
+    public float direction = 0;
+    public float speed = 60f; // pixels per second
     
     
     /**

@@ -31,9 +31,6 @@ public class Spider extends Entity
      */
     public void logic(float deltaSeconds)
     {
-        //  Do not move to destination if locked
-        if (frozen) return;
-        
         float x = sprite.getX();
         float y = sprite.getY();
         

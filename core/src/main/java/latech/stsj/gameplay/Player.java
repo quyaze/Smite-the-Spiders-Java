@@ -16,9 +16,7 @@ import latech.stsj.Main;
 public class Player extends Entity
 {
     //  Fields
-    public boolean enableInput = false;
     private Vector2 movementAxis2d = Vector2.Zero;
-    private float movementSensitivity = 0.2f;
     
     
     //  Constructor
@@ -36,49 +34,35 @@ public class Player extends Entity
      */
     public void input(float deltaSeconds)
     {
-        //  1.  Is input enabled
-        if (!enableInput) return;
+        //  TODO: game controller
+        //  1.  Evaluate move direction from player input
+        final boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP);
+        final boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+        final boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        final boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT);
         
-        //  2.  Move
-        final int xMax = Gdx.graphics.getWidth() - (int) (getTrueScaleX());
-        final int yMax = Gdx.graphics.getHeight() - (int) (getTrueScaleY());
-        
+        //  2.  Map input to movement
         movementAxis2d.setZero();
-        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP))
-        {
-            movementAxis2d.add(0f, 1f);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        {
-            movementAxis2d.add(1f, 0f);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        {
-            movementAxis2d.sub(0f, 1f);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        {
-            movementAxis2d.sub(1f, 0f);
-        }
+        if (upPressed) movementAxis2d.add(0f, 1f);      //  Input up
+        if (rightPressed) movementAxis2d.add(1f, 0f);   //  Input right
+        if (downPressed) movementAxis2d.sub(0f, 1f);    //  Input down
+        if (leftPressed) movementAxis2d.sub(1f, 0f);    //  Input left
         
-        //  Stop here if frozen or there is no input from the user
-        if (movementAxis2d.len2() < movementSensitivity || frozen) return;
+        //  2.  No input from the user
+        if (!(upPressed || rightPressed || downPressed || leftPressed)) return;
+        
+        //  3.  Calculate movement then move
         direction = MathUtils.atan2(movementAxis2d.y, movementAxis2d.x);
         sprite.translate(getSpeedX() * deltaSeconds, getSpeedY() * deltaSeconds);
         
-        //  3.  Prevent sprite from going off screen
-        //  Position is acquired here because sprite may have moved
+        //  4.  Prevent wizard from going off screen
         final float x = sprite.getX();
         final float y = sprite.getY();
+        final float xMax = Gdx.graphics.getWidth() - MathUtils.ceil(getTrueScaleX());
+        final float yMax = Gdx.graphics.getHeight() - MathUtils.ceil(getTrueScaleY());
         
-        if (x < 0 || x > xMax)
-        {
-            sprite.setX(MathUtils.clamp(x, 0, xMax));
-        }
-        if (y < 0 || y > yMax)
-        {
-            sprite.setY(MathUtils.clamp(y, 0, yMax));
-        }
+        if (x < 0 || x > xMax) sprite.setX(MathUtils.clamp(x, 0, xMax));
+        if (y < 0 || y > yMax) sprite.setY(MathUtils.clamp(y, 0, yMax));
     }
     
     
