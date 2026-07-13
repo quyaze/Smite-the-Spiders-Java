@@ -10,11 +10,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.Main;
+import latech.stsj.gameplay.Entity;
 import latech.stsj.gameplay.Player;
+import latech.stsj.gameplay.Projectile;
 import latech.stsj.gameplay.Spider;
 
 /**
@@ -28,9 +31,12 @@ public class GameScreen implements Screen
     private final Main game;
     private final Player player;
     private final Spider[] spiders;
-    
-    private AtlasRegion background;
+    private final AtlasRegion background;
     private boolean paused = false;
+    private boolean spawnFireball;
+    
+    private Array<Projectile> fireballs;
+    private Array<Projectile> webs;
     
     
     //  Constructor
@@ -40,6 +46,8 @@ public class GameScreen implements Screen
         background = game.getAtlas().findRegion("bg");
         player = new Player(game);
         spiders =  new Spider[MathUtils.random(1, 3)];
+        fireballs = new Array<Projectile>();
+        webs = new Array<Projectile>();
         for (int i = 0; i < spiders.length; i++) spiders[i] = new Spider(game);
     }
     
@@ -49,16 +57,16 @@ public class GameScreen implements Screen
     public void show()
     {
         paused = false;
-        player.sprite.setCenter(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * ONE_THIRD);
+        player.character.setCenter(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * ONE_THIRD);
         for (int i = 0; i < spiders.length; i++)
         {
             Spider spider = spiders[i];
-            float spawnHeight = Gdx.graphics.getHeight() * 0.8f - spider.getTrueScaleY() * 0.5f;
-            float width = Gdx.graphics.getWidth() - spider.getTrueScaleX();
-            float spiderCenter = spider.getTrueScaleX() * 0.5f;
-            if (i == 0) spider.sprite.setCenter(width * 0.5f - spiderCenter, spawnHeight);
-            else if (i == 1) spider.sprite.setCenter(width * 0.25f - spiderCenter, spawnHeight);
-            else if (i == 2) spider.sprite.setCenter(width * 0.75f - spiderCenter, spawnHeight);
+            Entity entitySpider = spider.getEntity();
+            float spawnHeight = Gdx.graphics.getHeight() * 0.8f;
+            float width = Gdx.graphics.getWidth() - entitySpider.getTrueSizeX();
+            if (i == 0) entitySpider.setCenter(width * 0.5f, spawnHeight);
+            else if (i == 1) entitySpider.setCenter(width * 0.25f, spawnHeight);
+            else if (i == 2) entitySpider.setCenter(width * 0.75f, spawnHeight);
             spider.refresh();
         }
     }
@@ -67,7 +75,10 @@ public class GameScreen implements Screen
     //  Hide
     @Override
     public void hide()
-    {}
+    {
+        fireballs.clear();
+        webs.clear();
+    }
     
     
     //  Pause
@@ -119,6 +130,7 @@ public class GameScreen implements Screen
         //  Gameplay elements-specific input. Skipped altogether if paused
         if (paused) return;
         player.input(deltaSeconds);
+        spawnFireball = Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
     }
     
     
@@ -130,8 +142,66 @@ public class GameScreen implements Screen
     {
         //  Gameplay elements-specific logic. Skipped altogether if paused
         if (paused) return;
+        
+        
+        //  Entities
         player.logic(deltaSeconds);
         for (Spider spider : spiders) spider.logic(deltaSeconds);
+        
+        
+        //  Fireballs
+        for (int i = 0; i < fireballs.size; i ++)
+        {
+            Projectile fireball = fireballs.get(i);
+            if (fireball.getIsOutsideScreen())
+            {
+                fireballs.removeIndex(i);
+            }
+            else
+            {
+                Entity fireballEntity = fireball.getEntity();
+                fireballEntity.translate(
+                    fireballEntity.getVelocityX() * deltaSeconds,
+                    fireballEntity.getVelocityY() * deltaSeconds
+                );
+            }
+        }
+        
+        
+        //  Webs
+        for (int i = 0; i < webs.size; i ++)
+        {
+            Projectile web = webs.get(i);
+            if (web.getIsOutsideScreen())
+            {
+                webs.removeIndex(i);
+            }
+            else
+            {
+                Entity webEntity = web.getEntity();
+                webEntity.translate(
+                    webEntity.getVelocityX() * deltaSeconds,
+                    webEntity.getVelocityY() * deltaSeconds
+                );
+            }
+        }
+        
+        
+        //  Spawn fireball
+        if (spawnFireball)
+        {
+            Projectile fireball = new Projectile(game.getAtlas().findRegion("spell"));
+            Entity fireballEntity = fireball.getEntity();
+            
+            fireballEntity.setDirection(0f, 1f);
+            fireballEntity.setScale(2f);
+            fireballEntity.setPosition(
+                player.character.getX() + (player.character.getTrueSizeX() - fireballEntity.getTrueSizeX()) * 0.5f,
+                player.character.getY() + (player.character.getTrueSizeY() - fireballEntity.getTrueSizeY()) * 0.5f
+            );
+            fireballEntity.setSpeed(1200f);
+            fireballs.add(fireball);
+        }
     }
     
     
@@ -148,9 +218,11 @@ public class GameScreen implements Screen
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        player.draw(batch);
-        for (Spider spider : spiders) spider.draw(batch);
+        batch.draw(background, 0f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        for (Projectile fireball : fireballs) fireball.getEntity().draw(batch);
+        for (Projectile web : webs) web.getEntity().draw(batch);
+        player.character.draw(batch);
+        for (Spider spider : spiders) spider.getEntity().draw(batch);
         batch.end();
     }
 }

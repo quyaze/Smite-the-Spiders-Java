@@ -10,18 +10,28 @@ import com.badlogic.gdx.math.Vector2;
 
 import latech.stsj.Main;
 
-public class Spider extends Entity
+public class Spider
 {
     //  Fields
-    private Vector2 destination = new Vector2();
+    private Vector2 destination = Vector2.Zero.cpy();
+    private Entity entity;
     
     
     //  Constructor
     public Spider(final Main game)
     {
-        sprite = new Sprite(game.getAtlas().findRegion("spider"));
-        sprite.setScale(4f);
+        entity = new Entity(new Sprite(game.getAtlas().findRegion("spider")));
+        entity.setScale(4f);
         destination.set(randomDestination());
+    }
+    
+    
+    /**
+     * @return owned Entity
+     */
+    public Entity getEntity()
+    {
+        return entity;
     }
     
     
@@ -31,22 +41,22 @@ public class Spider extends Entity
      */
     public void logic(float deltaSeconds)
     {
-        float x = sprite.getX();
-        float y = sprite.getY();
+        float x = entity.getX();
+        float y = entity.getY();
         
         //  TODO: tolerance needs to be aware of framerate and speed
         if (MathUtils.isEqual(x, destination.x, 5f) && MathUtils.isEqual(y, destination.y, 5f))
         {
             destination.set(randomDestination());
         }
-        sprite.translate(getSpeedX() * deltaSeconds, getSpeedY() * deltaSeconds);
+        entity.translate(entity.getVelocityX() * deltaSeconds, entity.getVelocityY() * deltaSeconds);
     }
     
     
     public void refresh()
     {
         //  TODO: javadoc
-        direction = MathUtils.atan2(destination.y - sprite.getY(), destination.x - sprite.getX());
+        entity.setDirection(destination.x - entity.getX(), destination.y - entity.getY());
     }
     
     
@@ -55,10 +65,10 @@ public class Spider extends Entity
         //  TODO: javadoc
         int width = Gdx.graphics.getWidth();
         int height = Gdx.graphics.getHeight();
-        Vector2 newDestination = new Vector2(MathUtils.random(0, width - getTrueScaleX()), MathUtils.random((int) (height * 0.5f), height - getTrueScaleY()));
+        Vector2 newDestination = new Vector2(MathUtils.random(0, width - entity.getTrueSizeX()), MathUtils.random((int) (height * 0.5f), height - entity.getTrueSizeY()));
         
-        direction = MathUtils.atan2(newDestination.y - sprite.getY(), newDestination.x - sprite.getX());
-        speed = MathUtils.random(160, 200); // 60 * random
+        entity.setDirection(newDestination.x - entity.getX(), newDestination.y - entity.getY());
+        entity.setSpeed(MathUtils.map(0f, 1f, 160f, 200f, MathUtils.random()));
         return newDestination;
     }
 }
