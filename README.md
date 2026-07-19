@@ -2,10 +2,9 @@
 
 This project is a remake of "Shoot the Spiders." Originally written in Python using Pygame, it is now programmed in Java using LibGDX.
 
-Requirements:
-<ul>
-    <li><a href="https://www.oracle.com/java/technologies/downloads/#java26">JDK 26.0.1</a>.</li>
-</ul>
+Project requirements: [JDK 26.0.1]("https://www.oracle.com/java/technologies/downloads/#java26")
+
+Todo: mini-ECS description
 
 <i>Made for Louisiana Tech University.</i>
 

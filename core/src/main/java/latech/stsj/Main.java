@@ -1,3 +1,8 @@
+/*
+//      Main.java
+*/
+
+
 package latech.stsj;
 
 import com.badlogic.gdx.Game;
@@ -9,11 +14,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import latech.stsj.screens.GameScreen;
+import latech.stsj.screens.GameplayScreen;
 import latech.stsj.screens.MainMenuScreen;
 
 /**
- * Main - entry point into the game
+ * Entry point into the game
  */
 public class Main extends Game
 {
@@ -26,7 +31,7 @@ public class Main extends Game
     private FreeTypeFontGenerator fontGeneric;
     
     private MainMenuScreen mainMenuScreen;
-    private GameScreen gameScreen;
+    private GameplayScreen gameplayScreen;
     
     
     //  Create
@@ -41,7 +46,7 @@ public class Main extends Game
         fontGeneric = new FreeTypeFontGenerator(Gdx.files.internal("fonts/generic.otf"));
         
         mainMenuScreen = new MainMenuScreen(this);
-        gameScreen = new GameScreen(this);
+        gameplayScreen = new GameplayScreen(this);
         
         music.setLooping(true);
         setScreen(mainMenuScreen);
@@ -55,17 +60,9 @@ public class Main extends Game
         batch.dispose();
         atlas.dispose();
         mainMenuScreen.dispose();
-        gameScreen.dispose();
+        gameplayScreen.dispose();
         music.dispose();
         fontGeneric.dispose();
-    }
-    
-    
-    //  Render
-    @Override
-    public void render()
-    {
-        super.render();
     }
     
     
@@ -97,25 +94,25 @@ public class Main extends Game
     
     
     /**
-     * @return Screen representing the main menu
+     * Switch to the main menu screen
      */
-    public MainMenuScreen getMainMenuScreen()
+    public void goToMainMenuScreen()
     {
-        return mainMenuScreen;
+        setScreen(mainMenuScreen);
     }
     
     
     /**
-     * @return Screen representing gameplay
+     * Switch to the gameplay screen
      */
-    public GameScreen getGameScreen()
+    public void goToGameplayScreen()
     {
-        return gameScreen;
+        setScreen(gameplayScreen);
     }
     
     
     /**
-     * @return Timer and task scheduler utility
+     * @return Game's timer and task scheduler utility
     */
     public Timer getTimer()
     {
@@ -133,11 +130,10 @@ public class Main extends Game
     
     
     /**
-     * 
+     * TODO: javadoc
     */
     public FreeTypeFontGenerator getFontGeneric()
     {
-        //  TODO: javadoc
         return fontGeneric;
     }
 }

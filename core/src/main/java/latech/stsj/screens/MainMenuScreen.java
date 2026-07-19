@@ -1,8 +1,12 @@
+/*
+//      MainMenuScreen.java
+*/
+
+
 package latech.stsj.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -16,14 +20,15 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.Main;
+import latech.stsj.templates.StarterScreen;
+
 
 /**
  * Screen for the main menu
  */
-public class MainMenuScreen implements Screen
+public class MainMenuScreen extends StarterScreen
 {
     //  Fields
-    private final Main game;
     private static final int LOGO_SCALE = 3;
     
     private AtlasRegion background;
@@ -38,14 +43,14 @@ public class MainMenuScreen implements Screen
     
     
     //  Constructor
-    public MainMenuScreen(final Main game)
+    public MainMenuScreen(final Main main)
     {
-        this.game = game;
+        this.main = main;
         
         FreeTypeFontParameter params = new FreeTypeFontParameter();
         params.size = 36;
         
-        subtitleText = game.getFontGeneric().generateFont(params);
+        subtitleText = main.getFontGeneric().generateFont(params);
         subtitleGlyph = new GlyphLayout(subtitleText, "Click anywhere to play");
     }
     
@@ -54,9 +59,9 @@ public class MainMenuScreen implements Screen
     @Override
     public void show()
     {
-        TextureAtlas atlas = game.getAtlas();
+        TextureAtlas atlas = main.getAtlas();
         
-        game.getTimer().scheduleTask(
+        main.getTimer().scheduleTask(
             new Task()
             {
                 public void run()
@@ -69,7 +74,7 @@ public class MainMenuScreen implements Screen
         background = atlas.findRegion("bg");
         logo = atlas.findRegion("logo");
         logoPhase = 0f;
-        game.getMusic().play();
+        main.getMusic().play();
     }
     
     
@@ -96,7 +101,7 @@ public class MainMenuScreen implements Screen
     @Override
     public void resize(int width, int height)
     {
-        game.getViewport().update(width, height, true);
+        main.getViewport().update(width, height, true);
     }
     
     
@@ -136,7 +141,7 @@ public class MainMenuScreen implements Screen
         //  3.  Proceed to main menu input processing
         if (Gdx.input.isButtonJustPressed(0))
         {
-            game.setScreen(game.getGameScreen());
+            main.goToGameplayScreen();
         }
     }
     
@@ -154,12 +159,12 @@ public class MainMenuScreen implements Screen
      */
     private void draw(float deltaSeconds)
     {
-        SpriteBatch batch = game.getBatch();
-        ScreenViewport viewport = game.getViewport();
+        SpriteBatch batch = main.getBatch();
+        ScreenViewport viewport = main.getViewport();
         float width = Gdx.graphics.getWidth();
         float height =  Gdx.graphics.getHeight();
         
-        if (logoPhase != 1)
+        if (logoPhase < 1)
         {
             logoPhase = MathUtils.clamp(logoPhase + (logoPhaseInverse ? -deltaSeconds : deltaSeconds) * 0.8f, 0f, 1f);
         }
@@ -167,7 +172,7 @@ public class MainMenuScreen implements Screen
         viewport.apply(true);
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.draw(background, 0, 0, width, height);
+        batch.draw(background, 0, 0, width, width * 0.75f);
         batch.setColor(1f, 1f, 1f, MathUtils.lerp(0f, 1f, logoPhase));
         batch.draw(logo, (width - logo.getRegionWidth() * LOGO_SCALE) * 0.5f, (height - logo.getRegionHeight() * LOGO_SCALE) * 0.5f, logo.getRegionWidth() * LOGO_SCALE, logo.getRegionHeight() * LOGO_SCALE);
         batch.setColor(1f, 1f, 1f, 1f);
