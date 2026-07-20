@@ -18,7 +18,7 @@ import latech.stsj.screens.GameplayScreen;
 import latech.stsj.screens.MainMenuScreen;
 
 /**
- * Entry point into the game
+ * Entry way into the game.
  */
 public class Main extends Game
 {

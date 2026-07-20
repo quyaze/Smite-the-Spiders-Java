@@ -24,7 +24,7 @@ import latech.stsj.templates.StarterScreen;
 
 
 /**
- * Screen for the main menu
+ * Screen for the main menu.
  */
 public class MainMenuScreen extends StarterScreen
 {

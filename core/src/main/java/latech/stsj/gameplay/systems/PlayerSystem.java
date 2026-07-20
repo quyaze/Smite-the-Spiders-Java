@@ -15,6 +15,10 @@ import latech.stsj.gameplay.stores.Player;
 import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.templates.System;
 
+
+/**
+ * System for player input.
+ */
 public class PlayerSystem extends System
 {
     //  Fields
@@ -38,11 +42,6 @@ public class PlayerSystem extends System
         
         Vector2 movementInput2D = player.movementInput2D;
         
-        if (mobility == null || player == null)
-        {
-            return;
-        }
-        
         movementInput2D.setZero();
         
         final boolean goUp = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_8);
@@ -56,6 +55,7 @@ public class PlayerSystem extends System
         if (goDown) movementInput2D.y -= 1f;
         if (goLeft) movementInput2D.x -= 1f;
         
+        //  Game controllers coming soon
         float inputStrength = movementInput2D.len2();
         float speed = 0f;
         if (inputStrength > 0.04f)

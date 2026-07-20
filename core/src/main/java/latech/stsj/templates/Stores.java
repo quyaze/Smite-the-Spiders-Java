@@ -7,6 +7,12 @@ package latech.stsj.templates;
 
 import com.badlogic.gdx.utils.IntMap;
 
+
+/**
+ * Lays out the stores that hold data for associated entities.
+ * This data is accessed for any entity within systems.
+ * @param <T> the type of data stored for each entity
+ */
 public class Stores<T>
 {
     //  Fields
@@ -21,9 +27,9 @@ public class Stores<T>
     
     
     /**
-     * Associate entity with the corresponding <T> data.
-     * @param entity
-     * @param data <T>
+     * Associate an entity with the corresponding {@code T} data.
+     * @param entity the entity identifier
+     * @param data the data of type {@code T} to associate with the entity
      */
     public void add(int entity, T data)
     {
@@ -32,8 +38,8 @@ public class Stores<T>
     
     
     /**
-     * Omit entity and its <T> data.
-     * @param entity
+     * Remove an entity and its associated {@code T} data.
+     * @param entity the entity identifier to remove
      */
     public void remove(int entity)
     {
@@ -44,9 +50,9 @@ public class Stores<T>
     
     
     /**
-     * Retrieve the entity's <T> data
+     * Retrieve the entity's data of type {@code T}.
      * @param entity
-     * @return <T>
+     * @return the data associated with the entity or {@code null}
      */
     public T get(int entity)
     {

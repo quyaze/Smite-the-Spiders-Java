@@ -25,6 +25,7 @@ import latech.stsj.gameplay.systems.ProjectileSystem;
 import latech.stsj.gameplay.systems.SpiderSystem;
 import latech.stsj.gameplay.systems.DrawSystem;
 import latech.stsj.templates.Stores;
+import latech.stsj.templates.System;
 import latech.stsj.templates.World;
 
 public class GameplayWorld extends World
@@ -42,14 +43,17 @@ public class GameplayWorld extends World
     private SpiderSystem spiderSystem;
     private ProjectileSystem projectileSystem;
     
+    final private System[] systems;
+    
     private SpriteBatch batch;
     private ScreenViewport viewport;
     
-    final static private char flagTexture = 1;      //     1
-    final static private char flagAvatar = 2;       //    10
-    final static private char flagPlayer = 4;       //   100
-    final static private char flagCollision = 8;    //  1000
-    final static private char flagSpider = 16;      // 10000
+    final static private char flagPlayer = 1;       //     1 = 1 << 0
+    final static private char flagCollision = 2;    //    10 = 1 << 1
+    final static private char flagAvatar = 4;       //   100 = 1 << 2
+    final static private char flagSpider = 8;       //  1000 = 1 << 3
+    final static private char flagTexture = 16;     // 10000 = 1 << 4
+    //  << is binary bitshift
     
     IntArray entityRenderQueue;
     
@@ -71,17 +75,22 @@ public class GameplayWorld extends World
         spiderSystem = new SpiderSystem(this);
         projectileSystem = new ProjectileSystem(this);
         
+        systems = new System[] {
+            playerSystem,
+            projectileSystem,
+            avatarSystem,
+            spiderSystem,
+            drawSystem
+        };
+        
         batch = main.getBatch();
         viewport = main.getViewport();
         
         entityRenderQueue = new IntArray(false, 32);
         
-        /*  The order of these functions determines texture draw
-            order/zindex
-        */
+        spawnBackground(main);
         spawnSpiders(main);
         spawnPlayer(main);
-        spawnBackground(main);
     }
     
     
@@ -89,31 +98,32 @@ public class GameplayWorld extends World
     @Override
     public void render(float deltaSeconds)
     {
-        for (IntIntMap.Entry entry : entityIds)
+        /*  Loop through all systems with the corresponding
+            bitmask. Each system has their own render pass and
+            perform logic upon all applicable entities.
+            
+            Can probably be optimized
+        */
+        //  TODO: remove entities
+        System system;
+        for (char flag = 1; flag <= flagTexture; flag <<= 1)
         {
-            int system = entry.value;
-            int entity = entry.key;
-            
-            if (system == 0)
+            system = systems[Integer.numberOfTrailingZeros(flag)];
+            if (system == drawSystem)
             {
-                removeEntity(entity);
-                continue;
+                ScreenUtils.clear(Color.BLACK);
+                viewport.apply();
+                batch.setProjectionMatrix(viewport.getCamera().combined);
+                batch.begin();
             }
-            
-            if (isRegistered(system, flagTexture)) entityRenderQueue.add(entity);
-            if (isRegistered(system, flagPlayer)) playerSystem.render(deltaSeconds, entity);
-            if (isRegistered(system, flagAvatar)) avatarSystem.render(deltaSeconds, entity);
-            if (isRegistered(system, flagSpider)) spiderSystem.render(deltaSeconds, entity);
-            if (isRegistered(system, flagCollision)) projectileSystem.render(deltaSeconds, entity);
+            for (int entity = 0; entity < entityIds.size; entity++)
+            {
+                int systemCode = entityIds.get(flag, 0);
+                if (isRegistered(systemCode, flag)) system.render(deltaSeconds, entity);
+            }
         }
         
-        ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-        batch.begin();
-        for (int entity : entityRenderQueue.items) drawSystem.render(deltaSeconds, entity);
         batch.end();
-        entityRenderQueue.clear();
     }
     
     

@@ -12,6 +12,10 @@ import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Collision;
 import latech.stsj.templates.System;
 
+
+/**
+ * System for projectiles.
+ */
 public class ProjectileSystem extends System
 {
     //  Field
@@ -35,6 +39,10 @@ public class ProjectileSystem extends System
         if (collision.collision.overlaps(rectScreen))
         {
             //  Collision detected
+        }
+        else
+        {
+            
         }
         //  If (not screen contained) world.entityRemove.add(entity);
     }

@@ -14,6 +14,10 @@ import latech.stsj.gameplay.stores.Spider;
 import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.templates.System;
 
+
+/**
+ * System for spiders.
+ */
 public class SpiderSystem extends System
 {
     //  Fields

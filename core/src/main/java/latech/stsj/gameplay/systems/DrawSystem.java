@@ -11,6 +11,10 @@ import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.templates.System;
 
+
+/**
+ * System for drawing or screen rendering.
+ */
 public class DrawSystem extends System
 {
     //  Fields

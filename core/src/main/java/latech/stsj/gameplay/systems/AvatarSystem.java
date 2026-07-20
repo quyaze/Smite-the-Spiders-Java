@@ -10,6 +10,10 @@ import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.templates.System;
 
+
+/**
+ * System for moving beings, characters, objects, etc.
+ */
 public class AvatarSystem extends System
 {
     //  Fields

@@ -9,6 +9,10 @@ import latech.stsj.Main;
 import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.templates.StarterScreen;
 
+
+/**
+ * Screen for the gameplay.
+ */
 public class GameplayScreen extends StarterScreen
 {
     //  Fields
