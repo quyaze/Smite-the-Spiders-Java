@@ -12,10 +12,15 @@ package latech.stsj.templates;
  */
 public abstract class System
 {
+    //  Fields
+    public Stores<? extends Object>[] stores;
+    
+    
     /**
      * The primary method that performs a specific task or job per
-     * entity by acquiring its associated data. To be called each
-     * frame.
+     * entity and may acquire associated data.
+     * <p>
+     * Is called from owning <code>World.render(float)</code>.
      * @param deltaSeconds
      * @param entity
      */

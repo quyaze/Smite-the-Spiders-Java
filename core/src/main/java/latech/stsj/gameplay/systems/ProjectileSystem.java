@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Collision;
+import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
 
@@ -23,9 +24,12 @@ public class ProjectileSystem extends System
     Rectangle rectScreen;
     
     
-    //  Concstructor
+    //  Constructor
     public ProjectileSystem(GameplayWorld world)
     {
+        stores = new Stores[] {
+            world.collisionStore
+        };
         this.world = world;
         rectScreen = new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }

@@ -8,6 +8,7 @@ package latech.stsj.gameplay.systems;
 import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
 
@@ -23,6 +24,10 @@ public class AvatarSystem extends System
     //  Constructor
     public AvatarSystem(GameplayWorld world)
     {
+        stores = new Stores[] {
+            world.textureDrawableStore,
+            world.mobilityStore
+        };
         this.world = world;
     }
     

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
 
@@ -25,6 +26,9 @@ public class DrawSystem extends System
     //  Constructor
     public DrawSystem(GameplayWorld world, SpriteBatch batch)
     {
+        stores = new Stores[] {
+            world.textureDrawableStore
+        };
         this.world = world;
         this.batch = batch;
     }

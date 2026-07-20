@@ -12,6 +12,7 @@ import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.Spider;
 import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
 
@@ -27,6 +28,11 @@ public class SpiderSystem extends System
     //  Constructor
     public SpiderSystem(GameplayWorld world)
     {
+        stores = new Stores[] {
+            world.textureDrawableStore,
+            world.mobilityStore,
+            world.spiderStore
+        };
         this.world = world;
     }
     

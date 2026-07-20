@@ -130,7 +130,7 @@ public class Main extends Game
     
     
     /**
-     * TODO: javadoc
+     * @return Font generator for generic text (Cinzel)
     */
     public FreeTypeFontGenerator getFontGeneric()
     {

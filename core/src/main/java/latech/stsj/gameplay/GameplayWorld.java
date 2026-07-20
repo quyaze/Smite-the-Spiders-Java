@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -44,6 +45,7 @@ public class GameplayWorld extends World
     private ProjectileSystem projectileSystem;
     
     final private System[] systems;
+    private IntSet entityDebris;
     
     private SpriteBatch batch;
     private ScreenViewport viewport;
@@ -82,6 +84,7 @@ public class GameplayWorld extends World
             spiderSystem,
             drawSystem
         };
+        entityDebris = new IntSet(4);
         
         batch = main.getBatch();
         viewport = main.getViewport();
@@ -89,8 +92,8 @@ public class GameplayWorld extends World
         entityRenderQueue = new IntArray(false, 32);
         
         spawnBackground(main);
-        spawnSpiders(main);
         spawnPlayer(main);
+        spawnSpiders(main);
     }
     
     
@@ -101,29 +104,37 @@ public class GameplayWorld extends World
         /*  Loop through all systems with the corresponding
             bitmask. Each system has their own render pass and
             perform logic upon all applicable entities.
-            
-            Can probably be optimized
         */
-        //  TODO: remove entities
         System system;
         for (char flag = 1; flag <= flagTexture; flag <<= 1)
         {
             system = systems[Integer.numberOfTrailingZeros(flag)];
-            if (system == drawSystem)
+            
+            /*  If statement below is for the draw pass. A few utilities
+                are needed before rendering visible objects on screen.
+            */
+            if (flag == flagTexture)
             {
                 ScreenUtils.clear(Color.BLACK);
                 viewport.apply();
                 batch.setProjectionMatrix(viewport.getCamera().combined);
                 batch.begin();
             }
+            
+            /*  Pass entities to system or remove data
+            */
             for (int entity = 0; entity < entityIds.size; entity++)
             {
-                int systemCode = entityIds.get(flag, 0);
-                if (isRegistered(systemCode, flag)) system.render(deltaSeconds, entity);
+                if (entityDebris.contains(entity)) for (Stores<? extends Object> store : system.stores) store.remove(entity);
+                else if (isRegistered(entityIds.get(entity, 0), flag)) system.render(deltaSeconds, entity);
             }
         }
-        
         batch.end();
+        
+        /*  Actual deferred entity removal
+        */
+        for (IntSet.IntSetIterator entities = entityDebris.iterator(); entities.hasNext;) removeEntity(entities.next());
+        entityDebris.clear();
     }
     
     
@@ -185,6 +196,19 @@ public class GameplayWorld extends World
     private boolean isRegistered(int system, char flag)
     {
         return (system & flag) != 0b0;
+    }
+    
+    
+    /**
+     * For GameplayWorld.
+     * <p>
+     * Allows systems to mark entities for removal. Entity removal
+     * is deferred each render.
+     * @param entity
+     */
+    public void deferEntityRemoval(int entity)
+    {
+        entityDebris.add(entity);
     }
     
     
