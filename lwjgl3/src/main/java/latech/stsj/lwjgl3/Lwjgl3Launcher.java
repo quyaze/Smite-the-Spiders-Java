@@ -31,6 +31,13 @@ public class Lwjgl3Launcher {
         //  TODO: Smite the Spiders icon
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setTitle("Smite the Spiders (Java)");
+        configuration.setWindowIcon(
+            "icon_16.png",
+            "icon_24.png",
+            "icon_32.png",
+            "icon_48.png",
+            "icon_64.png"
+        );
         configuration.useVsync(true);
         configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
         configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
