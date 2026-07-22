@@ -5,7 +5,9 @@
 
 package latech.stsj.templates;
 
-import com.badlogic.gdx.utils.IntMap;
+import java.util.HashMap;
+
+// import com.badlogic.gdx.utils.IntMap;
 
 
 /**
@@ -16,13 +18,15 @@ import com.badlogic.gdx.utils.IntMap;
 public class Stores<T>
 {
     //  Fields
-    protected IntMap<T> entityData;
+    protected HashMap<Entity, T> data;
+    // protected IntMap<T> entityData;
     
     
     //  Constructor
     public Stores()
     {
-        entityData = new IntMap<T>(64);
+        data = new HashMap<>(64);
+        // entityData = new IntMap<T>(64);
     }
     
     
@@ -31,9 +35,10 @@ public class Stores<T>
      * @param entity the entity identifier
      * @param data the data of type {@code T} to associate with the entity
      */
-    public void add(int entity, T data)
+    public void add(Entity entity, T data)
     {
-        entityData.put(entity, data);
+        this.data.put(entity, data);
+        // entityData.put(entity, data);
     }
     
     
@@ -41,11 +46,12 @@ public class Stores<T>
      * Remove an entity and its associated {@code T} data.
      * @param entity the entity identifier to remove
      */
-    public void remove(int entity)
+    public void remove(Entity entity)
     {
-        int lastEntity = entityData.size - 1;
-        if (entity != lastEntity) entityData.put(entity, entityData.get(lastEntity));
-        entityData.remove(lastEntity);
+        data.remove(entity);
+        // int lastEntity = entityData.size - 1;
+        // if (entity != lastEntity) entityData.put(entity, entityData.get(lastEntity));
+        // entityData.remove(lastEntity);
     }
     
     
@@ -54,8 +60,9 @@ public class Stores<T>
      * @param entity
      * @return the data associated with the entity or {@code null}
      */
-    public T get(int entity)
+    public T get(Entity entity)
     {
-        return entityData.get(entity);
+        return data.get(entity);
+        // return entityData.get(entity);
     }
 }

@@ -72,7 +72,7 @@ public class MainMenuScreen extends StarterScreen
             1f
         );
         background = atlas.findRegion("bg");
-        logo = atlas.findRegion("logo");
+        logo = atlas.findRegion("title");
         logoPhase = 0f;
         main.getMusic().play();
     }

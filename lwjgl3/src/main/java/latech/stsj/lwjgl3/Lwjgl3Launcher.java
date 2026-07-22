@@ -12,8 +12,9 @@ public class Lwjgl3Launcher {
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         
-        //  TexturePacker will do its thing.
-        //  Passing '--texture-packer' outside of development will cause directory issues
+        /*  TexturePacker will do its thing.
+            Passing '--texture-packer' outside of development will cause directory issues.
+        */
         if (args.length == 1 && args[0].equals("--texture-packer"))
         {
             Settings settings = new Settings();
@@ -28,19 +29,14 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
-        //  TODO: Smite the Spiders icon
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
+        
         configuration.setTitle("Smite the Spiders (Java)");
-        configuration.setWindowIcon(
-            "icon_16.png",
-            "icon_24.png",
-            "icon_32.png",
-            "icon_48.png",
-            "icon_64.png"
-        );
+        configuration.setWindowIcon("icon_16.png", "icon_24.png", "icon_32.png", "icon_48.png", "icon_64.png");
         configuration.useVsync(true);
         configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
         configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+        
         return configuration;
     }
 }

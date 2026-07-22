@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Collision;
+import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
@@ -28,6 +29,8 @@ public class ProjectileSystem extends System
     public ProjectileSystem(GameplayWorld world)
     {
         stores = new Stores[] {
+            world.textureDrawableStore,
+            world.mobilityStore,
             world.collisionStore
         };
         this.world = world;
@@ -39,16 +42,10 @@ public class ProjectileSystem extends System
     @Override
     public void render(float deltaSeconds, int entity)
     {
+        TextureDrawable drawable = world.textureDrawableStore.get(entity);
         Collision collision = world.collisionStore.get(entity);
-        if (collision.collision.overlaps(rectScreen))
-        {
-            //  Collision detected
-        }
-        else
-        {
-            
-        }
-        //  If (not screen contained) world.entityRemove.add(entity);
+        collision.update(drawable);
+        if (!collision.collision.overlaps(rectScreen)) world.deferEntityRemoval(entity);
     }
     
     

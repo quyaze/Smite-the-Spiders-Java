@@ -11,16 +11,29 @@ public class Collision
 {
     //  Fields
     public Rectangle collision;
+    public float[] margin;
     
     
     //  Constructor
-    public Collision(TextureDrawable playerTex)
+    public Collision(TextureDrawable drawable)
     {
+        margin = new float[4];
         collision = new Rectangle(
-            playerTex.tex.getRegionX(),
-            playerTex.tex.getRegionY(),
-            playerTex.getTrueWidth(),
-            playerTex.getTrueHeight()
+            drawable.position.x,
+            drawable.position.y,
+            drawable.getTrueWidth(),
+            drawable.getTrueHeight()
+        );
+    }
+    
+    
+    public void update(TextureDrawable drawable)
+    {
+        collision.set(
+            drawable.position.x,
+            drawable.position.y,
+            drawable.getTrueWidth(),
+            drawable.getTrueHeight()
         );
     }
 }

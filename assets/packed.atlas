@@ -11,13 +11,6 @@ bg
   orig: 800, 600
   offset: 0, 0
   index: -1
-logo
-  rotate: false
-  xy: 2, 36
-  size: 420, 100
-  orig: 420, 100
-  offset: 0, 0
-  index: -1
 spell
   rotate: false
   xy: 804, 706
@@ -30,6 +23,13 @@ spider
   xy: 804, 685
   size: 27, 19
   orig: 27, 19
+  offset: 0, 0
+  index: -1
+title
+  rotate: false
+  xy: 2, 36
+  size: 420, 100
+  orig: 420, 100
   offset: 0, 0
   index: -1
 web

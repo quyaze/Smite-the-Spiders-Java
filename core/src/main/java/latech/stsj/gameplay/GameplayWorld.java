@@ -5,12 +5,16 @@
 
 package latech.stsj.gameplay;
 
+import java.util.HashSet;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.IntSet;
+import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -25,6 +29,7 @@ import latech.stsj.gameplay.systems.PlayerSystem;
 import latech.stsj.gameplay.systems.ProjectileSystem;
 import latech.stsj.gameplay.systems.SpiderSystem;
 import latech.stsj.gameplay.systems.DrawSystem;
+import latech.stsj.templates.Entity;
 import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 import latech.stsj.templates.World;
@@ -49,6 +54,7 @@ public class GameplayWorld extends World
     
     private SpriteBatch batch;
     private ScreenViewport viewport;
+    final AtlasRegion texSpell;
     
     final static private char flagPlayer = 1;       //     1 = 1 << 0
     final static private char flagCollision = 2;    //    10 = 1 << 1
@@ -57,13 +63,12 @@ public class GameplayWorld extends World
     final static private char flagTexture = 16;     // 10000 = 1 << 4
     //  << is binary bitshift
     
-    IntArray entityRenderQueue;
-    
     
     //  Constructor
     public GameplayWorld(Main main)
     {
-        entityIds = new IntIntMap(32);
+        // entityIds = new IntIntMap(32);
+        entities = new OrderedSet<>(48);
         
         textureDrawableStore = new Stores<TextureDrawable>();
         mobilityStore = new Stores<Mobility>();
@@ -89,8 +94,7 @@ public class GameplayWorld extends World
         batch = main.getBatch();
         viewport = main.getViewport();
         
-        entityRenderQueue = new IntArray(false, 32);
-        
+        texSpell = main.getAtlas().findRegion("spell");
         spawnBackground(main);
         spawnPlayer(main);
         spawnSpiders(main);
@@ -121,20 +125,35 @@ public class GameplayWorld extends World
                 batch.begin();
             }
             
-            /*  Pass entities to system or remove data
+            /*  Pass entities to system
             */
             for (int entity = 0; entity < entityIds.size; entity++)
             {
-                if (entityDebris.contains(entity)) for (Stores<? extends Object> store : system.stores) store.remove(entity);
-                else if (isRegistered(entityIds.get(entity, 0), flag)) system.render(deltaSeconds, entity);
+                if (!isRegistered(entityIds.get(entity, 0), flag))
+                {
+                    continue;
+                }
+                system.render(deltaSeconds, entity);
             }
         }
         batch.end();
         
-        /*  Actual deferred entity removal
+        /*  Deferred entity removal
         */
-        for (IntSet.IntSetIterator entities = entityDebris.iterator(); entities.hasNext;) removeEntity(entities.next());
+        for (IntSet.IntSetIterator entities = entityDebris.iterator(); entities.hasNext;)
+        {
+            
+            removeEntity(entities.next());
+        }
         entityDebris.clear();
+    }
+    
+    
+    //  Remove Entity
+    @Override
+    protected void removeEntity(int entity)
+    {
+        super.removeEntity(entity);
     }
     
     
@@ -143,7 +162,10 @@ public class GameplayWorld extends World
     {
         TextureDrawable tex = new TextureDrawable(main.getAtlas().findRegion("bg"));
         
-        int entity = addEntity(flagTexture);
+        Entity entity = new Entity(
+            new System[] {drawSystem},
+            new Stores[] {textureDrawableStore}
+        );
         tex.setScale(Gdx.graphics.getWidth() / (float) tex.tex.getRegionWidth());
         
         textureDrawableStore.add(entity, tex);
@@ -189,6 +211,34 @@ public class GameplayWorld extends World
         textureDrawableStore.add(entity, tex);
         mobilityStore.add(entity, mobility);
         spiderStore.add(entity, spider);
+    }
+    
+    
+    /**
+     * Called from PlayerSystem.
+     * <p>
+     * Wizard cast spell.
+     * @param playerDrawable Acquire wizard's position so that the
+     * spell is casted from the center.
+     */
+    public void spawnFireball(TextureDrawable playerDrawable)
+    {
+        TextureDrawable drawable = new TextureDrawable(texSpell);
+        Mobility mobility = new Mobility();
+        
+        int entity = addEntity(flagTexture | flagAvatar | flagCollision);
+        drawable.setScale(2f);
+        drawable.position.set(
+            playerDrawable.position.x + (playerDrawable.getTrueHeight() - drawable.getTrueHeight()) * 0.5f,
+            playerDrawable.position.y + (playerDrawable.getTrueWidth() - drawable.getTrueWidth()) * 0.5f
+        );
+        Collision collision = new Collision(drawable);
+        mobility.setSpeed(1000f);
+        mobility.setDirection(Vector2.Y.cpy());
+        
+        textureDrawableStore.add(entity, drawable);
+        mobilityStore.add(entity, mobility);
+        collisionStore.add(entity, collision);
     }
     
     

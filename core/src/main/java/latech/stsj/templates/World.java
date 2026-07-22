@@ -5,7 +5,9 @@
 
 package latech.stsj.templates;
 
-import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.OrderedSet;
+
+// import com.badlogic.gdx.utils.IntIntMap;
 
 
 /**
@@ -15,7 +17,9 @@ import com.badlogic.gdx.utils.IntIntMap;
 public abstract class World
 {
     //  Fields
-    protected IntIntMap entityIds;
+    protected OrderedSet<Entity> entities;
+    // protected Set<Entity> entities;
+    // protected IntIntMap entityIds;
     
     
     /**
@@ -36,12 +40,17 @@ public abstract class World
      * @param system
      * @return Entity no.
      */
-    protected int addEntity(int system)
+    protected void addEntity(Entity entity)
     {
-        int size = entityIds.size;
-        entityIds.put(size, system);
-        return size;
+        entities.
     }
+    // protected void addEntity(System[] systems)
+    // {
+    //     entities.add(new Entity(systems));
+    //     // int size = entityIds.size;
+    //     // entityIds.put(size, system);
+    //     // return size;
+    // }
     
     
     /**
@@ -52,10 +61,11 @@ public abstract class World
      * entity removal. In other words, this method is a helper only.
      * @param entity
      */
-    protected void removeEntity(int entity)
-    {
-        int lastEntity = entityIds.size - 1;
-        if (entity != lastEntity) entityIds.put(entity, entityIds.get(lastEntity, -1));
-        entityIds.remove(lastEntity, -1);
-    }
+//     protected void removeEntity(Entity entity)
+//     {
+//         entities.remove(entity);
+//         // int lastEntity = entityIds.size - 1;
+//         // if (entity != lastEntity) entityIds.put(entity, entityIds.get(lastEntity, -1));
+//         // entityIds.remove(lastEntity, -1);
+//     }
 }

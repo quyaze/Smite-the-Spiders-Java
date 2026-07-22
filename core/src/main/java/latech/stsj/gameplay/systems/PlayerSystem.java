@@ -54,7 +54,7 @@ public class PlayerSystem extends System
         final boolean goRight = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6);
         final boolean goDown = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
         final boolean goLeft = Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4);
-        // final boolean castSpell = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+        final boolean castSpell = Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
         
         if (goUp) movementInput2D.y += 1f;
         if (goRight) movementInput2D.x += 1f;
@@ -72,5 +72,7 @@ public class PlayerSystem extends System
         }
         mobility.setSpeed(speed);
         mobility.setDirection(movementInput2D);
+        
+        if (castSpell) world.spawnFireball(drawable);
     }
 }
