@@ -5,6 +5,8 @@
 
 package latech.stsj.gameplay.systems;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.TextureDrawable;
@@ -38,9 +40,20 @@ public class AvatarSystem extends System
         TextureDrawable drawable = textureDrawableStore.get(entity.getId());
         Mobility mobility = mobilityStore.get(entity.getId());
         
-        drawable.position.add(
-            mobility.getVelocityX() * deltaSeconds,
-            mobility.getVelocityY() * deltaSeconds
-        );
+        //  TODO: refactor screen contained
+        if (mobility.screenContained)
+        {
+            drawable.position.set(
+                MathUtils.clamp(drawable.position.x + mobility.getVelocityX() * deltaSeconds, mobility.screenBounds[0], mobility.screenBounds[2]),
+                MathUtils.clamp(drawable.position.y + mobility.getVelocityY() * deltaSeconds, mobility.screenBounds[1], mobility.screenBounds[3])
+            );
+        }
+        else
+        {
+            drawable.position.add(
+                mobility.getVelocityX() * deltaSeconds,
+                mobility.getVelocityY() * deltaSeconds
+            );
+        }
     }
 }

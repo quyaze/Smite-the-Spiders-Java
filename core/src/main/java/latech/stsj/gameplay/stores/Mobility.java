@@ -14,6 +14,8 @@ public class Mobility
     private Vector2 velocity; // pixels per second
     private float angle = 0f;
     private float speed = 100f; // pixels per second
+    public boolean screenContained;
+    public float[] screenBounds;
     
     /*  Velocity and speed are in pixels per sceond
         Angle is in radians
@@ -28,11 +30,11 @@ public class Mobility
         screen than in a straight x- or y-direction.
         
         Velocity is calculated from angles, scaled by speed, and made to
-        be O(1) readability. For the most part, gameplay characters now
+        be O(1) readable. For the most part, gameplay characters now
         move in a linear speed in any direction.
         
-        Field maxSpeed is for the player to control input-to-speed
-        movement.
+        Field screenContained is accessed in AvatarSystem. Keeps
+        characters, specifically the player, from going off screen.
     */
     
     

@@ -49,15 +49,21 @@ public class PlayerSystem extends System
         Player player = playerStore.get(entity.getId());
         
         Vector2 movementInput2D = player.movementInput2D;
-        
         movementInput2D.setZero();
         
+        /*  Input
+        */
         final boolean goUp = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_8);
         final boolean goRight = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6);
         final boolean goDown = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
         final boolean goLeft = Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4);
         final boolean castSpell = Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
         
+        //  TODO: event deferred
+        if (castSpell) world.spawnFireball(drawable);
+        
+        /*  Logic
+        */
         if (goUp) movementInput2D.y += 1f;
         if (goRight) movementInput2D.x += 1f;
         if (goDown) movementInput2D.y -= 1f;
@@ -74,7 +80,5 @@ public class PlayerSystem extends System
         }
         mobility.setSpeed(speed);
         mobility.setDirection(movementInput2D);
-        
-        if (castSpell) world.spawnFireball(drawable);
     }
 }

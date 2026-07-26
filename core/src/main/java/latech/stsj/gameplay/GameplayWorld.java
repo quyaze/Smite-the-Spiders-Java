@@ -172,9 +172,25 @@ public class GameplayWorld extends World
     //  Spawn Player
     private void spawnPlayer(Main main)
     {
+        //  TODO: order of initialization
         TextureDrawable tex = new TextureDrawable(main.getAtlas().findRegion("wizard"));
+        tex.setScale(4f);
+        tex.position.set(
+            (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
+            Gdx.graphics.getHeight() * 0.25f - tex.getTrueHeight() * 0.5f
+        );
+        
+        //  TODO: update screen bounds on screen resized
         Mobility mobility = new Mobility();
-        Player player = new Player();
+        mobility.screenContained = true;
+        mobility.screenBounds = new float[] {
+            0f,
+            0f,
+            Gdx.graphics.getWidth() - tex.getTrueWidth(),
+            Gdx.graphics.getHeight() - tex.getTrueHeight()
+        };
+        
+        Player player = new Player(tex);
         
         Entity entity = new Entity(
             entities.size,
@@ -184,11 +200,6 @@ public class GameplayWorld extends World
                 mobilityStore,
                 playerStore
             }
-        );
-        tex.setScale(4f);
-        tex.position.set(
-            (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
-            Gdx.graphics.getHeight() * 0.25f - tex.getTrueHeight() * 0.5f
         );
         
         entities.add(entity);
