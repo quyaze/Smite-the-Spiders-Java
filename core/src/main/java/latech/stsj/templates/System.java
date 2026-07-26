@@ -5,7 +5,7 @@
 
 package latech.stsj.templates;
 
-import com.badlogic.gdx.utils.Array;
+// import com.badlogic.gdx.utils.Array;
 
 /**
  * Abstract class that allows subclasses to run input, logic, etc.
@@ -14,30 +14,30 @@ import com.badlogic.gdx.utils.Array;
 public abstract class System
 {
     //  Fields
-    public Array<Entity> entities;
+    // public Array<Entity> entities;
     
     
     //  Constructor
-    public System(boolean ordered, int entityCapacity)
-    {
-        entities = new Array<>(ordered, entityCapacity);
-    }
+    // public System(boolean ordered, int entityCapacity)
+    // {
+    //     entities = new Array<>(ordered, entityCapacity);
+    // }
     
     
     /**
      * TODO: javadoc
      * @param entity
     */
-    public void registerEntity(Entity entity)
-    {
-        entities.add(entity);
-    }
+    // public void registerEntity(Entity entity)
+    // {
+    //     entities.add(entity);
+    // }
     
     
-    public void retireEntity()
-    {
+    // public void retireEntity()
+    // {
         
-    }
+    // }
     
     
     /**

@@ -5,28 +5,49 @@
 
 package latech.stsj.templates;
 
-import java.util.Objects;
-
 /**
- * Represents entities. Contained by worlds, holds data, and
- * managed by systems.
+ * TODO: javadoc
  */
 final public class Entity
 {
     //  Fields
-    private World owner;
+    private int id;
+    final private int systemFlag;
+    final private Stores<?>[] stores;
+    public boolean debris;
     
     
     //  Constructor
-    public Entity(World owner)
+    public Entity(int id, int systemFlag, Stores<?>[] stores)
     {
-        this.owner = owner;
+        this.id = id;
+        this.systemFlag = systemFlag;
+        this.stores = stores;
     }
     
     
-    @Override
-    public int hashCode()
+    public void setId(int id)
     {
-        return Objects.hashCode(this);
+        for (int i = 0; i < stores.length; i++) stores[i].move(this.id, id);
+        this.id = id;
+    }
+    
+    
+    public int getId()
+    {
+        return id;
+    }
+    
+    
+    public int getSystem()
+    {
+        return systemFlag;
+    }
+    
+    
+    public void removeFromStores()
+    {
+        for (int i = 0; i < stores.length; i++) stores[i].remove(id);
     }
 }
+//  TODO: javadocs

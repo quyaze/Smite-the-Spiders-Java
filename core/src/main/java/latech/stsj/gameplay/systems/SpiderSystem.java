@@ -12,6 +12,7 @@ import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.Spider;
 import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.templates.Entity;
 import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
@@ -22,28 +23,27 @@ import latech.stsj.templates.System;
 public class SpiderSystem extends System
 {
     //  Fields
-    GameplayWorld world;
+    private Stores<TextureDrawable> textureDrawableStore;
+    private Stores<Mobility> mobilityStore;
+    private Stores<Spider> spiderStore;
     
     
     //  Constructor
     public SpiderSystem(GameplayWorld world)
     {
-        stores = new Stores[] {
-            world.textureDrawableStore,
-            world.mobilityStore,
-            world.spiderStore
-        };
-        this.world = world;
+        textureDrawableStore = world.textureDrawableStore;
+        mobilityStore = world.mobilityStore;
+        spiderStore = world.spiderStore;
     }
     
     
     //  Render
     @Override
-    public void render(float deltaSeconds, int entity)
+    public void render(float deltaSeconds, Entity entity)
     {
-        TextureDrawable drawable = world.textureDrawableStore.get(entity);
-        Mobility mobility = world.mobilityStore.get(entity);
-        Spider spider = world.spiderStore.get(entity);
+        TextureDrawable drawable = textureDrawableStore.get(entity.getId());
+        Mobility mobility = mobilityStore.get(entity.getId());
+        Spider spider = spiderStore.get(entity.getId());
         
         if (drawable.position.dst2(spider.destination) < 36f)
         {

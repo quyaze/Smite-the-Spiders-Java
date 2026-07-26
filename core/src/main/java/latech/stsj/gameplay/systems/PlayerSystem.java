@@ -13,6 +13,7 @@ import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.Player;
 import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.templates.Entity;
 import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
@@ -23,28 +24,29 @@ import latech.stsj.templates.System;
 public class PlayerSystem extends System
 {
     //  Fields
-    GameplayWorld world;
+    private GameplayWorld world;
+    private Stores<TextureDrawable> textureDrawableStore;
+    private Stores<Mobility> mobilityStore;
+    private Stores<Player> playerStore;
     
     
     //  Constructor
     public PlayerSystem(GameplayWorld world)
     {
-        stores = new Stores[] {
-            world.textureDrawableStore,
-            world.mobilityStore,
-            world.playerStore
-        };
         this.world = world;
+        textureDrawableStore = world.textureDrawableStore;
+        mobilityStore = world.mobilityStore;
+        playerStore = world.playerStore;
     }
     
     
     //  Render
     @Override
-    public void render(float deltaSeconds, int entity)
+    public void render(float deltaSeconds, Entity entity)
     {
-        TextureDrawable drawable = world.textureDrawableStore.get(entity);
-        Mobility mobility = world.mobilityStore.get(entity);
-        Player player = world.playerStore.get(entity);
+        TextureDrawable drawable = textureDrawableStore.get(entity.getId());
+        Mobility mobility = mobilityStore.get(entity.getId());
+        Player player = playerStore.get(entity.getId());
         
         Vector2 movementInput2D = player.movementInput2D;
         

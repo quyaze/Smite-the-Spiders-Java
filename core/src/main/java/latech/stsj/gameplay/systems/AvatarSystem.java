@@ -8,6 +8,7 @@ package latech.stsj.gameplay.systems;
 import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.templates.Entity;
 import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
@@ -18,26 +19,24 @@ import latech.stsj.templates.System;
 public class AvatarSystem extends System
 {
     //  Fields
-    private GameplayWorld world;
+    private Stores<TextureDrawable> textureDrawableStore;
+    private Stores<Mobility> mobilityStore;
     
     
     //  Constructor
     public AvatarSystem(GameplayWorld world)
     {
-        stores = new Stores[] {
-            world.textureDrawableStore,
-            world.mobilityStore
-        };
-        this.world = world;
+        textureDrawableStore = world.textureDrawableStore;
+        mobilityStore = world.mobilityStore;
     }
     
     
     //  Render
     @Override
-    public void render(float deltaSeconds, int entity)
+    public void render(float deltaSeconds, Entity entity)
     {
-        TextureDrawable drawable = world.textureDrawableStore.get(entity);
-        Mobility mobility = world.mobilityStore.get(entity);
+        TextureDrawable drawable = textureDrawableStore.get(entity.getId());
+        Mobility mobility = mobilityStore.get(entity.getId());
         
         drawable.position.add(
             mobility.getVelocityX() * deltaSeconds,

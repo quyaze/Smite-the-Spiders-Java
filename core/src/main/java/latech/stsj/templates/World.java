@@ -16,6 +16,7 @@ public abstract class World
     //  Fields
     protected Array<Entity> entities;
     
+    
     //  Constructor
     public World(boolean ordered, int entityCapacity)
     {

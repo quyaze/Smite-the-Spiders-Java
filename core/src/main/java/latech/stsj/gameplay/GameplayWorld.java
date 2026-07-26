@@ -5,17 +5,12 @@
 
 package latech.stsj.gameplay;
 
-import java.util.HashSet;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntIntMap;
-import com.badlogic.gdx.utils.IntSet;
-import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -38,6 +33,9 @@ import latech.stsj.templates.World;
 public class GameplayWorld extends World
 {
     //  Fields
+    private SpriteBatch batch;
+    private ScreenViewport viewport;
+    
     public Stores<TextureDrawable> textureDrawableStore;
     public Stores<Mobility> mobilityStore;
     public Stores<Player> playerStore;
@@ -51,10 +49,7 @@ public class GameplayWorld extends World
     private ProjectileSystem projectileSystem;
     
     final private System[] systems;
-    private IntSet entityDebris;
-    
-    private SpriteBatch batch;
-    private ScreenViewport viewport;
+    private Array<Entity> entityDebris;
     final AtlasRegion texSpell;
     
     final static private char flagPlayer = 1;       //     1 = 1 << 0
@@ -70,13 +65,16 @@ public class GameplayWorld extends World
     {
         super(false, 64);
         
+        batch = main.getBatch();
+        viewport = main.getViewport();
+        
         textureDrawableStore = new Stores<>(64);
         mobilityStore = new Stores<>(64);
         playerStore = new Stores<>(64);
         collisionStore = new Stores<>(64);
         spiderStore = new Stores<>(64);
         
-        drawSystem = new DrawSystem(this, main.getBatch());
+        drawSystem = new DrawSystem(this, batch);
         avatarSystem = new AvatarSystem(this);
         playerSystem = new PlayerSystem(this);
         spiderSystem = new SpiderSystem(this);
@@ -89,10 +87,7 @@ public class GameplayWorld extends World
             spiderSystem,
             drawSystem
         };
-        entityDebris = new IntSet(4);
-        
-        batch = main.getBatch();
-        viewport = main.getViewport();
+        entityDebris = new Array<>(false, 4);
         
         texSpell = main.getAtlas().findRegion("spell");
         spawnBackground(main);
@@ -127,34 +122,31 @@ public class GameplayWorld extends World
             
             /*  Pass entities to system
             */
-            for (int i = 0; i < system.entities.size; i++)
+            for (int i = 0; i < entities.size; i++)
             {
                 Entity entity = entities.get(i);
-                if (!isRegistered(entity, flag))
-                {
-                    continue;
-                }
-                system.render(deltaSeconds, entity);
+                if (entity.debris) continue;
+                if (isRegistered(entity.getSystem(), flag)) system.render(deltaSeconds, entity);
             }
         }
         batch.end();
         
-        /*  Deferred entity removal
+        /*  Entity removal
         */
-        for (IntSet.IntSetIterator entities = entityDebris.iterator(); entities.hasNext;)
+        for (int i = 0; i < entityDebris.size; i++)
         {
-            
-            removeEntity(entities.next());
+            Entity debris = entityDebris.get(i);
+            Entity lastEntity = entities.get(entities.size - 1);
+            int debrisId = debris.getId();
+            debris.removeFromStores();
+            if (debris != lastEntity)
+            {
+                entities.set(debrisId, lastEntity);
+                lastEntity.setId(debrisId);
+            }
+            entities.removeIndex(entities.size - 1);
         }
         entityDebris.clear();
-    }
-    
-    
-    //  Remove Entity
-    @Override
-    protected void removeEntity(int entity)
-    {
-        super.removeEntity(entity);
     }
     
     
@@ -164,12 +156,16 @@ public class GameplayWorld extends World
         TextureDrawable tex = new TextureDrawable(main.getAtlas().findRegion("bg"));
         
         Entity entity = new Entity(
-            new System[] {drawSystem},
-            new Stores[] {textureDrawableStore}
+            entities.size,
+            flagTexture,
+            new Stores[] {
+                textureDrawableStore
+            }
         );
         tex.setScale(Gdx.graphics.getWidth() / (float) tex.tex.getRegionWidth());
         
-        textureDrawableStore.add(entity, tex);
+        entities.add(entity);
+        textureDrawableStore.add(entity.getId(), tex);
     }
     
     
@@ -180,16 +176,25 @@ public class GameplayWorld extends World
         Mobility mobility = new Mobility();
         Player player = new Player();
         
-        int entity = addEntity(flagTexture | flagAvatar | flagPlayer);
+        Entity entity = new Entity(
+            entities.size,
+            flagTexture | flagAvatar | flagPlayer,
+            new Stores[] {
+                textureDrawableStore,
+                mobilityStore,
+                playerStore
+            }
+        );
         tex.setScale(4f);
         tex.position.set(
             (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
             Gdx.graphics.getHeight() * 0.25f - tex.getTrueHeight() * 0.5f
         );
         
-        textureDrawableStore.add(entity, tex);
-        mobilityStore.add(entity, mobility);
-        playerStore.add(entity, player);
+        entities.add(entity);
+        textureDrawableStore.add(entity.getId(), tex);
+        mobilityStore.add(entity.getId(), mobility);
+        playerStore.add(entity.getId(), player);
     }
     
     
@@ -200,7 +205,15 @@ public class GameplayWorld extends World
         Mobility mobility = new Mobility();
         Spider spider = new Spider();
         
-        int entity = addEntity(flagTexture | flagAvatar | flagSpider);
+        Entity entity = new Entity(
+            entities.size,
+            flagTexture | flagAvatar | flagSpider,
+            new Stores[] {
+                textureDrawableStore,
+                mobilityStore,
+                spiderStore
+            }
+        );
         tex.setScale(4f);
         tex.position.set(
             (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
@@ -209,9 +222,10 @@ public class GameplayWorld extends World
         mobility.setSpeed(spider.randomSpeed());
         spider.destination.set(tex.position);
         
-        textureDrawableStore.add(entity, tex);
-        mobilityStore.add(entity, mobility);
-        spiderStore.add(entity, spider);
+        entities.add(entity);
+        textureDrawableStore.add(entity.getId(), tex);
+        mobilityStore.add(entity.getId(), mobility);
+        spiderStore.add(entity.getId(), spider);
     }
     
     
@@ -227,7 +241,15 @@ public class GameplayWorld extends World
         TextureDrawable drawable = new TextureDrawable(texSpell);
         Mobility mobility = new Mobility();
         
-        int entity = addEntity(flagTexture | flagAvatar | flagCollision);
+        Entity entity = new Entity(
+            entities.size,
+            flagTexture | flagAvatar | flagCollision,
+            new Stores[] {
+                textureDrawableStore,
+                mobilityStore,
+                collisionStore
+            }
+        );
         drawable.setScale(2f);
         drawable.position.set(
             playerDrawable.position.x + (playerDrawable.getTrueHeight() - drawable.getTrueHeight()) * 0.5f,
@@ -237,9 +259,10 @@ public class GameplayWorld extends World
         mobility.setSpeed(1000f);
         mobility.setDirection(Vector2.Y.cpy());
         
-        textureDrawableStore.add(entity, drawable);
-        mobilityStore.add(entity, mobility);
-        collisionStore.add(entity, collision);
+        entities.add(entity);
+        textureDrawableStore.add(entity.getId(), drawable);
+        mobilityStore.add(entity.getId(), mobility);
+        collisionStore.add(entity.getId(), collision);
     }
     
     
@@ -251,14 +274,14 @@ public class GameplayWorld extends World
     
     
     /**
-     * For GameplayWorld.
+     * A system requests that an entity should be removed.
      * <p>
-     * Allows systems to mark entities for removal. Entity removal
-     * is deferred each render.
+     * Entity removal is deferred.
      * @param entity
      */
-    public void deferEntityRemoval(int entity)
+    public void removeEntity(Entity entity)
     {
+        entity.debris = true;
         entityDebris.add(entity);
     }
     

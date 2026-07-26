@@ -5,7 +5,7 @@
 
 package latech.stsj.templates;
 
-import java.util.HashMap;
+import com.badlogic.gdx.utils.IntMap;
 
 
 /**
@@ -17,13 +17,13 @@ import java.util.HashMap;
 final public class Stores<T>
 {
     //  Fields
-    private HashMap<Entity, T> data;
+    private IntMap<T> data;
     
     
     //  Constructor
     public Stores(int entityCapacity)
     {
-        data = new HashMap<>(entityCapacity);
+        data = new IntMap<>(entityCapacity);
     }
     
     
@@ -32,9 +32,9 @@ final public class Stores<T>
      * @param entity
      * @param data
      */
-    public void add(Entity entity, T data)
+    public void add(int entityId, T data)
     {
-        this.data.put(entity, data);
+        this.data.put(entityId, data);
     }
     
     
@@ -45,9 +45,21 @@ final public class Stores<T>
      * @return Data <code>T</code> from removed entity. Can but
      * should never return <code>null</code> if used correctly
      */
-    public T remove(Entity entity)
+    public T remove(int entityId)
     {
-        return data.remove(entity);
+        return data.remove(entityId);
+    }
+    
+    
+    /**
+     * TODO: javadoc
+     * @param oldId
+     * @param newId
+     */
+    public void move(int oldId, int newId)
+    {
+        this.data.put(newId, this.data.get(oldId));
+        remove(oldId);
     }
     
     
@@ -55,8 +67,8 @@ final public class Stores<T>
      * @param entity
      * @return The <code>T</code> data associated with the entity
      */
-    public T get(Entity entity)
+    public T get(int entityId)
     {
-        return data.get(entity);
+        return data.get(entityId);
     }
 }

@@ -10,7 +10,7 @@ import latech.stsj.templates.World;
 public class MainMenuWorld extends World
 {
     //  TODO: constructor
-    public MainMenuWorld() {super(64);}
+    public MainMenuWorld() {super(false, 64);}
     
     
     //  Render
