@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.OrderedSet;
@@ -67,14 +68,13 @@ public class GameplayWorld extends World
     //  Constructor
     public GameplayWorld(Main main)
     {
-        // entityIds = new IntIntMap(32);
-        entities = new OrderedSet<>(48);
+        super(false, 64);
         
-        textureDrawableStore = new Stores<TextureDrawable>();
-        mobilityStore = new Stores<Mobility>();
-        playerStore = new Stores<Player>();
-        collisionStore = new Stores<Collision>();
-        spiderStore = new Stores<Spider>();
+        textureDrawableStore = new Stores<>(64);
+        mobilityStore = new Stores<>(64);
+        playerStore = new Stores<>(64);
+        collisionStore = new Stores<>(64);
+        spiderStore = new Stores<>(64);
         
         drawSystem = new DrawSystem(this, main.getBatch());
         avatarSystem = new AvatarSystem(this);
@@ -127,9 +127,10 @@ public class GameplayWorld extends World
             
             /*  Pass entities to system
             */
-            for (int entity = 0; entity < entityIds.size; entity++)
+            for (int i = 0; i < system.entities.size; i++)
             {
-                if (!isRegistered(entityIds.get(entity, 0), flag))
+                Entity entity = entities.get(i);
+                if (!isRegistered(entity, flag))
                 {
                     continue;
                 }

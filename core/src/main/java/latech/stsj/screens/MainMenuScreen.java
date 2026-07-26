@@ -179,22 +179,4 @@ public class MainMenuScreen extends StarterScreen
         if (enableInput) subtitleText.draw(batch, subtitleGlyph, (Gdx.graphics.getWidth() - subtitleGlyph.width) * 0.5f, (Gdx.graphics.getHeight() - subtitleGlyph.height) * 0.25f);
         batch.end();
     }
-    
-    
-    /**
-     * Enables input processing for the screen
-     */
-    public void enableScreenInput()
-    {
-        enableInput = true;
-    }
-    
-    
-    /**
-     * Disables input processing for the screen
-     */
-    public void disableScreenInput()
-    {
-        enableInput = false;
-    }
 }

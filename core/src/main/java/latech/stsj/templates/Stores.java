@@ -7,62 +7,56 @@ package latech.stsj.templates;
 
 import java.util.HashMap;
 
-// import com.badlogic.gdx.utils.IntMap;
-
 
 /**
- * Lays out the stores that hold data for associated entities.
- * This data is accessed for any entity within systems.
- * @param <T> the type of data stored for each entity
+ * A class that acts as a container for data associated with
+ * <code>Entity</code>s. Designed to be accessed and not
+ * iterated.
+ * @param <T> Data associated with entities is of type T
  */
-public class Stores<T>
+final public class Stores<T>
 {
     //  Fields
-    protected HashMap<Entity, T> data;
-    // protected IntMap<T> entityData;
+    private HashMap<Entity, T> data;
     
     
     //  Constructor
-    public Stores()
+    public Stores(int entityCapacity)
     {
-        data = new HashMap<>(64);
-        // entityData = new IntMap<T>(64);
+        data = new HashMap<>(entityCapacity);
     }
     
     
     /**
-     * Associate an entity with the corresponding {@code T} data.
-     * @param entity the entity identifier
-     * @param data the data of type {@code T} to associate with the entity
+     * Add an entity and its associated data.
+     * @param entity
+     * @param data
      */
     public void add(Entity entity, T data)
     {
         this.data.put(entity, data);
-        // entityData.put(entity, data);
     }
     
     
     /**
-     * Remove an entity and its associated {@code T} data.
-     * @param entity the entity identifier to remove
-     */
-    public void remove(Entity entity)
-    {
-        data.remove(entity);
-        // int lastEntity = entityData.size - 1;
-        // if (entity != lastEntity) entityData.put(entity, entityData.get(lastEntity));
-        // entityData.remove(lastEntity);
-    }
-    
-    
-    /**
-     * Retrieve the entity's data of type {@code T}.
+     * Remove the entity and its associated <code>T</code> data from
+     * the store.
      * @param entity
-     * @return the data associated with the entity or {@code null}
+     * @return Data <code>T</code> from removed entity. Can but
+     * should never return <code>null</code> if used correctly
+     */
+    public T remove(Entity entity)
+    {
+        return data.remove(entity);
+    }
+    
+    
+    /**
+     * @param entity
+     * @return The <code>T</code> data associated with the entity
      */
     public T get(Entity entity)
     {
         return data.get(entity);
-        // return entityData.get(entity);
     }
 }

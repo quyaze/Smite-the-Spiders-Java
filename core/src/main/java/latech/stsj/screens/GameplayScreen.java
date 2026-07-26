@@ -46,31 +46,21 @@ public class GameplayScreen extends StarterScreen
     
     
     //  Show
-    @Override
-    public void show()
-    {}
+    @Override public void show() {}
     
     
     //  Hide
-    @Override
-    public void hide()
-    {}
+    @Override public void hide() {}
     
     
     //  Pause
-    @Override
-    public void pause()
-    {}
+    @Override public void pause() {}
     
     
     //  Resume
-    @Override
-    public void resume()
-    {}
+    @Override public void resume() {}
     
     
     //  Dispose
-    @Override
-    public void dispose()
-    {}
+    @Override public void dispose() {}
 }

@@ -5,67 +5,27 @@
 
 package latech.stsj.templates;
 
-import com.badlogic.gdx.utils.OrderedSet;
-
-// import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.Array;
 
 
 /**
- * Abstract class representing a basic master over entities and
- * systems.
+ * TODO: javadoc
  */
 public abstract class World
 {
     //  Fields
-    protected OrderedSet<Entity> entities;
-    // protected Set<Entity> entities;
-    // protected IntIntMap entityIds;
+    protected Array<Entity> entities;
+    
+    //  Constructor
+    public World(boolean ordered, int entityCapacity)
+    {
+        entities = new Array<>(ordered, entityCapacity);
+    }
     
     
     /**
-     * Call in Screen.render(). Subclasses implement their own way
-     * of rendering.
-     * <p>
-     * The implemented method in GameplayWorld, for example,
-     * handles input, logic (movement, collision, projectiles), and
-     * drawing. Each gameplay aspect has their own render pass in
-     * that class.
+     * Function to be called every frame for entity processing.
      * @param deltaSeconds
      */
     public abstract void render(float deltaSeconds);
-    
-    
-    /**
-     * Generate an entity.
-     * @param system
-     * @return Entity no.
-     */
-    protected void addEntity(Entity entity)
-    {
-        entities.
-    }
-    // protected void addEntity(System[] systems)
-    // {
-    //     entities.add(new Entity(systems));
-    //     // int size = entityIds.size;
-    //     // entityIds.put(size, system);
-    //     // return size;
-    // }
-    
-    
-    /**
-     * "Removes" entity. Replaces the entity with the last entity
-     * in the list if it is not the last entity.
-     * <p>
-     * Subclasses use this method but have their own overall way of
-     * entity removal. In other words, this method is a helper only.
-     * @param entity
-     */
-//     protected void removeEntity(Entity entity)
-//     {
-//         entities.remove(entity);
-//         // int lastEntity = entityIds.size - 1;
-//         // if (entity != lastEntity) entityIds.put(entity, entityIds.get(lastEntity, -1));
-//         // entityIds.remove(lastEntity, -1);
-//     }
 }

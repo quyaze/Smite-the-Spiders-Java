@@ -1,32 +1,32 @@
+/*
+//      Entity.java
+*/
+
+
 package latech.stsj.templates;
 
+import java.util.Objects;
 
 /**
- * Represents entities. Contained by worlds, holds data and
+ * Represents entities. Contained by worlds, holds data, and
  * managed by systems.
  */
-public class Entity
+final public class Entity
 {
     //  Fields
-    final private System[] systems;
-    final private Stores<? extends Object>[] stores;
+    private World owner;
     
     
     //  Constructor
-    public Entity(System[] systems, Stores<? extends Object>[] stores)
+    public Entity(World owner)
     {
-        this.systems = systems;
-        this.stores = stores;
+        this.owner = owner;
     }
     
     
-    /**
-     * TODO: javadoc
-     * @param bitmask
-     * @return
-     */
-    public System bitmaskToSystem(char bitmask)
+    @Override
+    public int hashCode()
     {
-        return systems[Integer.numberOfLeadingZeros(bitmask)];
+        return Objects.hashCode(this);
     }
 }
