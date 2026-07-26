@@ -52,11 +52,11 @@ public class GameplayWorld extends World
     private Array<Entity> entityDebris;
     final AtlasRegion texSpell;
     
-    final static private char flagPlayer = 1;       //     1 = 1 << 0
-    final static private char flagCollision = 2;    //    10 = 1 << 1
-    final static private char flagAvatar = 4;       //   100 = 1 << 2
-    final static private char flagSpider = 8;       //  1000 = 1 << 3
-    final static private char flagTexture = 16;     // 10000 = 1 << 4
+    final static private char flagPlayer = 1;       //      1 = 1 << 0
+    final static private char flagCollision = 2;    //     10 = 1 << 1
+    final static private char flagAvatar = 4;       //    100 = 1 << 2
+    final static private char flagSpider = 8;       //   1000 = 1 << 3
+    final static private char flagTexture = 16;     //  10000 = 1 << 4
     //  << is binary bitshift
     
     
@@ -100,18 +100,27 @@ public class GameplayWorld extends World
     @Override
     public void render(float deltaSeconds)
     {
-        /*  Loop through all systems with the corresponding
-            bitmask. Each system has their own render pass and
-            perform logic upon all applicable entities.
+        /*  Every frame, all systems perform a pass in which
+            system.render(float, Entity) is called. These systems access
+            data and manipulate entities for gameplay.
+            
+            An entity applies to a system if its signature is recognizable
+            by the system's bitmask flag. If it applies, the entity is
+            passed to the system. Entities marked for removal are skipped.
+            
+            'flag == flagTexture' is for being able to execute extra drawing
+            utilities before rendering the player, spiders, background, etc.
+            
+            Entities can be marked for removal. Actual removal is deferred.
+            The last entity and entity to remove are swapped. The entity to
+            remove can then be 'popped' for the array to remain without
+            holes.
         */
+       
         System system;
         for (char flag = 1; flag <= flagTexture; flag <<= 1)
         {
             system = systems[Integer.numberOfTrailingZeros(flag)];
-            
-            /*  If statement below is for the draw pass. A few utilities
-                are needed before rendering visible objects on screen.
-            */
             if (flag == flagTexture)
             {
                 ScreenUtils.clear(Color.BLACK);
@@ -119,9 +128,6 @@ public class GameplayWorld extends World
                 batch.setProjectionMatrix(viewport.getCamera().combined);
                 batch.begin();
             }
-            
-            /*  Pass entities to system
-            */
             for (int i = 0; i < entities.size; i++)
             {
                 Entity entity = entities.get(i);
@@ -263,8 +269,8 @@ public class GameplayWorld extends World
         );
         drawable.setScale(2f);
         drawable.position.set(
-            playerDrawable.position.x + (playerDrawable.getTrueHeight() - drawable.getTrueHeight()) * 0.5f,
-            playerDrawable.position.y + (playerDrawable.getTrueWidth() - drawable.getTrueWidth()) * 0.5f
+            playerDrawable.position.x + (playerDrawable.getTrueWidth() - drawable.getTrueWidth()) * 0.5f,
+            playerDrawable.position.y + (playerDrawable.getTrueHeight() - drawable.getTrueHeight()) * 0.5f
         );
         Collision collision = new Collision(drawable);
         mobility.setSpeed(1000f);

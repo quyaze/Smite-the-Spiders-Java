@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import latech.stsj.screens.GameplayScreen;
 import latech.stsj.screens.MainMenuScreen;
 
+
 /**
  * Entry way into the game.
  */

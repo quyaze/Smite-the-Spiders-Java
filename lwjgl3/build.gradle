@@ -54,7 +54,8 @@ tasks.register('runTexturePacker') {
   }
 }
 
-run { 
+run {
+  //  Pass '--texture-packer'
   dependsOn tasks.named('runTexturePacker')
   workingDir = rootProject.file('assets').path
   doFirst {
@@ -62,6 +63,7 @@ run {
       args += '--texture-packer'
     }
   }
+  
 // You can uncomment the next line if your IDE claims a build failure even when the app closed properly.
   //setIgnoreExitValue(true)
   jvmArgs += "--enable-native-access=ALL-UNNAMED"
