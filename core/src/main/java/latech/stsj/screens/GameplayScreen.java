@@ -41,20 +41,28 @@ public class GameplayScreen extends StarterScreen
     public void resize(int width, int height)
     {
         main.getViewport().update(width, height, true);
-        world.resize(width, height);
     }
     
     
     //  Show
-    @Override public void show() {}
+    @Override public void show()
+    {
+        world.create();
+    }
     
     
     //  Hide
-    @Override public void hide() {}
+    @Override public void hide()
+    {
+        world.remove();
+    }
     
     
     //  Pause
-    @Override public void pause() {}
+    @Override public void pause()
+    {
+        world.onPause();
+    }
     
     
     //  Resume

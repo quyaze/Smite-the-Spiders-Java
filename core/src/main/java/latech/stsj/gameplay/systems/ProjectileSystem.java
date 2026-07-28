@@ -19,7 +19,7 @@ import latech.stsj.templates.System;
 /**
  * System for projectiles.
  */
-public class ProjectileSystem extends System
+public class ProjectileSystem implements System
 {
     //  Field
     private GameplayWorld world;
@@ -44,23 +44,8 @@ public class ProjectileSystem extends System
     {
         TextureDrawable drawable = textureDrawableStore.get(entity.getId());
         Collision collision = collisionStore.get(entity.getId());
-        if (drawable == null || collision == null)
-        {
-            world.removeEntity(entity);
-            return;
-        }
+        
         collision.update(drawable);
         if (!collision.collision.overlaps(rectScreen)) world.removeEntity(entity);
-    }
-    
-    
-    /**
-     * @param width
-     * @param height
-     */
-    public void resize(int width, int height)
-    {
-        rectScreen.width = width;
-        rectScreen.height = height;
     }
 }

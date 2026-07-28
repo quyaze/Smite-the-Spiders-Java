@@ -24,8 +24,8 @@ public class Spider
     /**
      * 
      */
-    public float randomSpeed()
+    public static float randomSpeed()
     {
-        return MathUtils.random(160, 200); // 180 ± 20
+        return MathUtils.random(180, 220); // 200 ± 20
     }
 }

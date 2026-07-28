@@ -3,7 +3,6 @@ package latech.stsj.lwjgl3;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
 import latech.stsj.Main;
 
@@ -15,10 +14,9 @@ public class Lwjgl3Launcher {
         /*  TexturePacker will do its thing.
             Passing '--texture-packer' outside of development will cause directory issues.
         */
-        if (args.length == 1 && args[0].equals("--texture-packer"))
+        if (args.length == 1 && "--texture-packer".equals(args[0]))
         {
-            Settings settings = new Settings();
-            TexturePacker.process(settings, "./images", "./", "packed");
+            TexturePacker.process("./images", "./", "packed");
         }
         
         createApplication();

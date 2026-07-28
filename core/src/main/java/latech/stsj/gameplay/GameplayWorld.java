@@ -6,13 +6,11 @@
 package latech.stsj.gameplay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import latech.stsj.Main;
 import latech.stsj.gameplay.stores.Collision;
@@ -30,11 +28,14 @@ import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 import latech.stsj.templates.World;
 
+
+/**
+ * TODO: javadoc
+*/
 public class GameplayWorld extends World
 {
     //  Fields
-    private SpriteBatch batch;
-    private ScreenViewport viewport;
+    private Main main;
     
     public Stores<TextureDrawable> textureDrawableStore;
     public Stores<Mobility> mobilityStore;
@@ -48,16 +49,17 @@ public class GameplayWorld extends World
     private SpiderSystem spiderSystem;
     private ProjectileSystem projectileSystem;
     
-    final private System[] systems;
     private Array<Entity> entityDebris;
-    final AtlasRegion texSpell;
+    private System iteratingSystem;
+    public boolean gamePaused;
     
     final static private char flagPlayer = 1;       //      1 = 1 << 0
     final static private char flagCollision = 2;    //     10 = 1 << 1
     final static private char flagAvatar = 4;       //    100 = 1 << 2
     final static private char flagSpider = 8;       //   1000 = 1 << 3
     final static private char flagTexture = 16;     //  10000 = 1 << 4
-    //  << is binary bitshift
+    /*  << is binary bitshift
+    */
     
     
     //  Constructor
@@ -65,8 +67,7 @@ public class GameplayWorld extends World
     {
         super(false, 64);
         
-        batch = main.getBatch();
-        viewport = main.getViewport();
+        this.main = main;
         
         textureDrawableStore = new Stores<>(64);
         mobilityStore = new Stores<>(64);
@@ -74,25 +75,49 @@ public class GameplayWorld extends World
         collisionStore = new Stores<>(64);
         spiderStore = new Stores<>(64);
         
-        drawSystem = new DrawSystem(this, batch);
+        drawSystem = new DrawSystem(this, main.getBatch());
         avatarSystem = new AvatarSystem(this);
         playerSystem = new PlayerSystem(this);
         spiderSystem = new SpiderSystem(this);
         projectileSystem = new ProjectileSystem(this);
         
-        systems = new System[] {
-            playerSystem,
-            projectileSystem,
-            avatarSystem,
-            spiderSystem,
-            drawSystem
-        };
         entityDebris = new Array<>(false, 4);
-        
-        texSpell = main.getAtlas().findRegion("spell");
+    }
+    
+    
+    /**
+     * Create gameplay world. For {@code Screen.show()}.
+    */
+    public void create()
+    {
         spawnBackground(main);
         spawnPlayer(main);
         spawnSpiders(main);
+    }
+    
+    
+    /**
+     * Unload gameplay world. For {@code Screen.hide()}.
+    */
+    public void remove()
+    {
+        entities.clear();
+        entityDebris.clear();
+        textureDrawableStore.clear();
+        mobilityStore.clear();
+        playerStore.clear();
+        collisionStore.clear();
+        spiderStore.clear();
+        gamePaused = false;
+    }
+    
+    
+    /**
+     * When owning {@code Screen.pause()} fires.
+    */
+    public void onPause()
+    {
+        gamePaused = true;
     }
     
     
@@ -100,7 +125,9 @@ public class GameplayWorld extends World
     @Override
     public void render(float deltaSeconds)
     {
-        /*  Every frame, all systems perform a pass in which
+        /*  Begin by seeing if we are pausing or exiting to the main menu.
+        
+            Every frame, all systems perform a pass in which
             system.render(float, Entity) is called. These systems access
             data and manipulate entities for gameplay.
             
@@ -108,34 +135,55 @@ public class GameplayWorld extends World
             by the system's bitmask flag. If it applies, the entity is
             passed to the system. Entities marked for removal are skipped.
             
-            'flag == flagTexture' is for being able to execute extra drawing
-            utilities before rendering the player, spiders, background, etc.
-            
             Entities can be marked for removal. Actual removal is deferred.
             The last entity and entity to remove are swapped. The entity to
             remove can then be 'popped' for the array to remain without
             holes.
         */
-       
-        System system;
+        
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) gamePaused = !gamePaused;
+        if (gamePaused && Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+        {
+            main.goToMainMenuScreen();
+            return;
+        }
+        
         for (char flag = 1; flag <= flagTexture; flag <<= 1)
         {
-            system = systems[Integer.numberOfTrailingZeros(flag)];
-            if (flag == flagTexture)
+            if (gamePaused && flag != flagTexture) continue;
+            
+            switch (flag)
             {
-                ScreenUtils.clear(Color.BLACK);
-                viewport.apply();
-                batch.setProjectionMatrix(viewport.getCamera().combined);
-                batch.begin();
+                case flagPlayer: iteratingSystem = playerSystem; break;
+                
+                case flagCollision: iteratingSystem = projectileSystem; break;
+                
+                case flagAvatar: iteratingSystem = avatarSystem; break;
+                
+                case flagSpider: iteratingSystem = spiderSystem; break;
+                
+                case flagTexture:
+                    iteratingSystem = drawSystem;
+                    
+                    ScreenUtils.clear(Color.BLACK);
+                    main.getViewport().apply();
+                    main.getBatch().setProjectionMatrix(main.getViewport().getCamera().combined);
+                    main.getBatch().begin();
+                    break;
+                
+                default: return;
             }
+            
             for (int i = 0; i < entities.size; i++)
             {
                 Entity entity = entities.get(i);
                 if (entity.debris) continue;
-                if (isRegistered(entity.getSystem(), flag)) system.render(deltaSeconds, entity);
+                if (isRegistered(entity.getSystem(), flag)) iteratingSystem.render(deltaSeconds, entity);
             }
+            
+            if (flag == flagTexture) main.getBatch().end();
+            iteratingSystem = null;
         }
-        batch.end();
         
         /*  Entity removal
         */
@@ -144,6 +192,7 @@ public class GameplayWorld extends World
             Entity debris = entityDebris.get(i);
             Entity lastEntity = entities.get(entities.size - 1);
             int debrisId = debris.getId();
+            
             debris.removeFromStores();
             if (debris != lastEntity)
             {
@@ -159,15 +208,18 @@ public class GameplayWorld extends World
     //  Spawn Background
     private void spawnBackground(Main main)
     {
-        TextureDrawable tex = new TextureDrawable(main.getAtlas().findRegion("bg"));
+        Entity entity;
+        TextureDrawable tex;
         
-        Entity entity = new Entity(
+        entity = new Entity(
             entities.size,
             flagTexture,
             new Stores[] {
                 textureDrawableStore
             }
         );
+        
+        tex = new TextureDrawable(main.getAtlas().findRegion("bg"));
         tex.setScale(Gdx.graphics.getWidth() / (float) tex.tex.getRegionWidth());
         
         entities.add(entity);
@@ -178,27 +230,14 @@ public class GameplayWorld extends World
     //  Spawn Player
     private void spawnPlayer(Main main)
     {
-        //  TODO: order of initialization
-        TextureDrawable tex = new TextureDrawable(main.getAtlas().findRegion("wizard"));
-        tex.setScale(4f);
-        tex.position.set(
-            (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
-            Gdx.graphics.getHeight() * 0.25f - tex.getTrueHeight() * 0.5f
-        );
+        //  Initialize
+        Entity entity;
+        TextureDrawable tex;
+        Mobility mobility;
+        Player player;
         
-        //  TODO: update screen bounds on screen resized
-        Mobility mobility = new Mobility();
-        mobility.screenContained = true;
-        mobility.screenBounds = new float[] {
-            0f,
-            0f,
-            Gdx.graphics.getWidth() - tex.getTrueWidth(),
-            Gdx.graphics.getHeight() - tex.getTrueHeight()
-        };
-        
-        Player player = new Player(tex);
-        
-        Entity entity = new Entity(
+        //  Entity
+        entity = new Entity(
             entities.size,
             flagTexture | flagAvatar | flagPlayer,
             new Stores[] {
@@ -208,6 +247,28 @@ public class GameplayWorld extends World
             }
         );
         
+        //  Drawable
+        tex = new TextureDrawable(main.getAtlas().findRegion("wizard"));
+        tex.setScale(4f);
+        tex.position.set(
+            (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
+            Gdx.graphics.getHeight() * 0.25f - tex.getTrueHeight() * 0.5f
+        );
+        
+        //  Mobility
+        mobility = new Mobility();
+        mobility.screenContained = true;
+        mobility.screenBounds = new float[] {
+            0f,
+            0f,
+            Gdx.graphics.getWidth() - tex.getTrueWidth(),
+            Gdx.graphics.getHeight() - tex.getTrueHeight()
+        };
+        
+        //  Player
+        player = new Player(tex);
+        
+        //  Finalize
         entities.add(entity);
         textureDrawableStore.add(entity.getId(), tex);
         mobilityStore.add(entity.getId(), mobility);
@@ -218,11 +279,14 @@ public class GameplayWorld extends World
     //  Spawn Spiders
     private void spawnSpiders(Main main)
     {
-        TextureDrawable tex = new TextureDrawable(main.getAtlas().findRegion("spider"));
-        Mobility mobility = new Mobility();
-        Spider spider = new Spider();
+        //  Initialize
+        Entity entity;
+        TextureDrawable tex;
+        Mobility mobility;
+        Spider spider;
         
-        Entity entity = new Entity(
+        //  Entity
+        entity = new Entity(
             entities.size,
             flagTexture | flagAvatar | flagSpider,
             new Stores[] {
@@ -231,14 +295,24 @@ public class GameplayWorld extends World
                 spiderStore
             }
         );
+        
+        //  Drawable
+        tex = new TextureDrawable(main.getAtlas().findRegion("spider"));
         tex.setScale(4f);
         tex.position.set(
             (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
             Gdx.graphics.getHeight() * 0.75f - tex.getTrueHeight() * 0.5f
         );
-        mobility.setSpeed(spider.randomSpeed());
+        
+        //  Mobility
+        mobility = new Mobility();
+        mobility.setSpeed(Spider.randomSpeed());
+        
+        //  Spider
+        spider = new Spider();
         spider.destination.set(tex.position);
         
+        //  Finalize
         entities.add(entity);
         textureDrawableStore.add(entity.getId(), tex);
         mobilityStore.add(entity.getId(), mobility);
@@ -255,10 +329,14 @@ public class GameplayWorld extends World
      */
     public void spawnFireball(TextureDrawable playerDrawable)
     {
-        TextureDrawable drawable = new TextureDrawable(texSpell);
-        Mobility mobility = new Mobility();
+        //  Initialize
+        Entity entity;
+        TextureDrawable drawable;
+        Mobility mobility;
+        Collision collision;
         
-        Entity entity = new Entity(
+        //  Entity
+        entity = new Entity(
             entities.size,
             flagTexture | flagAvatar | flagCollision,
             new Stores[] {
@@ -267,15 +345,24 @@ public class GameplayWorld extends World
                 collisionStore
             }
         );
+        
+        //  Drawable
+        drawable = new TextureDrawable(main.getAtlas().findRegion("spell"));
         drawable.setScale(2f);
         drawable.position.set(
             playerDrawable.position.x + (playerDrawable.getTrueWidth() - drawable.getTrueWidth()) * 0.5f,
             playerDrawable.position.y + (playerDrawable.getTrueHeight() - drawable.getTrueHeight()) * 0.5f
         );
-        Collision collision = new Collision(drawable);
+        
+        //  Collision
+        collision = new Collision(drawable);
+        
+        //  Mobility
+        mobility = new Mobility();
         mobility.setSpeed(1000f);
         mobility.setDirection(Vector2.Y.cpy());
         
+        //  Finalize
         entities.add(entity);
         textureDrawableStore.add(entity.getId(), drawable);
         mobilityStore.add(entity.getId(), mobility);
@@ -283,7 +370,13 @@ public class GameplayWorld extends World
     }
     
     
-    //  Bitmask flags
+    /**
+     * A kind of bitmask flag detector.
+     * @param system Entity's system
+     * @param flag of the target system. Should be a power of 2
+     * @return If the passed entity can be put through the system
+     * based on its system flags.
+     */
     private boolean isRegistered(int system, char flag)
     {
         return (system & flag) != 0b0;
@@ -300,15 +393,5 @@ public class GameplayWorld extends World
     {
         entity.debris = true;
         entityDebris.add(entity);
-    }
-    
-    
-    /**
-     * @param width
-     * @param height
-     */
-    public void resize(int width, int height)
-    {
-        projectileSystem.resize(width, height);
     }
 }

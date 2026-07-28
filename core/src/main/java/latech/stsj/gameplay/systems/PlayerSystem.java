@@ -21,7 +21,7 @@ import latech.stsj.templates.System;
 /**
  * System for player input.
  */
-public class PlayerSystem extends System
+public class PlayerSystem implements System
 {
     //  Fields
     private GameplayWorld world;

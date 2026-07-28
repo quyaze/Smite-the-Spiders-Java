@@ -173,7 +173,7 @@ public class MainMenuScreen extends StarterScreen
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.draw(background, 0, 0, width, width * 0.75f);
-        batch.setColor(1f, 1f, 1f, MathUtils.lerp(0f, 1f, logoPhase));
+        batch.setColor(1f, 1f, 1f, logoPhase);
         batch.draw(logo, (width - logo.getRegionWidth() * LOGO_SCALE) * 0.5f, (height - logo.getRegionHeight() * LOGO_SCALE) * 0.5f, logo.getRegionWidth() * LOGO_SCALE, logo.getRegionHeight() * LOGO_SCALE);
         batch.setColor(1f, 1f, 1f, 1f);
         if (enableInput) subtitleText.draw(batch, subtitleGlyph, (Gdx.graphics.getWidth() - subtitleGlyph.width) * 0.5f, (Gdx.graphics.getHeight() - subtitleGlyph.height) * 0.25f);

@@ -20,7 +20,7 @@ import latech.stsj.templates.System;
 /**
  * System for spiders.
  */
-public class SpiderSystem extends System
+public class SpiderSystem implements System
 {
     //  Fields
     private Stores<TextureDrawable> textureDrawableStore;
@@ -52,7 +52,7 @@ public class SpiderSystem extends System
                 MathUtils.random(Gdx.graphics.getHeight() * 0.5f, Gdx.graphics.getHeight() - drawable.getTrueHeight())
             );
             mobility.setDirection(spider.destination.cpy().sub(drawable.position));
-            mobility.setSpeed(spider.randomSpeed());
+            mobility.setSpeed(Spider.randomSpeed());
         }
     }
 }

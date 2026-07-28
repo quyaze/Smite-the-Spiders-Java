@@ -18,19 +18,21 @@ final public class Stores<T>
 {
     //  Fields
     private IntMap<T> data;
+    private int originalCapacity;
     
     
     //  Constructor
     public Stores(int entityCapacity)
     {
+        originalCapacity = entityCapacity;
         data = new IntMap<>(entityCapacity);
     }
     
     
     /**
      * Add an entity and its associated data.
-     * @param entity
-     * @param data
+     * @param entityId
+     * @param data of type <code>T</code>
      */
     public void add(int entityId, T data)
     {
@@ -41,7 +43,7 @@ final public class Stores<T>
     /**
      * Remove the entity and its associated <code>T</code> data from
      * the store.
-     * @param entity
+     * @param entityId
      * @return Data <code>T</code> from removed entity. Can but
      * should never return <code>null</code> if used correctly
      */
@@ -52,7 +54,7 @@ final public class Stores<T>
     
     
     /**
-     * TODO: javadoc
+     * Move entity's data from its old id to its new id.
      * @param oldId
      * @param newId
      */
@@ -64,11 +66,20 @@ final public class Stores<T>
     
     
     /**
-     * @param entity
+     * @param entityId
      * @return The <code>T</code> data associated with the entity
      */
     public T get(int entityId)
     {
         return data.get(entityId);
+    }
+    
+    
+    /**
+     * Clear the store of all entity data.
+    */
+    public void clear()
+    {
+        data.clear(originalCapacity);
     }
 }

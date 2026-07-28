@@ -17,7 +17,7 @@ import latech.stsj.templates.System;
 /**
  * System for drawing or screen rendering.
  */
-public class DrawSystem extends System
+public class DrawSystem implements System
 {
     //  Fields
     private SpriteBatch batch;

@@ -155,7 +155,7 @@ public class StartupHelper {
 			// There is no need for -XstartOnFirstThread on Graal native image
 			if (!System.getProperty("org.graalvm.nativeimage.imagecode", "").isEmpty()) return false;
 
-			// Checks if we are already on the main thread, such as from running via Construo. [Construo has been omitted]
+			// Checks if we are already on the main thread
 			long objcMsgSend = ObjCRuntime.getLibrary().getFunctionAddress("objc_msgSend");
 			long nsThread = ObjCRuntime.objc_getClass("NSThread");
 			long currentThread = JNI.invokePPP(nsThread, ObjCRuntime.sel_getUid("currentThread"), objcMsgSend);

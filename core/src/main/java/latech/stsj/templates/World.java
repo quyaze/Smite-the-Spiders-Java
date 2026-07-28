@@ -9,7 +9,12 @@ import com.badlogic.gdx.utils.Array;
 
 
 /**
- * TODO: javadoc
+ * Abstract class for a World that can belong to a Screen.
+ * <p>
+ * Default constructors:<br>
+ * {@code World(boolean, int)}.<br>
+ * Default fields:<br>
+ * {@link Array}<{@code Entity}>
  */
 public abstract class World
 {

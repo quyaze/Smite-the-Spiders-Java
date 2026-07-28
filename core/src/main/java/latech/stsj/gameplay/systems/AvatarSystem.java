@@ -18,7 +18,7 @@ import latech.stsj.templates.System;
 /**
  * System for moving beings, characters, objects, etc.
  */
-public class AvatarSystem extends System
+public class AvatarSystem implements System
 {
     //  Fields
     private Stores<TextureDrawable> textureDrawableStore;
@@ -40,20 +40,15 @@ public class AvatarSystem extends System
         TextureDrawable drawable = textureDrawableStore.get(entity.getId());
         Mobility mobility = mobilityStore.get(entity.getId());
         
-        //  TODO: refactor screen contained
-        if (mobility.screenContained)
-        {
-            drawable.position.set(
-                MathUtils.clamp(drawable.position.x + mobility.getVelocityX() * deltaSeconds, mobility.screenBounds[0], mobility.screenBounds[2]),
-                MathUtils.clamp(drawable.position.y + mobility.getVelocityY() * deltaSeconds, mobility.screenBounds[1], mobility.screenBounds[3])
-            );
-        }
-        else
-        {
-            drawable.position.add(
-                mobility.getVelocityX() * deltaSeconds,
-                mobility.getVelocityY() * deltaSeconds
-            );
-        }
+        drawable.position.add(
+            mobility.getVelocityX() * deltaSeconds,
+            mobility.getVelocityY() * deltaSeconds
+        );
+        
+        if (!mobility.screenContained) return;
+        drawable.position.set(
+            MathUtils.clamp(drawable.position.x, mobility.screenBounds[0], mobility.screenBounds[2]),
+                MathUtils.clamp(drawable.position.y, mobility.screenBounds[1], mobility.screenBounds[3])
+        );
     }
 }

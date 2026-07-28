@@ -12,6 +12,8 @@ import latech.stsj.Main;
 
 /**
  * Screen template class.
+ * <p>
+ * Contains a {@code Main} field.
  */
 public abstract class StarterScreen implements Screen
 {
