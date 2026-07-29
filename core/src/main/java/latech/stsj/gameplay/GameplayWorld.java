@@ -158,10 +158,7 @@ final public class GameplayWorld extends World
         }
         
         //  TODO: game state/round based. omit in the future
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
-        {
-            spawnSpiders();
-        }
+        if (!gamePaused && Gdx.input.isKeyJustPressed(Input.Keys.Q)) spawnSpiders();
         
         for (char flag = 1; flag <= flagTexture; flag <<= 1)
         {

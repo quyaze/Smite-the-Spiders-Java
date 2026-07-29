@@ -1,10 +1,30 @@
 # Smite the Spiders (Java)
 
-A remake of "Shoot the Spiders" in CSC-132. Originally written in Python using Pygame, it is now developed in Java using LibGDX.
+A remake of "Shoot the Spiders" in CSC 132 (Louisiana Tech University). Originally written in Python using Pygame, it is now developed in Java using LibGDX.
 
 Built with [JDK 26](https://www.oracle.com/java/technologies/downloads/#java26)
 
-<hr>
+## Controls
+
+<div style="display: flex; justify-content: space-between;">
+    <div>
+        Move<br><code>[WASD] / [Arrows] / [Numpad Arrows]</code>
+    </div>
+    <div>
+        Fire a spell<br><code>[SPACE]</code>
+    </div>
+    <div>
+        Spawn spiders<br><code>[Q]</code>
+    </div>
+    <div>
+        Quit to main menu<br><code>[ESCAPE], [SPACE]</code>
+    </div>
+    <div>
+        Quit game (main menu)<br><code>[ESCAPE]</code>
+    </div>
+</div>
+
+## About Project (<i>Generated</i>)
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
