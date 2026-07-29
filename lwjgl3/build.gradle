@@ -137,23 +137,44 @@ tasks.register("jarWin") {
   }
 }
 
-//  Configure jpackage. With `System.getenv('JAVA_HOME')`, ensure your environment variable points to JDK 26.0.1
+/*
+  Installs an application-image.
+  Ensure your JAVA_HOME path variable points to JDK 26.
+  
+  ./gradlew clean build jpackage
+*/
 runtime {
   options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
   modules = ["java.base", "java.management", "java.desktop", "jdk.unsupported"]
   javaHome = System.getenv('JAVA_HOME')
   jpackage {
-    imageName = appName
+    imageName = appNameSimple
     appVersion = projectVersion
-    jpackageHome = System.getenv('JAVA_HOME')
-    imageOptions = ['--icon', file('icons/logo.ico').absolutePath]
+    jpackageHome = 'alpha' + javaHome
     skipInstaller = true
+    if (os.contains('windows')) {
+      imageOptions = ['--icon', file('icons/logo.ico').absolutePath]
+    }
+    else if (os.contains('mac')) {
+      imageOptions = ['--icon', file('icons/logo.icns').absolutePath]
+    }
+    else if (os.contains('linux')) {
+      imageOptions = ['--icon', file('icons/logo.png').absolutePath]
+    }
   }
 }
 
 // Equivalent to the jar task; here for compatibility with gdx-setup.
 tasks.register('dist') {
-  dependsOn 'jar'
+  if (os.contains('windows')) {
+    dependsOn 'jarWin'
+  }
+  else if (os.contains('mac')) {
+    dependsOn 'jarMac'
+  }
+  else if (os.contains('linux')) {
+    dependsOn 'jarLinux'
+  }
 }
 
 distributions {

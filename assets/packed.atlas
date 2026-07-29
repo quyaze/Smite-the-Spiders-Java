@@ -6,21 +6,21 @@ filter: Nearest, Nearest
 repeat: none
 bg
   rotate: false
-  xy: 2, 138
+  xy: 2, 88
   size: 800, 600
   orig: 800, 600
   offset: 0, 0
   index: -1
 spell
   rotate: false
-  xy: 804, 706
+  xy: 804, 656
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 spider
   rotate: false
-  xy: 804, 685
+  xy: 804, 635
   size: 27, 19
   orig: 27, 19
   offset: 0, 0
@@ -28,8 +28,8 @@ spider
 title
   rotate: false
   xy: 2, 36
-  size: 420, 100
-  orig: 420, 100
+  size: 400, 50
+  orig: 400, 50
   offset: 0, 0
   index: -1
 web
@@ -41,7 +41,7 @@ web
   index: -1
 wizard
   rotate: false
-  xy: 424, 105
+  xy: 404, 55
   size: 20, 31
   orig: 20, 31
   offset: 0, 0
