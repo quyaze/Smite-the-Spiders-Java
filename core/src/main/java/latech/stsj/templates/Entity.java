@@ -7,7 +7,7 @@ package latech.stsj.templates;
 
 
 /**
- * TODO: javadoc
+ * Class representing entities in a World.
  */
 final public class Entity
 {
@@ -27,6 +27,9 @@ final public class Entity
     }
     
     
+    /**
+     * @param id Entity's new Id to set
+     */
     public void setId(int id)
     {
         for (int i = 0; i < stores.length; i++) stores[i].move(this.id, id);
@@ -34,21 +37,29 @@ final public class Entity
     }
     
     
+    /**
+     * @return Entity's Id
+     */
     public int getId()
     {
         return id;
     }
     
     
+    /**
+     * @return Entity's designated systems (bitmask flag)
+     */
     public int getSystem()
     {
         return systemFlag;
     }
     
     
+    /**
+     * Entity removes data from all stores associated with itself.
+    */
     public void removeFromStores()
     {
         for (int i = 0; i < stores.length; i++) stores[i].remove(id);
     }
 }
-//  TODO: javadocs

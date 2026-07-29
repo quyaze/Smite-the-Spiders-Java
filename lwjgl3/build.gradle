@@ -20,14 +20,15 @@ eclipse.project.name = appName + '-lwjgl3'
 java.sourceCompatibility = 26
 java.targetCompatibility = 26
 if (JavaVersion.current().isJava9Compatible()) {
-        compileJava.options.release.set(26)
+  compileJava.options.release.set(26)
 }
 
 dependencies {
   implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+  implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
   implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   implementation ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'}
-  implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
   implementation project(':core')
 
   if(enableGraalNative == 'true') {
@@ -47,7 +48,7 @@ dependencies {
 
 def os = System.properties['os.name'].toLowerCase(Locale.ROOT)
 
-tasks.register('runTexturePacker') {
+tasks.register('texturePacker') {
   group('application')
   doLast {
     project.extensions.extraProperties.set('texturePackerEnabled', true)
@@ -56,7 +57,7 @@ tasks.register('runTexturePacker') {
 
 run {
   //  Pass '--texture-packer'
-  dependsOn tasks.named('runTexturePacker')
+  dependsOn 'texturePacker'
   workingDir = rootProject.file('assets').path
   doFirst {
     if (project.extensions.extraProperties.has('texturePackerEnabled')) {

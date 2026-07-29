@@ -8,6 +8,10 @@ package latech.stsj.gameplay.stores;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+
+/**
+ * Class providing gameplay characters with a sprite.
+ */
 public class TextureDrawable
 {
     //  Fields

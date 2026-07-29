@@ -11,25 +11,23 @@ import latech.stsj.gameplay.GameplayWorld;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.templates.Entity;
-import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
 
 /**
- * System for moving beings, characters, objects, etc.
+ * System supplementing movement for beings, characters, objects,
+ * etc.
  */
 public class AvatarSystem implements System
 {
     //  Fields
-    private Stores<TextureDrawable> textureDrawableStore;
-    private Stores<Mobility> mobilityStore;
+    private GameplayWorld world;
     
     
     //  Constructor
     public AvatarSystem(GameplayWorld world)
     {
-        textureDrawableStore = world.textureDrawableStore;
-        mobilityStore = world.mobilityStore;
+        this.world = world;
     }
     
     
@@ -37,8 +35,8 @@ public class AvatarSystem implements System
     @Override
     public void render(float deltaSeconds, Entity entity)
     {
-        TextureDrawable drawable = textureDrawableStore.get(entity.getId());
-        Mobility mobility = mobilityStore.get(entity.getId());
+        TextureDrawable drawable = world.textureDrawableStore.get(entity.getId());
+        Mobility mobility = world.mobilityStore.get(entity.getId());
         
         drawable.position.add(
             mobility.getVelocityX() * deltaSeconds,
@@ -48,7 +46,7 @@ public class AvatarSystem implements System
         if (!mobility.screenContained) return;
         drawable.position.set(
             MathUtils.clamp(drawable.position.x, mobility.screenBounds[0], mobility.screenBounds[2]),
-                MathUtils.clamp(drawable.position.y, mobility.screenBounds[1], mobility.screenBounds[3])
+            MathUtils.clamp(drawable.position.y, mobility.screenBounds[1], mobility.screenBounds[3])
         );
     }
 }

@@ -8,19 +8,23 @@ package latech.stsj.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import latech.stsj.Main;
+import latech.stsj.enums.CollisionType;
 import latech.stsj.gameplay.stores.Collision;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.Player;
 import latech.stsj.gameplay.stores.Spider;
 import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.gameplay.systems.AvatarSystem;
+import latech.stsj.gameplay.systems.CollisionSystem;
 import latech.stsj.gameplay.systems.PlayerSystem;
-import latech.stsj.gameplay.systems.ProjectileSystem;
 import latech.stsj.gameplay.systems.SpiderSystem;
 import latech.stsj.gameplay.systems.DrawSystem;
 import latech.stsj.templates.Entity;
@@ -30,9 +34,9 @@ import latech.stsj.templates.World;
 
 
 /**
- * TODO: javadoc
+ * World for the gameplay.
 */
-public class GameplayWorld extends World
+final public class GameplayWorld extends World
 {
     //  Fields
     private Main main;
@@ -44,14 +48,17 @@ public class GameplayWorld extends World
     public Stores<Spider> spiderStore;
     
     private PlayerSystem playerSystem;
-    private DrawSystem drawSystem;
+    private CollisionSystem collisionSystem;
     private AvatarSystem avatarSystem;
     private SpiderSystem spiderSystem;
-    private ProjectileSystem projectileSystem;
+    private DrawSystem drawSystem;
     
     private Array<Entity> entityDebris;
     private System iteratingSystem;
     public boolean gamePaused;
+    
+    private Task collisionSolveTask;
+    final static private float collisionSolveInterval = 1/30f;
     
     final static private char flagPlayer = 1;       //      1 = 1 << 0
     final static private char flagCollision = 2;    //     10 = 1 << 1
@@ -75,32 +82,43 @@ public class GameplayWorld extends World
         collisionStore = new Stores<>(64);
         spiderStore = new Stores<>(64);
         
-        drawSystem = new DrawSystem(this, main.getBatch());
-        avatarSystem = new AvatarSystem(this);
         playerSystem = new PlayerSystem(this);
+        collisionSystem = new CollisionSystem(this);
+        avatarSystem = new AvatarSystem(this);
         spiderSystem = new SpiderSystem(this);
-        projectileSystem = new ProjectileSystem(this);
+        drawSystem = new DrawSystem(this, main.getBatch());
         
         entityDebris = new Array<>(false, 4);
+        
+        collisionSolveTask = new Timer.Task()
+        {
+            public void run()
+            {
+                if (!gamePaused) collisionSystem.solve();
+            }
+        };
     }
     
     
     /**
      * Create gameplay world. For {@code Screen.show()}.
     */
-    public void create()
+    public void creator()
     {
-        spawnBackground(main);
-        spawnPlayer(main);
-        spawnSpiders(main);
+        spawnBackground();
+        spawnPlayer();
+        spawnSpiders();
+        main.getTimer().scheduleTask(collisionSolveTask, 0f, collisionSolveInterval, -1);
     }
     
     
     /**
      * Unload gameplay world. For {@code Screen.hide()}.
     */
-    public void remove()
+    public void remover()
     {
+        collisionSystem.remover();
+        collisionSolveTask.cancel();
         entities.clear();
         entityDebris.clear();
         textureDrawableStore.clear();
@@ -109,15 +127,6 @@ public class GameplayWorld extends World
         collisionStore.clear();
         spiderStore.clear();
         gamePaused = false;
-    }
-    
-    
-    /**
-     * When owning {@code Screen.pause()} fires.
-    */
-    public void onPause()
-    {
-        gamePaused = true;
     }
     
     
@@ -148,6 +157,12 @@ public class GameplayWorld extends World
             return;
         }
         
+        //  TODO: game state/round based. omit in the future
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
+        {
+            spawnSpiders();
+        }
+        
         for (char flag = 1; flag <= flagTexture; flag <<= 1)
         {
             if (gamePaused && flag != flagTexture) continue;
@@ -156,7 +171,7 @@ public class GameplayWorld extends World
             {
                 case flagPlayer: iteratingSystem = playerSystem; break;
                 
-                case flagCollision: iteratingSystem = projectileSystem; break;
+                case flagCollision: iteratingSystem = collisionSystem; break;
                 
                 case flagAvatar: iteratingSystem = avatarSystem; break;
                 
@@ -190,29 +205,27 @@ public class GameplayWorld extends World
         for (int i = 0; i < entityDebris.size; i++)
         {
             Entity debris = entityDebris.get(i);
-            Entity lastEntity = entities.get(entities.size - 1);
             int debrisId = debris.getId();
             
             debris.removeFromStores();
-            if (debris != lastEntity)
-            {
-                entities.set(debrisId, lastEntity);
-                lastEntity.setId(debrisId);
-            }
-            entities.removeIndex(entities.size - 1);
+            entities.get(entities.size - 1).setId(debrisId);
+            entities.removeIndex(debrisId);
         }
         entityDebris.clear();
     }
     
     
     //  Spawn Background
-    private void spawnBackground(Main main)
+    private void spawnBackground()
     {
+        //  Initialize
         Entity entity;
         TextureDrawable tex;
         
+        //  Entity
+        int id = entities.size;
         entity = new Entity(
-            entities.size,
+            id,
             flagTexture,
             new Stores[] {
                 textureDrawableStore
@@ -223,27 +236,30 @@ public class GameplayWorld extends World
         tex.setScale(Gdx.graphics.getWidth() / (float) tex.tex.getRegionWidth());
         
         entities.add(entity);
-        textureDrawableStore.add(entity.getId(), tex);
+        textureDrawableStore.add(id, tex);
     }
     
     
     //  Spawn Player
-    private void spawnPlayer(Main main)
+    private void spawnPlayer()
     {
         //  Initialize
         Entity entity;
         TextureDrawable tex;
         Mobility mobility;
         Player player;
+        Collision collision;
         
         //  Entity
+        int id = entities.size;
         entity = new Entity(
-            entities.size,
-            flagTexture | flagAvatar | flagPlayer,
+            id,
+            flagPlayer | flagCollision | flagAvatar | flagTexture,
             new Stores[] {
                 textureDrawableStore,
                 mobilityStore,
-                playerStore
+                playerStore,
+                collisionStore
             }
         );
         
@@ -266,57 +282,88 @@ public class GameplayWorld extends World
         };
         
         //  Player
-        player = new Player(tex);
+        player = new Player();
+        
+        //  Collision
+        collision = new Collision(
+            tex,
+            false,
+            CollisionType.PLAYER
+        );
         
         //  Finalize
         entities.add(entity);
-        textureDrawableStore.add(entity.getId(), tex);
-        mobilityStore.add(entity.getId(), mobility);
-        playerStore.add(entity.getId(), player);
+        textureDrawableStore.add(id, tex);
+        mobilityStore.add(id, mobility);
+        playerStore.add(id, player);
+        collisionStore.add(id, collision);
     }
     
     
     //  Spawn Spiders
-    private void spawnSpiders(Main main)
+    private void spawnSpiders()
     {
-        //  Initialize
-        Entity entity;
-        TextureDrawable tex;
-        Mobility mobility;
-        Spider spider;
-        
-        //  Entity
-        entity = new Entity(
-            entities.size,
-            flagTexture | flagAvatar | flagSpider,
-            new Stores[] {
-                textureDrawableStore,
-                mobilityStore,
-                spiderStore
+        int no = MathUtils.random(1, 3);
+        for (int i = 0; i < no; i++)
+        {
+            //  Initialize
+            Entity entity;
+            TextureDrawable tex;
+            Mobility mobility;
+            Collision collision;
+            Spider spider;
+            float posX;
+            
+            //  Entity
+            int id = entities.size;
+            entity = new Entity(
+                id,
+                flagSpider | flagCollision | flagAvatar | flagTexture,
+                new Stores[] {
+                    textureDrawableStore,
+                    mobilityStore,
+                    collisionStore,
+                    spiderStore
+                }
+            );
+            
+            //  Drawable
+            tex = new TextureDrawable(main.getAtlas().findRegion("spider"));
+            tex.setScale(4f);
+            switch (i)
+            {
+                case 0: posX = (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f; break;
+                
+                case 1: posX = Gdx.graphics.getWidth() * 0.25f - tex.getTrueWidth() * 0.5f; break;
+                
+                case 2: posX = Gdx.graphics.getWidth() * 0.75f - tex.getTrueWidth() * 0.5f; break;
+            
+                default: continue;
             }
-        );
-        
-        //  Drawable
-        tex = new TextureDrawable(main.getAtlas().findRegion("spider"));
-        tex.setScale(4f);
-        tex.position.set(
-            (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
-            Gdx.graphics.getHeight() * 0.75f - tex.getTrueHeight() * 0.5f
-        );
-        
-        //  Mobility
-        mobility = new Mobility();
-        mobility.setSpeed(Spider.randomSpeed());
-        
-        //  Spider
-        spider = new Spider();
-        spider.destination.set(tex.position);
-        
-        //  Finalize
-        entities.add(entity);
-        textureDrawableStore.add(entity.getId(), tex);
-        mobilityStore.add(entity.getId(), mobility);
-        spiderStore.add(entity.getId(), spider);
+            tex.position.set(posX, Gdx.graphics.getHeight() * 0.75f - tex.getTrueHeight() * 0.5f);
+            
+            //  Mobility
+            mobility = new Mobility();
+            mobility.setSpeed(Spider.randomSpeed());
+            
+            //  Collision
+            collision = new Collision(
+                tex,
+                false,
+                CollisionType.SPIDER
+            );
+            
+            //  Spider
+            spider = new Spider();
+            spider.destination.set(tex.position);
+            
+            //  Finalize
+            entities.add(entity);
+            textureDrawableStore.add(id, tex);
+            mobilityStore.add(id, mobility);
+            collisionStore.add(id, collision);
+            spiderStore.add(id, spider);
+        }
     }
     
     
@@ -336,8 +383,9 @@ public class GameplayWorld extends World
         Collision collision;
         
         //  Entity
+        int id = entities.size;
         entity = new Entity(
-            entities.size,
+            id,
             flagTexture | flagAvatar | flagCollision,
             new Stores[] {
                 textureDrawableStore,
@@ -355,7 +403,11 @@ public class GameplayWorld extends World
         );
         
         //  Collision
-        collision = new Collision(drawable);
+        collision = new Collision(
+            drawable,
+            false,
+            CollisionType.SPELL
+        );
         
         //  Mobility
         mobility = new Mobility();
@@ -364,9 +416,9 @@ public class GameplayWorld extends World
         
         //  Finalize
         entities.add(entity);
-        textureDrawableStore.add(entity.getId(), drawable);
-        mobilityStore.add(entity.getId(), mobility);
-        collisionStore.add(entity.getId(), collision);
+        textureDrawableStore.add(id, drawable);
+        mobilityStore.add(id, mobility);
+        collisionStore.add(id, collision);
     }
     
     
@@ -387,11 +439,15 @@ public class GameplayWorld extends World
      * A system requests that an entity should be removed.
      * <p>
      * Entity removal is deferred.
-     * @param entity
+     * @param targetEntities
      */
-    public void removeEntity(Entity entity)
+    public void removeEntities(Entity... targetEntities)
     {
-        entity.debris = true;
-        entityDebris.add(entity);
+        for (int i = 0; i < targetEntities.length; i++)
+        {
+            Entity debris = targetEntities[i];
+            debris.debris = true;
+            entityDebris.add(debris);
+        }
     }
 }

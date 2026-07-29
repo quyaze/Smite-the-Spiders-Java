@@ -47,21 +47,21 @@ public class GameplayScreen extends StarterScreen
     //  Show
     @Override public void show()
     {
-        world.create();
+        world.creator();
     }
     
     
     //  Hide
     @Override public void hide()
     {
-        world.remove();
+        world.remover();
     }
     
     
     //  Pause
     @Override public void pause()
     {
-        world.onPause();
+        world.gamePaused = true;
     }
     
     

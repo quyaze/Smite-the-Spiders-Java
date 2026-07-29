@@ -7,15 +7,13 @@ package latech.stsj.gameplay.stores;
 
 import com.badlogic.gdx.math.Vector2;
 
+
+/**
+ * Class representing the player.
+ */
 public class Player
 {
-    public Vector2 movementInput2D;
+    //  Fields
+    public Vector2 movementInput2D = Vector2.Zero.cpy();
     public float maxSpeed = 600f;
-    
-    
-    public Player(TextureDrawable playerCharacter)
-    {
-        movementInput2D = Vector2.Zero.cpy();
-    }
 }
-//  TODO: javadocs

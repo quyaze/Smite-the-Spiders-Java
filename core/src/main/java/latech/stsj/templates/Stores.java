@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.IntMap;
  * A class that acts as a container for data associated with
  * <code>Entity</code>s. Designed to be accessed and not
  * iterated.
- * @param <T> Data associated with entities is of type T
+ * @param <T> Data associated with entities of type T
  */
 final public class Stores<T>
 {
@@ -41,11 +41,11 @@ final public class Stores<T>
     
     
     /**
-     * Remove the entity and its associated <code>T</code> data from
+     * Remove the entity and its associated {@code T} data from
      * the store.
      * @param entityId
-     * @return Data <code>T</code> from removed entity. Can but
-     * should never return <code>null</code> if used correctly
+     * @return Data {@code T} from removed entity. Can but
+     * should never return {@code null} if used correctly
      */
     public T remove(int entityId)
     {
@@ -67,7 +67,7 @@ final public class Stores<T>
     
     /**
      * @param entityId
-     * @return The <code>T</code> data associated with the entity
+     * @return The {@code T} data associated with the entity
      */
     public T get(int entityId)
     {

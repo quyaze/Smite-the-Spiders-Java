@@ -8,12 +8,16 @@ package latech.stsj.gameplay.stores;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+
+/**
+ * Class providing movement to characters.
+ */
 public class Mobility
 {
     //  Fields
-    private Vector2 velocity; // pixels per second
-    private float angle = 0f;
-    private float speed = 100f; // pixels per second
+    private Vector2 velocity;
+    private float angle;
+    private float speed;
     public boolean screenContained;
     public float[] screenBounds;
     
@@ -29,9 +33,9 @@ public class Mobility
         This allows characters to move faster diagonally across the
         screen than in a straight x- or y-direction.
         
-        Velocity is calculated from angles, scaled by speed, and made to
-        be O(1) readable. For the most part, gameplay characters now
-        move in a linear speed in any direction.
+        Velocity is calculated from angles and scaled by speed. For the
+        most part, gameplay characters now move in a linear speed in any
+        direction.
         
         Field screenContained is accessed in AvatarSystem. Keeps
         characters, specifically the player, from going off screen.
@@ -42,6 +46,8 @@ public class Mobility
     public Mobility()
     {
         velocity = Vector2.Zero.cpy();
+        angle = 0f;
+        speed = 100f;
     }
     
     
@@ -87,8 +93,8 @@ public class Mobility
      */
     public void setSpeed(float speed)
     {
-        speed = Math.abs(speed);
-        velocity.scl(speed / (this.speed > 0 ? this.speed : 1));
+        if (this.speed <= 0) this.speed = 1;
+        velocity.scl(speed / this.speed);
         this.speed = speed;
     }
     

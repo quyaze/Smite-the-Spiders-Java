@@ -1,12 +1,8 @@
 # Smite the Spiders (Java)
 
-This project is a remake of "Shoot the Spiders." Originally written in Python using Pygame, it is now programmed in Java using LibGDX.
+A remake of "Shoot the Spiders" in CSC-132. Originally written in Python using Pygame, it is now developed in Java using LibGDX.
 
-Project requirements: [JDK 26.0.1]("https://www.oracle.com/java/technologies/downloads/#java26")
-
-Todo: mini-ECS description
-
-<i>Made for Louisiana Tech University.</i>
+Built with [JDK 26](https://www.oracle.com/java/technologies/downloads/#java26)
 
 <hr>
 

@@ -13,27 +13,22 @@ import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.Spider;
 import latech.stsj.gameplay.stores.TextureDrawable;
 import latech.stsj.templates.Entity;
-import latech.stsj.templates.Stores;
 import latech.stsj.templates.System;
 
 
 /**
- * System for spiders.
+ * System for spider pathfinding (random).
  */
 public class SpiderSystem implements System
 {
     //  Fields
-    private Stores<TextureDrawable> textureDrawableStore;
-    private Stores<Mobility> mobilityStore;
-    private Stores<Spider> spiderStore;
+    private GameplayWorld world;
     
     
     //  Constructor
     public SpiderSystem(GameplayWorld world)
     {
-        textureDrawableStore = world.textureDrawableStore;
-        mobilityStore = world.mobilityStore;
-        spiderStore = world.spiderStore;
+        this.world = world;
     }
     
     
@@ -41,9 +36,9 @@ public class SpiderSystem implements System
     @Override
     public void render(float deltaSeconds, Entity entity)
     {
-        TextureDrawable drawable = textureDrawableStore.get(entity.getId());
-        Mobility mobility = mobilityStore.get(entity.getId());
-        Spider spider = spiderStore.get(entity.getId());
+        TextureDrawable drawable = world.textureDrawableStore.get(entity.getId());
+        Mobility mobility = world.mobilityStore.get(entity.getId());
+        Spider spider = world.spiderStore.get(entity.getId());
         
         if (drawable.position.dst2(spider.destination) < 36f)
         {
