@@ -8,6 +8,7 @@ package latech.stsj.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -16,7 +17,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import latech.stsj.Main;
-import latech.stsj.enums.CollisionType;
+import latech.stsj.enums.GameplayPhase;
 import latech.stsj.gameplay.stores.Collision;
 import latech.stsj.gameplay.stores.Mobility;
 import latech.stsj.gameplay.stores.Player;
@@ -40,6 +41,8 @@ final public class GameplayWorld extends World
 {
     //  Fields
     private Main main;
+    public GameplayState state;
+    public GameplayPhase phase;
     
     public Stores<TextureDrawable> textureDrawableStore;
     public Stores<Mobility> mobilityStore;
@@ -75,6 +78,8 @@ final public class GameplayWorld extends World
         super(false, 64);
         
         this.main = main;
+        state = new GameplayState(3);
+        phase = GameplayPhase.NORMAL;
         
         textureDrawableStore = new Stores<>(64);
         mobilityStore = new Stores<>(64);
@@ -127,6 +132,9 @@ final public class GameplayWorld extends World
         collisionStore.clear();
         spiderStore.clear();
         gamePaused = false;
+        phase = GameplayPhase.NORMAL;
+        state.points = 0;
+        state.lives = 3;
     }
     
     
@@ -217,7 +225,7 @@ final public class GameplayWorld extends World
     {
         //  Initialize
         Entity entity;
-        TextureDrawable tex;
+        TextureDrawable drawable;
         
         //  Entity
         int id = entities.size;
@@ -229,11 +237,11 @@ final public class GameplayWorld extends World
             }
         );
         
-        tex = new TextureDrawable(main.getAtlas().findRegion("bg"));
-        tex.setScale(Gdx.graphics.getWidth() / (float) tex.tex.getRegionWidth());
+        drawable = new TextureDrawable(main.getAtlas().findRegion("bg"));
+        drawable.setScale(Gdx.graphics.getWidth() / (float) drawable.tex.getRegionWidth());
         
         entities.add(entity);
-        textureDrawableStore.add(id, tex);
+        textureDrawableStore.add(id, drawable);
     }
     
     
@@ -242,7 +250,7 @@ final public class GameplayWorld extends World
     {
         //  Initialize
         Entity entity;
-        TextureDrawable tex;
+        TextureDrawable drawable;
         Mobility mobility;
         Player player;
         Collision collision;
@@ -261,11 +269,11 @@ final public class GameplayWorld extends World
         );
         
         //  Drawable
-        tex = new TextureDrawable(main.getAtlas().findRegion("wizard"));
-        tex.setScale(4f);
-        tex.position.set(
-            (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f,
-            Gdx.graphics.getHeight() * 0.25f - tex.getTrueHeight() * 0.5f
+        drawable = new TextureDrawable(main.getAtlas().findRegion("wizard"));
+        drawable.setScale(4f);
+        drawable.position.set(
+            (Gdx.graphics.getWidth() - drawable.getTrueWidth()) * 0.5f,
+            Gdx.graphics.getHeight() * 0.25f - drawable.getTrueHeight() * 0.5f
         );
         
         //  Mobility
@@ -274,8 +282,8 @@ final public class GameplayWorld extends World
         mobility.screenBounds = new float[] {
             0f,
             0f,
-            Gdx.graphics.getWidth() - tex.getTrueWidth(),
-            Gdx.graphics.getHeight() - tex.getTrueHeight()
+            Gdx.graphics.getWidth() - drawable.getTrueWidth(),
+            Gdx.graphics.getHeight() - drawable.getTrueHeight()
         };
         
         //  Player
@@ -283,14 +291,13 @@ final public class GameplayWorld extends World
         
         //  Collision
         collision = new Collision(
-            tex,
-            false,
-            CollisionType.PLAYER
+            drawable,
+            false
         );
         
         //  Finalize
         entities.add(entity);
-        textureDrawableStore.add(id, tex);
+        textureDrawableStore.add(id, drawable);
         mobilityStore.add(id, mobility);
         playerStore.add(id, player);
         collisionStore.add(id, collision);
@@ -305,7 +312,7 @@ final public class GameplayWorld extends World
         {
             //  Initialize
             Entity entity;
-            TextureDrawable tex;
+            TextureDrawable drawable;
             Mobility mobility;
             Collision collision;
             Spider spider;
@@ -325,19 +332,19 @@ final public class GameplayWorld extends World
             );
             
             //  Drawable
-            tex = new TextureDrawable(main.getAtlas().findRegion("spider"));
-            tex.setScale(4f);
+            drawable = new TextureDrawable(main.getAtlas().findRegion("spider"));
+            drawable.setScale(4f);
             switch (i)
             {
-                case 0: posX = (Gdx.graphics.getWidth() - tex.getTrueWidth()) * 0.5f; break;
+                case 0: posX = (Gdx.graphics.getWidth() - drawable.getTrueWidth()) * 0.5f; break;
                 
-                case 1: posX = Gdx.graphics.getWidth() * 0.25f - tex.getTrueWidth() * 0.5f; break;
+                case 1: posX = Gdx.graphics.getWidth() * 0.25f - drawable.getTrueWidth() * 0.5f; break;
                 
-                case 2: posX = Gdx.graphics.getWidth() * 0.75f - tex.getTrueWidth() * 0.5f; break;
+                case 2: posX = Gdx.graphics.getWidth() * 0.75f - drawable.getTrueWidth() * 0.5f; break;
             
                 default: continue;
             }
-            tex.position.set(posX, Gdx.graphics.getHeight() * 0.75f - tex.getTrueHeight() * 0.5f);
+            drawable.position.set(posX, Gdx.graphics.getHeight() * 0.75f - drawable.getTrueHeight() * 0.5f);
             
             //  Mobility
             mobility = new Mobility();
@@ -345,22 +352,59 @@ final public class GameplayWorld extends World
             
             //  Collision
             collision = new Collision(
-                tex,
-                false,
-                CollisionType.SPIDER
+                drawable,
+                false
             );
             
             //  Spider
             spider = new Spider();
-            spider.destination.set(tex.position);
+            spider.destination.set(drawable.position);
             
             //  Finalize
             entities.add(entity);
-            textureDrawableStore.add(id, tex);
+            textureDrawableStore.add(id, drawable);
             mobilityStore.add(id, mobility);
             collisionStore.add(id, collision);
             spiderStore.add(id, spider);
         }
+    }
+    
+    
+    //  TODO: javadoc
+    public void onPlayerHit(Entity player)
+    {
+        if (state.lives-- < 1)
+        {
+            main.getTimer().scheduleTask(
+                new Task()
+                {
+                    @Override public void run()
+                    {
+                        main.goToMainMenuScreen();
+                    }
+                },
+                1f
+            );
+            removeEntities(player, playerStore.get(player.getId()).hitWeb);
+        }
+    }
+    
+    
+    //  TODO: javadoc
+    public void onSpiderHit(Entity spider)
+    {
+        main.getTimer().scheduleTask(
+            new Task()
+            {
+                @Override public void run()
+                {
+                    removeEntities(spider);
+                }
+            },
+            1f
+        );
+        removeEntities(spiderStore.get(spider.getId()).hitSpell);
+        state.points += GameplayState.POINTS_HIT_SPIDER;
     }
     
     
@@ -392,18 +436,18 @@ final public class GameplayWorld extends World
         );
         
         //  Drawable
-        drawable = new TextureDrawable(main.getAtlas().findRegion("spell"));
+        drawable = new TextureDrawable(new TextureRegion(main.getAtlas().findRegion("spell")));
         drawable.setScale(2f);
         drawable.position.set(
             playerDrawable.position.x + (playerDrawable.getTrueWidth() - drawable.getTrueWidth()) * 0.5f,
             playerDrawable.position.y + (playerDrawable.getTrueHeight() - drawable.getTrueHeight()) * 0.5f
         );
+        drawable.tex.flip(false, true);
         
         //  Collision
         collision = new Collision(
             drawable,
-            false,
-            CollisionType.SPELL
+            false
         );
         
         //  Mobility
@@ -416,6 +460,25 @@ final public class GameplayWorld extends World
         textureDrawableStore.add(id, drawable);
         mobilityStore.add(id, mobility);
         collisionStore.add(id, collision);
+    }
+    
+    
+    /**
+     * Player is out of lives.
+    */
+    public void requestGameOver(Entity player)
+    {
+        main.getTimer().scheduleTask(
+            new Task()
+            {
+                @Override public void run()
+                {
+                    main.goToMainMenuScreen();
+                }
+            },
+            1f
+        );
+        removeEntities(player);
     }
     
     

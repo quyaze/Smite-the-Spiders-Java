@@ -73,5 +73,8 @@ public class PlayerSystem implements System
         }
         mobility.setSpeed(speed);
         mobility.setDirection(movementInput2D);
+        
+        //  Is hit by a spider's web
+        if (player.hitWeb != null) world.onPlayerHit(entity);
     }
 }

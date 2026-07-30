@@ -37,6 +37,7 @@ public class DrawSystem implements System
     {
         TextureDrawable drawable = world.textureDrawableStore.get(entity.getId());
         
+        batch.setColor(1f, 1f, 1f, drawable.transparency);
         batch.draw(drawable.tex, drawable.position.x, drawable.position.y, drawable.getTrueWidth(), drawable.getTrueHeight());
     }
 }

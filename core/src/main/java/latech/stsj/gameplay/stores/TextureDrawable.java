@@ -18,6 +18,7 @@ public class TextureDrawable
     public TextureRegion tex;
     public Vector2 position;
     public Vector2 anchor;
+    public float transparency;
     private Vector2 trueSize;
     
     
@@ -27,6 +28,7 @@ public class TextureDrawable
         this.tex = tex;
         position = Vector2.Zero.cpy();
         anchor = Vector2.One.cpy().scl(-1f);
+        transparency = 1f;
         trueSize = new Vector2(tex.getRegionWidth(), tex.getRegionHeight());
     }
     

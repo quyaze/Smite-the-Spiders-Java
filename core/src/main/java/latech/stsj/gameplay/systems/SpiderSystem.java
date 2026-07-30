@@ -36,9 +36,19 @@ public class SpiderSystem implements System
     @Override
     public void render(float deltaSeconds, Entity entity)
     {
-        TextureDrawable drawable = world.textureDrawableStore.get(entity.getId());
-        Mobility mobility = world.mobilityStore.get(entity.getId());
-        Spider spider = world.spiderStore.get(entity.getId());
+        int id = entity.getId();
+        
+        TextureDrawable drawable = world.textureDrawableStore.get(id);
+        Mobility mobility = world.mobilityStore.get(id);
+        Spider spider = world.spiderStore.get(id);
+        
+        //  Is hit by the player's spell
+        if (spider.hitSpell != null)
+        {
+            drawable.transparency -= deltaSeconds * 1f;
+            world.onSpiderHit(entity);
+        }
+        
         
         if (drawable.position.dst2(spider.destination) < 36f)
         {

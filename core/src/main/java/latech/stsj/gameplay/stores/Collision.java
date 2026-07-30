@@ -6,8 +6,9 @@
 package latech.stsj.gameplay.stores;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
-import latech.stsj.enums.CollisionType;
+import latech.stsj.templates.Entity;
 
 
 /**
@@ -18,7 +19,8 @@ public class Collision
     //  Fields
     public Rectangle collision;
     public boolean isDynamicSize;
-    public CollisionType type;
+    public Array<Entity> overlappingEntities;
+    public boolean active;
     
     
     /*  Collision box is based on an associated drawable.
@@ -26,7 +28,7 @@ public class Collision
    
     
     //  Constructor
-    public Collision(TextureDrawable drawable, boolean dynamicSize, CollisionType type)
+    public Collision(TextureDrawable drawable, boolean dynamicSize)
     {
         collision = new Rectangle(
             drawable.position.x,
@@ -35,7 +37,8 @@ public class Collision
             drawable.getTrueHeight()
         );
         isDynamicSize = dynamicSize;
-        this.type = type;
+        overlappingEntities = new Array<>(false, 64);
+        active = true;
     }
     
     

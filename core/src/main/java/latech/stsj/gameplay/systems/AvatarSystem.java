@@ -21,28 +21,28 @@ import latech.stsj.templates.System;
 public class AvatarSystem implements System
 {
     //  Fields
-    private GameplayWorld world;
-    
-    
+    final private GameplayWorld world;
+
+
     //  Constructor
     public AvatarSystem(GameplayWorld world)
     {
         this.world = world;
     }
-    
-    
+
+
     //  Render
     @Override
     public void render(float deltaSeconds, Entity entity)
     {
         TextureDrawable drawable = world.textureDrawableStore.get(entity.getId());
         Mobility mobility = world.mobilityStore.get(entity.getId());
-        
+
         drawable.position.add(
             mobility.getVelocityX() * deltaSeconds,
             mobility.getVelocityY() * deltaSeconds
         );
-        
+
         if (!mobility.screenContained) return;
         drawable.position.set(
             MathUtils.clamp(drawable.position.x, mobility.screenBounds[0], mobility.screenBounds[2]),

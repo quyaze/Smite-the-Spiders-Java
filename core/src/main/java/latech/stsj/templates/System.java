@@ -20,8 +20,8 @@ public interface System
      * It should be called from some owning
      * <code>World.render(deltaSeconds)</code> in which it is
      * iterating and passing over its entities.
-     * @param deltaSeconds
-     * @param entity
+     * @param deltaSeconds {@code float}
+     * @param entity {@link Entity}
      */
     public void render(float deltaSeconds, Entity entity);
 }
