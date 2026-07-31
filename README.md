@@ -24,6 +24,35 @@ Built with [JDK 26](https://www.oracle.com/java/technologies/downloads/#java26)
     </div>
 </div>
 
+## Application Build
+
+To build a standalone application, run `./gradlew clean build jpackage`. This generates the build in `/lwjgl3/build/jpackage/Smite the Spiders/`.
+<br>
+See [Gradle tasks](#tasks) below for guidance.
+
+<table>
+    <tr>
+        <th>Platform</th>
+        <th>File</th>
+        <th>Buildable</th>
+    </tr>
+    <tr>
+        <td>Windows</td>
+        <td><code>.exe</code></td>
+        <td>✅</td>
+    </tr>
+    <tr>
+        <td>Linux</td>
+        <td><code>file</code></td>
+        <td>✅ WSL</td>
+    </tr>
+    <tr>
+        <td>MacOSX</td>
+        <td><code>.app</code></td>
+        <td>❌ unknown</td>
+    </tr>
+</table>
+
 ## About Project (<i>Generated</i>)
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
@@ -35,7 +64,7 @@ This project was generated with a template including simple application launcher
 - `core`: Main module with the application logic shared by all platforms.
 - `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
 
-## Gradle
+<h2 id='tasks'>Gradle</h2>
 
 This project uses [Gradle](https://gradle.org/) to manage dependencies.
 The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
