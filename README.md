@@ -2,28 +2,26 @@
 
 A remake of "Shoot the Spiders" in CSC 132 (Louisiana Tech University). Originally written in Python using Pygame, it is now developed in Java using LibGDX.
 
-Built with [JDK 26](https://www.oracle.com/java/technologies/downloads/#java26)
+Built with [JDK 26.0](https://www.oracle.com/java/technologies/downloads/#java26)
 
 ## Controls
 
 <div align="center">
-    <span>
-        <span>
-            Move<br><code>[WASD] / [Arrows] / [Numpad Arrows]</code>
-        </span>
-        <span>
-            Fire a spell<br><code>[SPACE]</code>
-        </span>
-        <span>
-            Spawn spiders<br><code>[Q]</code>
-        </span>
-        <span>
-            Quit to main menu<br><code>[ESCAPE], [SPACE]</code>
-        </span>
-        <span>
-            Quit game (main menu)<br><code>[ESCAPE]</code>
-        </span>
-    </span>
+    <p>
+        Move<br><code>[WASD] / [Arrows] / [Numpad Arrows]</code>
+    </p>
+    <p>
+        Fire a spell<br><code>[SPACE]</code>
+    </p>
+    <p>
+        Spawn spiders<br><code>[Q]</code>
+    </p>
+    <p>
+        Quit to main menu<br><code>[ESCAPE], [SPACE]</code>
+    </p>
+    <p>
+        Quit game (main menu)<br><code>[ESCAPE]</code>
+    </p>
 </div>
 
 ## Application Build
@@ -32,8 +30,8 @@ To build a standalone application, run `./gradlew clean build jpackage`. This wi
 
 See [Gradle tasks](#gradle) down below for guidance.
 
-<div align="center">
-    <table>
+<table align="center">
+    <tbody>
         <tr>
             <th>Platform</th>
             <th>File</th>
@@ -58,8 +56,8 @@ See [Gradle tasks](#gradle) down below for guidance.
             <td>❌ unknown</td>
             <td>❌ unknown</td>
         </tr>
-    </table>
-</div>
+    </tbody>
+</table>
 
 ## About Project (<i>Generated</i>)
 
