@@ -10,9 +10,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import latech.stsj.gameplay.GameplayWorld;
-import latech.stsj.gameplay.stores.Mobility;
-import latech.stsj.gameplay.stores.Player;
-import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.gameplay.structure.Collision;
+import latech.stsj.gameplay.structure.Mobility;
+import latech.stsj.gameplay.structure.Player;
+import latech.stsj.gameplay.structure.TextureDrawable;
 import latech.stsj.templates.Entity;
 import latech.stsj.templates.System;
 
@@ -37,9 +38,12 @@ public class PlayerSystem implements System
     @Override
     public void render(float deltaSeconds, Entity entity)
     {
-        TextureDrawable drawable = world.textureDrawableStore.get(entity.getId());
-        Mobility mobility = world.mobilityStore.get(entity.getId());
-        Player player = world.playerStore.get(entity.getId());
+        int id = entity.getId();
+        
+        TextureDrawable drawable = world.textureDrawableStore.get(id);
+        Mobility mobility = world.mobilityStore.get(id);
+        Player player = world.playerStore.get(id);
+        Collision collision = world.collisionStore.get(id);
         
         Vector2 movementInput2D = player.movementInput2D;
         movementInput2D.setZero();
@@ -74,7 +78,12 @@ public class PlayerSystem implements System
         mobility.setSpeed(speed);
         mobility.setDirection(movementInput2D);
         
+        /*
         //  Is hit by a spider's web
-        if (player.hitWeb != null) world.onPlayerHit(entity);
+        if (collision.collidingEntities.notEmpty())
+        {
+            world.onPlayerHit(entity);
+        }
+        */
     }
 }

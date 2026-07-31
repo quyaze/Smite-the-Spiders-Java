@@ -9,9 +9,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 import latech.stsj.gameplay.GameplayWorld;
-import latech.stsj.gameplay.stores.Mobility;
-import latech.stsj.gameplay.stores.Spider;
-import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.gameplay.structure.Collision;
+import latech.stsj.gameplay.structure.Mobility;
+import latech.stsj.gameplay.structure.Spider;
+import latech.stsj.gameplay.structure.TextureDrawable;
 import latech.stsj.templates.Entity;
 import latech.stsj.templates.System;
 
@@ -40,14 +41,17 @@ public class SpiderSystem implements System
         
         TextureDrawable drawable = world.textureDrawableStore.get(id);
         Mobility mobility = world.mobilityStore.get(id);
+        Collision collision = world.collisionStore.get(id);
         Spider spider = world.spiderStore.get(id);
         
+        /*
         //  Is hit by the player's spell
-        if (spider.hitSpell != null)
+        if (collision.collidingEntities.notEmpty())
         {
             drawable.transparency -= deltaSeconds * 1f;
             world.onSpiderHit(entity);
         }
+        */
         
         
         if (drawable.position.dst2(spider.destination) < 36f)

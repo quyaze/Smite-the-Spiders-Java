@@ -3,12 +3,10 @@
 */
 
 
-package latech.stsj.gameplay.stores;
+package latech.stsj.gameplay.structure;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-
-import latech.stsj.templates.Entity;
 
 
 /**
@@ -18,7 +16,6 @@ public class Spider
 {
     //  Fields
     public Vector2 destination = Vector2.Zero.cpy();
-    public Entity hitSpell;
     
     
     /**

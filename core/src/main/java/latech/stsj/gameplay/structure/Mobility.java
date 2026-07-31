@@ -3,7 +3,7 @@
 */
 
 
-package latech.stsj.gameplay.stores;
+package latech.stsj.gameplay.structure;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

@@ -8,8 +8,8 @@ package latech.stsj.gameplay.systems;
 import com.badlogic.gdx.math.MathUtils;
 
 import latech.stsj.gameplay.GameplayWorld;
-import latech.stsj.gameplay.stores.Mobility;
-import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.gameplay.structure.Mobility;
+import latech.stsj.gameplay.structure.TextureDrawable;
 import latech.stsj.templates.Entity;
 import latech.stsj.templates.System;
 

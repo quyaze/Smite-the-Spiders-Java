@@ -61,7 +61,7 @@ public class GameplayScreen extends StarterScreen
     //  Pause
     @Override public void pause()
     {
-        world.gamePaused = true;
+        world.setGamePaused(true);
     }
 
 

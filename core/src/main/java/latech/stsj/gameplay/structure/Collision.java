@@ -3,7 +3,7 @@
 */
 
 
-package latech.stsj.gameplay.stores;
+package latech.stsj.gameplay.structure;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -13,14 +13,17 @@ import latech.stsj.templates.Entity;
 
 /**
  * Class providing collision for gameplay objects and characters.
+ * <p>
+ * Collision is based on an associated TextureDrawable.
  */
 public class Collision
 {
     //  Fields
-    public Rectangle collision;
-    public boolean isDynamicSize;
-    public Array<Entity> overlappingEntities;
+    public Rectangle rectangle;
+    public boolean isConstantSize;
+    public Array<Entity> collidingEntities;
     public boolean active;
+    public boolean screenCullable;
     
     
     /*  Collision box is based on an associated drawable.
@@ -28,16 +31,16 @@ public class Collision
    
     
     //  Constructor
-    public Collision(TextureDrawable drawable, boolean dynamicSize)
+    public Collision(TextureDrawable drawable, boolean isConstantSize)
     {
-        collision = new Rectangle(
+        rectangle = new Rectangle(
             drawable.position.x,
             drawable.position.y,
             drawable.getTrueWidth(),
             drawable.getTrueHeight()
         );
-        isDynamicSize = dynamicSize;
-        overlappingEntities = new Array<>(false, 64);
+        this.isConstantSize = isConstantSize;
+        collidingEntities = new Array<>(false, 64);
         active = true;
     }
     
@@ -48,13 +51,11 @@ public class Collision
      */
     public void update(TextureDrawable drawable)
     {
-        collision.setPosition(drawable.position);
-        if (isDynamicSize)
-        {
-            collision.setSize(
-                drawable.getTrueWidth(),
-                drawable.getTrueHeight()
-            );
-        }
+        rectangle.setPosition(drawable.position);
+        if (isConstantSize) return;
+        rectangle.setSize(
+            drawable.getTrueWidth(),
+            drawable.getTrueHeight()
+        );
     }
 }

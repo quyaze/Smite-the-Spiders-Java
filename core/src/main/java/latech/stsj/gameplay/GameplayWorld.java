@@ -18,11 +18,11 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import latech.stsj.Main;
 import latech.stsj.enums.GameplayPhase;
-import latech.stsj.gameplay.stores.Collision;
-import latech.stsj.gameplay.stores.Mobility;
-import latech.stsj.gameplay.stores.Player;
-import latech.stsj.gameplay.stores.Spider;
-import latech.stsj.gameplay.stores.TextureDrawable;
+import latech.stsj.gameplay.structure.Collision;
+import latech.stsj.gameplay.structure.Mobility;
+import latech.stsj.gameplay.structure.Player;
+import latech.stsj.gameplay.structure.Spider;
+import latech.stsj.gameplay.structure.TextureDrawable;
 import latech.stsj.gameplay.systems.AvatarSystem;
 import latech.stsj.gameplay.systems.CollisionSystem;
 import latech.stsj.gameplay.systems.PlayerSystem;
@@ -41,8 +41,8 @@ final public class GameplayWorld extends World
 {
     //  Fields
     private Main main;
-    public GameplayState state;
-    public GameplayPhase phase;
+    private GameplayState state;
+    private GameplayPhase phase;
     
     public Stores<TextureDrawable> textureDrawableStore;
     public Stores<Mobility> mobilityStore;
@@ -58,9 +58,10 @@ final public class GameplayWorld extends World
     
     private Array<Entity> entityDebris;
     private System iteratingSystem;
-    public boolean gamePaused;
+    private boolean gamePaused;
     
     private Task collisionSolveTask;
+    private float collisionSolveTaskPaused;
     final static private float collisionSolveInterval = 1/30f;
     
     final static private char flagPlayer = 1;       //      1 = 1 << 0
@@ -68,8 +69,7 @@ final public class GameplayWorld extends World
     final static private char flagAvatar = 4;       //    100 = 1 << 2
     final static private char flagSpider = 8;       //   1000 = 1 << 3
     final static private char flagTexture = 16;     //  10000 = 1 << 4
-    /*  << is binary bitshift
-    */
+    /*  << is binary bitshift left  */
     
     
     //  Constructor
@@ -99,7 +99,7 @@ final public class GameplayWorld extends World
         {
             public void run()
             {
-                if (!gamePaused) collisionSystem.solve();
+                collisionSystem.solve();
             }
         };
     }
@@ -122,7 +122,7 @@ final public class GameplayWorld extends World
     */
     public void remover()
     {
-        collisionSystem.remover();
+        collisionSystem.clean();
         collisionSolveTask.cancel();
         entities.clear();
         entityDebris.clear();
@@ -220,6 +220,80 @@ final public class GameplayWorld extends World
     }
     
     
+    /*
+    
+        Utility
+    
+    */
+    
+        
+    /**
+     * A system requests that an entity should be removed.
+     * <p>
+     * Entity removal is deferred.
+     * @param targetEntities
+     */
+    public void removeEntities(Entity... targetEntities)
+    {
+        for (int i = 0; i < targetEntities.length; i++)
+        {
+            Entity debris = targetEntities[i];
+            debris.debris = true;
+            entityDebris.add(debris);
+        }
+    }
+    
+    
+    /**
+     * A kind of bitmask flag detector.
+     * @param system Entity's system
+     * @param flag of the target system. Should be a power of 2
+     * @return If the passed entity can be put through the system
+     * based on its system flags.
+     */
+    private boolean isRegistered(int system, char flag)
+    {
+        return (system & flag) != 0b0;
+    }
+    
+    
+    /**
+     * @param paused Set paused or unpaused
+     */
+    public void setGamePaused(boolean paused)
+    {
+        gamePaused = paused;
+        
+        /*  When paused, skip collision solving and cache the remaining time
+            before solving. Continue solving when unpaused after this cached
+            time. Very unnoticeable but makes it seem as though the solver
+            freezes and unfreezes.
+        */
+        if (paused)
+        {
+            collisionSolveTaskPaused = collisionSolveTask.getExecuteTimeMillis() * 0.001f;
+            collisionSolveTask.cancel();
+        }
+        else main.getTimer().scheduleTask(collisionSolveTask, collisionSolveTaskPaused, collisionSolveInterval, -1);
+    }
+    
+    
+    /**
+     * Toggle game paused/unpaused.
+    */
+    public void toggleGamePaused()
+    {
+        setGamePaused(!gamePaused);
+    }
+    
+    
+    /*
+    
+        Gameplay
+    
+    */
+    
+    
     //  Spawn Background
     private void spawnBackground()
     {
@@ -292,7 +366,7 @@ final public class GameplayWorld extends World
         //  Collision
         collision = new Collision(
             drawable,
-            false
+            true
         );
         
         //  Finalize
@@ -307,8 +381,11 @@ final public class GameplayWorld extends World
     //  Spawn Spiders
     private void spawnSpiders()
     {
-        int no = MathUtils.random(1, 3);
-        for (int i = 0; i < no; i++)
+        for (
+            int i = 0, n = MathUtils.random(1, 3);
+            i < n;
+            i++
+        )
         {
             //  Initialize
             Entity entity;
@@ -353,7 +430,7 @@ final public class GameplayWorld extends World
             //  Collision
             collision = new Collision(
                 drawable,
-                false
+                true
             );
             
             //  Spider
@@ -367,44 +444,6 @@ final public class GameplayWorld extends World
             collisionStore.add(id, collision);
             spiderStore.add(id, spider);
         }
-    }
-    
-    
-    //  TODO: javadoc
-    public void onPlayerHit(Entity player)
-    {
-        if (state.lives-- < 1)
-        {
-            main.getTimer().scheduleTask(
-                new Task()
-                {
-                    @Override public void run()
-                    {
-                        main.goToMainMenuScreen();
-                    }
-                },
-                1f
-            );
-            removeEntities(player, playerStore.get(player.getId()).hitWeb);
-        }
-    }
-    
-    
-    //  TODO: javadoc
-    public void onSpiderHit(Entity spider)
-    {
-        main.getTimer().scheduleTask(
-            new Task()
-            {
-                @Override public void run()
-                {
-                    removeEntities(spider);
-                }
-            },
-            1f
-        );
-        removeEntities(spiderStore.get(spider.getId()).hitSpell);
-        state.points += GameplayState.POINTS_HIT_SPIDER;
     }
     
     
@@ -447,8 +486,9 @@ final public class GameplayWorld extends World
         //  Collision
         collision = new Collision(
             drawable,
-            false
+            true
         );
+        collision.screenCullable = true;
         
         //  Mobility
         mobility = new Mobility();
@@ -460,6 +500,43 @@ final public class GameplayWorld extends World
         textureDrawableStore.add(id, drawable);
         mobilityStore.add(id, mobility);
         collisionStore.add(id, collision);
+    }
+    
+    
+    //  TODO: javadoc
+    public void onPlayerHit(Entity player)
+    {
+        if (state.lives-- < 1)
+        {
+            main.getTimer().scheduleTask(
+                new Task()
+                {
+                    @Override public void run()
+                    {
+                        main.goToMainMenuScreen();
+                    }
+                },
+                1f
+            );
+            removeEntities(player);
+        }
+    }
+    
+    
+    //  TODO: javadoc
+    public void onSpiderHit(Entity spider)
+    {
+        main.getTimer().scheduleTask(
+            new Task()
+            {
+                @Override public void run()
+                {
+                    removeEntities(spider);
+                }
+            },
+            1f
+        );
+        state.points += GameplayState.POINTS_HIT_SPIDER;
     }
     
     
@@ -479,35 +556,5 @@ final public class GameplayWorld extends World
             1f
         );
         removeEntities(player);
-    }
-    
-    
-    /**
-     * A kind of bitmask flag detector.
-     * @param system Entity's system
-     * @param flag of the target system. Should be a power of 2
-     * @return If the passed entity can be put through the system
-     * based on its system flags.
-     */
-    private boolean isRegistered(int system, char flag)
-    {
-        return (system & flag) != 0b0;
-    }
-    
-    
-    /**
-     * A system requests that an entity should be removed.
-     * <p>
-     * Entity removal is deferred.
-     * @param targetEntities
-     */
-    public void removeEntities(Entity... targetEntities)
-    {
-        for (int i = 0; i < targetEntities.length; i++)
-        {
-            Entity debris = targetEntities[i];
-            debris.debris = true;
-            entityDebris.add(debris);
-        }
     }
 }

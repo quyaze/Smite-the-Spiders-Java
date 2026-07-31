@@ -3,11 +3,9 @@
 */
 
 
-package latech.stsj.gameplay.stores;
+package latech.stsj.gameplay.structure;
 
 import com.badlogic.gdx.math.Vector2;
-
-import latech.stsj.templates.Entity;
 
 
 /**
@@ -18,5 +16,4 @@ public class Player
     //  Fields
     public Vector2 movementInput2D = Vector2.Zero.cpy();
     public float maxSpeed = 600f;
-    public Entity hitWeb;
 }
