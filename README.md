@@ -42,13 +42,13 @@ See [Gradle tasks](#gradle) down below for guidance.
             <td>Windows</td>
             <td><code>.exe</code></td>
             <td>✅</td>
-            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/</code></td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders (Java)/</code></td>
         </tr>
         <tr>
             <td>Linux</td>
             <td><code>file</code></td>
             <td>✅ WSL</td>
-            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/bin/</code></td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders (Java)/bin/</code></td>
         </tr>
         <tr>
             <td>macOS</td>

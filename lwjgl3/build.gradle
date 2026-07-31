@@ -138,10 +138,8 @@ tasks.register("jarWin") {
 }
 
 /*
-  Installs an application-image.
-  Ensure your JAVA_HOME path variable points to JDK 26.
-  
-  ./gradlew clean build jpackage
+  Setup jpackage
+  Ensure your JAVA_HOME env. path variable points to JDK 26.
 */
 runtime {
   options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
@@ -164,16 +162,30 @@ runtime {
   }
 }
 
-// Equivalent to the jar task; here for compatibility with gdx-setup.
-tasks.register('dist') {
+tasks.register('buildOS') {
   if (os.contains('windows')) {
     dependsOn 'jarWin'
+    doLast {
+      println 'Built .jar for Windows.'
+    }
   }
   else if (os.contains('mac')) {
     dependsOn 'jarMac'
+    doLast {
+      println 'Built .jar for macOS.'
+    }
   }
   else if (os.contains('linux')) {
     dependsOn 'jarLinux'
+    doLast {
+      println 'Built .jar for Linux.'
+    }
+  }
+  else {
+    dependsOn 'jar'
+    doLast {
+      println 'Unrecognized OS. Built a cross-platform .jar.'
+    }
   }
 }
 
