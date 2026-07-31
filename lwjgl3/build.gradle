@@ -162,33 +162,6 @@ runtime {
   }
 }
 
-tasks.register('buildOS') {
-  if (os.contains('windows')) {
-    dependsOn 'jarWin'
-    doLast {
-      println 'Built .jar for Windows.'
-    }
-  }
-  else if (os.contains('mac')) {
-    dependsOn 'jarMac'
-    doLast {
-      println 'Built .jar for macOS.'
-    }
-  }
-  else if (os.contains('linux')) {
-    dependsOn 'jarLinux'
-    doLast {
-      println 'Built .jar for Linux.'
-    }
-  }
-  else {
-    dependsOn 'jar'
-    doLast {
-      println 'Unrecognized OS. Built a cross-platform .jar.'
-    }
-  }
-}
-
 distributions {
   main {
     contents {

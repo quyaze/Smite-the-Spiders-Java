@@ -94,7 +94,7 @@ public class CollisionSystem implements System
                 Collision collisionB = world.collisionStore.get(entityB.getId());
                 
                 if (!collisionA.rectangle.overlaps(collisionB.rectangle)) continue;
-                java.lang.System.out.println("COLLIDING");
+                
                 collisionA.collidingEntities.add(entityB);
                 collisionB.collidingEntities.add(entityA);
             }
