@@ -6,52 +6,60 @@ Built with [JDK 26](https://www.oracle.com/java/technologies/downloads/#java26)
 
 ## Controls
 
-<div style="display: flex; justify-content: space-between;">
-    <div>
-        Move<br><code>[WASD] / [Arrows] / [Numpad Arrows]</code>
-    </div>
-    <div>
-        Fire a spell<br><code>[SPACE]</code>
-    </div>
-    <div>
-        Spawn spiders<br><code>[Q]</code>
-    </div>
-    <div>
-        Quit to main menu<br><code>[ESCAPE], [SPACE]</code>
-    </div>
-    <div>
-        Quit game (main menu)<br><code>[ESCAPE]</code>
-    </div>
+<div align="center">
+    <span>
+        <span>
+            Move<br><code>[WASD] / [Arrows] / [Numpad Arrows]</code>
+        </span>
+        <span>
+            Fire a spell<br><code>[SPACE]</code>
+        </span>
+        <span>
+            Spawn spiders<br><code>[Q]</code>
+        </span>
+        <span>
+            Quit to main menu<br><code>[ESCAPE], [SPACE]</code>
+        </span>
+        <span>
+            Quit game (main menu)<br><code>[ESCAPE]</code>
+        </span>
+    </span>
 </div>
 
 ## Application Build
 
-To build a standalone application, run `./gradlew clean build jpackage`. This generates the build in `/lwjgl3/build/jpackage/Smite the Spiders/`.
-<br>
-See [Gradle tasks](#tasks) below for guidance.
+To build a standalone application, run `./gradlew clean build jpackage`. This will generate the application image in the designated directory.
 
-<table>
-    <tr>
-        <th>Platform</th>
-        <th>File</th>
-        <th>Buildable</th>
-    </tr>
-    <tr>
-        <td>Windows</td>
-        <td><code>.exe</code></td>
-        <td>✅</td>
-    </tr>
-    <tr>
-        <td>Linux</td>
-        <td><code>file</code></td>
-        <td>✅ WSL</td>
-    </tr>
-    <tr>
-        <td>MacOSX</td>
-        <td><code>.app</code></td>
-        <td>❌ unknown</td>
-    </tr>
-</table>
+See [Gradle tasks](#gradle) down below for guidance.
+
+<div align="center">
+    <table>
+        <tr>
+            <th>Platform</th>
+            <th>File</th>
+            <th>Buildable</th>
+            <th>Output Directory</th>
+        </tr>
+        <tr>
+            <td>Windows</td>
+            <td><code>.exe</code></td>
+            <td>✅</td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/</code></td>
+        </tr>
+        <tr>
+            <td>Linux</td>
+            <td><code>file</code></td>
+            <td>✅ WSL</td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/bin/</code></td>
+        </tr>
+        <tr>
+            <td>macOS</td>
+            <td><code>.app</code></td>
+            <td>❌ unknown</td>
+            <td>❌ unknown</td>
+        </tr>
+    </table>
+</div>
 
 ## About Project (<i>Generated</i>)
 
@@ -64,7 +72,7 @@ This project was generated with a template including simple application launcher
 - `core`: Main module with the application logic shared by all platforms.
 - `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
 
-<h2 id='tasks'>Gradle</h2>
+## Gradle
 
 This project uses [Gradle](https://gradle.org/) to manage dependencies.
 The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
