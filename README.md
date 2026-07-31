@@ -2,27 +2,62 @@
 
 A remake of "Shoot the Spiders" in CSC 132 (Louisiana Tech University). Originally written in Python using Pygame, it is now developed in Java using LibGDX.
 
-Built with [JDK 26](https://www.oracle.com/java/technologies/downloads/#java26)
+Built with [JDK 26.0](https://www.oracle.com/java/technologies/downloads/#java26)
 
 ## Controls
 
-<div style="display: flex; justify-content: space-between;">
-    <div>
+<div align="center">
+    <p>
         Move<br><code>[WASD] / [Arrows] / [Numpad Arrows]</code>
-    </div>
-    <div>
+    </p>
+    <p>
         Fire a spell<br><code>[SPACE]</code>
-    </div>
-    <div>
+    </p>
+    <p>
         Spawn spiders<br><code>[Q]</code>
-    </div>
-    <div>
+    </p>
+    <p>
         Quit to main menu<br><code>[ESCAPE], [SPACE]</code>
-    </div>
-    <div>
+    </p>
+    <p>
         Quit game (main menu)<br><code>[ESCAPE]</code>
-    </div>
+    </p>
 </div>
+
+## Application Build
+
+To build a standalone application, run `./gradlew clean build jpackage`. This will generate the application image in the designated directory.
+
+See [Gradle tasks](#gradle) down below for guidance.
+
+<table align="center">
+    <tbody>
+        <tr>
+            <th>Platform</th>
+            <th>File</th>
+            <th>Buildable</th>
+            <th>Output Directory</th>
+        </tr>
+        <tr>
+            <td>Windows</td>
+            <td><code>.exe</code></td>
+            <td>✅</td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/</code></td>
+        </tr>
+        <tr>
+            <td>Linux</td>
+            <td><code>file</code></td>
+            <td>✅ WSL</td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/bin/</code></td>
+        </tr>
+        <tr>
+            <td>macOS</td>
+            <td><code>.app</code></td>
+            <td>❌ unknown</td>
+            <td>❌ unknown</td>
+        </tr>
+    </tbody>
+</table>
 
 ## About Project (<i>Generated</i>)
 
