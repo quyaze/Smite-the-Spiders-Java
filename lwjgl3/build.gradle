@@ -139,21 +139,24 @@ tasks.register("jarWin") {
 
 //  Configure jpackage. With `System.getenv('JAVA_HOME')`, ensure your environment variable points to JDK 26.0.1
 runtime {
-  options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+  def icon = 'icons/logo.'
+  switch (os) {
+    case ~/.*windows.*/: icon += 'ico'; break;
+    case ~/.*mac.*/: icon += 'icns'; break;
+    case ~/.*linux.*/: icon += 'png'; break;
+    default: icon += 'png'; break;
+  }
+  
+  options = ['--strip-debug', '--compress=zip-6', '--no-header-files', '--no-man-pages']
   modules = ["java.base", "java.management", "java.desktop", "jdk.unsupported"]
   javaHome = System.getenv('JAVA_HOME')
   jpackage {
-    imageName = appName
+    imageName = appNameSimple
     appVersion = projectVersion
-    jpackageHome = System.getenv('JAVA_HOME')
-    imageOptions = ['--icon', file('icons/logo.ico').absolutePath]
+    jpackageHome = javaHome
+    imageOptions = ['--icon', file(icon).absolutePath]
     skipInstaller = true
   }
-}
-
-// Equivalent to the jar task; here for compatibility with gdx-setup.
-tasks.register('dist') {
-  dependsOn 'jar'
 }
 
 distributions {

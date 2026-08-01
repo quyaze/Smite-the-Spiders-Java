@@ -26,7 +26,7 @@ Built with [JDK 26.0](https://www.oracle.com/java/technologies/downloads/#java26
 
 ## Application Build
 
-To build a standalone application, run `./gradlew clean build jpackage`. This will generate the application image in the designated directory.
+To build a standalone application, run `./gradlew clean build jpackage`. This will generate the application image in the designated directory with the name "Smite the Spiders".
 
 See [Gradle tasks](#gradle) down below for guidance.
 
@@ -35,26 +35,22 @@ See [Gradle tasks](#gradle) down below for guidance.
         <tr>
             <th>Platform</th>
             <th>File</th>
-            <th>Buildable</th>
             <th>Output Directory</th>
         </tr>
         <tr>
             <td>Windows</td>
             <td><code>.exe</code></td>
-            <td>✅</td>
-            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/</code></td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders (Java)/</code></td>
         </tr>
         <tr>
             <td>Linux</td>
             <td><code>file</code></td>
-            <td>✅ WSL</td>
-            <td><code>/lwjgl3/build/jpackage/Smite the Spiders/bin/</code></td>
+            <td><code>/lwjgl3/build/jpackage/Smite the Spiders (Java)/bin/</code></td>
         </tr>
         <tr>
             <td>macOS</td>
             <td><code>.app</code></td>
-            <td>❌ unknown</td>
-            <td>❌ unknown</td>
+            <td><code>/lwjgl3/build/jpackage/</code></td>
         </tr>
     </tbody>
 </table>
