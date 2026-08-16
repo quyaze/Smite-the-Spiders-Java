@@ -4,8 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import quyaze.stsj.core.GameText;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
 
@@ -17,7 +19,9 @@ public class GameMaster extends Game
     //  Fields
     private SpriteBatch batch;
     private ScreenViewport viewport;
+    private TextureAtlas atlas;
     private Music music;
+    private GameText gameText;
     
     private MainMenuScreen mainMenuScreen;
     private GameplayScreen gameplayScreen;
@@ -29,7 +33,12 @@ public class GameMaster extends Game
     {
         batch = new SpriteBatch();
         viewport = new ScreenViewport();
+        atlas = new TextureAtlas(
+            Gdx.files.internal("packed/packed.atlas"),
+            Gdx.files.internal("images")
+        );
         music = Gdx.audio.newMusic(Gdx.files.internal("audio/Lord of the Land.mp3"));
+        gameText = new GameText();
         
         mainMenuScreen = new MainMenuScreen(this);
         gameplayScreen = new GameplayScreen(this);
@@ -46,6 +55,7 @@ public class GameMaster extends Game
     {
         super.dispose();
         batch.dispose();
+        atlas.dispose();
         music.dispose();
         mainMenuScreen.dispose();
         gameplayScreen.dispose();
@@ -67,6 +77,33 @@ public class GameMaster extends Game
     public ScreenViewport getViewport()
     {
         return viewport;
+    }
+    
+    
+    /**
+     * @return Global texture atlas
+     */
+    public TextureAtlas getAtlas()
+    {
+        return atlas;
+    }
+    
+    
+    /**
+     * @return Globally played music
+     */
+    public Music getMusic()
+    {
+        return music;
+    }
+    
+    
+    /**
+     * @return Global GameText
+     */
+    public GameText getGameText()
+    {
+        return gameText;
     }
     
     

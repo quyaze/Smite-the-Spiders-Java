@@ -1,6 +1,7 @@
 package quyaze.stsj.screens;
 
 import quyaze.stsj.GameMaster;
+import quyaze.stsj.core.StarterScreen;
 
 /**
  * Screen for the main menu.

@@ -1,4 +1,4 @@
-package quyaze.stsj.screens;
+package quyaze.stsj.core;
 
 import com.badlogic.gdx.Screen;
 
