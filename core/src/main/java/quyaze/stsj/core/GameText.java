@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Disposable;
 /**
  * Utility class for game text.
  */
-final public class GameText implements Disposable
+public class GameText implements Disposable
 {
     //  Fields
     private FreeTypeFontGenerator regularGenerator;
@@ -21,7 +21,7 @@ final public class GameText implements Disposable
     //  Constructor
     public GameText()
     {
-        regularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/generic.otf"));
+        regularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/regular.otf"));
         regularParams = new FreeTypeFontParameter();
         
         regularParams.size = 36;

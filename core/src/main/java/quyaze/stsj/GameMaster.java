@@ -1,5 +1,7 @@
 package quyaze.stsj;
 
+import java.io.File;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -34,10 +36,10 @@ public class GameMaster extends Game
         batch = new SpriteBatch();
         viewport = new ScreenViewport();
         atlas = new TextureAtlas(
-            Gdx.files.internal("packed/packed.atlas"),
-            Gdx.files.internal("images")
+            Gdx.files.internal("packed" + File.separator + "packed.atlas"),
+            Gdx.files.internal("packed")
         );
-        music = Gdx.audio.newMusic(Gdx.files.internal("audio/Lord of the Land.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("audio" + File.separator + "Lord of the Land.mp3"));
         gameText = new GameText();
         
         mainMenuScreen = new MainMenuScreen(this);

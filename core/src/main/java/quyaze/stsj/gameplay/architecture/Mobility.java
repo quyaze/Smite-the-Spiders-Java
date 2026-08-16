@@ -3,9 +3,7 @@ package quyaze.stsj.gameplay.architecture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-/**
- * Provide movement to game {@link Avatar}s.
- */
+/** Provide movement to game {@link Avatar}s. */
 public class Mobility
 {
     //  Fields
@@ -28,17 +26,34 @@ public class Mobility
         Velocity is calculated from angles and scaled by speed. When
         used with Avatar.position, they will move in a linear speed in
         any direction.
+        
+        Velocity and speed coexist.
     */
     
     
     //  Constructors
     
     /** Set speed and angle (degrees). */
-    public Mobility()
+    public Mobility(float angle, float speed)
     {
         velocity = Vector2.Zero.cpy();
-        angle = 0f;
-        speed = 100f;
+        this.angle = angle;
+        this.speed = speed;
+        applyDirection2D();
+    }
+    
+    
+    /** Set angle with a default speed of 100. */
+    public Mobility(float angle)
+    {
+        this(angle, 100f);
+    }
+    
+    
+    /** Go right with a default speed of 100. */
+    public Mobility()
+    {
+        this(0f, 100f);
     }
     
     
@@ -93,14 +108,14 @@ public class Mobility
     /**
      * Set angular direction with the given x- and y-coordinates.
      */
-    public void setDirection2D(float relativeX, float relativeY)
+    public void setDirection(float relativeX, float relativeY)
     {
         angle = MathUtils.atan2(relativeY, relativeX);
         applyDirection2D();
     }
     
     
-    //  Apply direction
+    /**  Apply direction from setDirection(...) */
     private void applyDirection2D()
     {
         velocity.set(MathUtils.cos(angle), MathUtils.sin(angle)).scl(speed);

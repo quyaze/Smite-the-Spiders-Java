@@ -10,12 +10,14 @@ public class EWDatastore<T>
 {
     //  Fields
     final private IntMap<T> data;
+    public int defaultCapacity;
     
     
     //  Constructor
     public EWDatastore(int initialCapacity)
     {
         data = new IntMap<T>(initialCapacity);
+        defaultCapacity = initialCapacity;
     }
     
     
@@ -65,5 +67,14 @@ public class EWDatastore<T>
     public void entityChanged(int oldEntity, int newEntity)
     {
         data.put(newEntity, data.remove(oldEntity));
+    }
+    
+    
+    /**
+     * Clear all data.
+     */
+    public void clear()
+    {
+        data.clear(defaultCapacity);
     }
 }
