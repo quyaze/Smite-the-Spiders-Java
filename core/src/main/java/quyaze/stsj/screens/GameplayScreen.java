@@ -2,7 +2,6 @@ package quyaze.stsj.screens;
 
 import quyaze.stsj.GameMaster;
 import quyaze.stsj.core.StarterScreen;
-import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayEntityWorld;
 
 /**
@@ -12,15 +11,13 @@ public class GameplayScreen extends StarterScreen
 {
     //  Fields
     final private GameplayEntityWorld world;
-    final private GameplayCore core;
     
     
     //  Constructor
     public GameplayScreen(GameMaster gameMaster)
     {
         super(gameMaster);
-        core = new GameplayCore(gameMaster, world);
-        world = new GameplayEntityWorld(this, gameMaster, core);
+        world = new GameplayEntityWorld(this, gameMaster);
     }
     
     
@@ -44,7 +41,7 @@ public class GameplayScreen extends StarterScreen
     @Override
     public void pause()
     {
-        world.setGamePaused(true);
+        world.pause();
     }
     
     

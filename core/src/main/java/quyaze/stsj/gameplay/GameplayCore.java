@@ -15,7 +15,7 @@ import quyaze.stsj.gameplay.architecture.Player;
 import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.gameplay.architecture.Spider;
 
-public class GameplayCore
+public abstract class GameplayCore
 {
     //  Fields
     final private GameMaster gameMaster;
@@ -60,14 +60,12 @@ public class GameplayCore
     }
     
     
-    /** On paused. */
-    private void onPaused()
-    {}
+    /** On paused. It is not {@code Screen.pause()}. */
+    public abstract void onPaused();
     
     
-    /** On unpaused. */
-    private void onUnpaused()
-    {}
+    /** On unpaused. It is not {@code Screen.resume}. */
+    public abstract void onUnpaused();
     
     
     /** Create the background. */
@@ -90,7 +88,7 @@ public class GameplayCore
         );
         
         world.addEntity(
-            GameplayEntityWorld.flagAvatar,
+            GameplayEntityWorld.SYSFLAG_AVATAR,
             new DatastoreForEW[] {
                 world.avatarDatastore
             },
@@ -112,7 +110,13 @@ public class GameplayCore
         final int height = Gdx.graphics.getHeight();
         final Vector2 center = new Vector2(width * 0.5f, height * 0.5f);
         
-        player = new Player();
+        player = new Player()
+        {
+            @Override public void onCastFireball()
+            {
+                spawnFireball();
+            }
+        };
         
         avatar = new Avatar(
             gameMaster.getAtlas().findRegion("wizard"),
@@ -128,7 +132,7 @@ public class GameplayCore
         };
         
         world.addEntity(
-            (char) (GameplayEntityWorld.flagPlayer | GameplayEntityWorld.flagAvatar | GameplayEntityWorld.flagCollision | GameplayEntityWorld.flagTexture),
+            (char) (GameplayEntityWorld.SYSFLAG_PLAYER | GameplayEntityWorld.SYSFLAG_AVATAR | GameplayEntityWorld.SYSFLAG_COLLISION | GameplayEntityWorld.SYSFLAG_DRAW),
             new DatastoreForEW[] {
                 world.playerDatastore,
                 world.avatarDatastore,
@@ -155,11 +159,26 @@ public class GameplayCore
             Collision collision;
             Spider spider;
             
-            float posX;
+            float posX = Gdx.graphics.getWidth();
             
             avatar = new Avatar(
                 gameMaster.getAtlas().findRegion("spider"),
                 4f
+            );
+            
+            switch (i)
+            {
+                case 0: posX *= 0.5f; break;
+                
+                case 1: posX *= 0.25f; break;
+                
+                case 2: posX *= 0.75f; break;
+            }
+            posX -= avatar.getTrueWidth() * 0.5f;
+            avatar.position.set(
+                posX,
+                //  Spider should not spawn-clip off the screen
+                Gdx.graphics.getHeight() * 0.8f
             );
             
             mobility = new Mobility(Spider.randomSpeed());
@@ -175,7 +194,7 @@ public class GameplayCore
             spider = new Spider();
             
             world.addEntity(
-                (char) (GameplayEntityWorld.flagAvatar | GameplayEntityWorld.flagCollision | GameplayEntityWorld.flagSpider | GameplayEntityWorld.flagTexture),
+                (char) (GameplayEntityWorld.SYSFLAG_AVATAR | GameplayEntityWorld.SYSFLAG_COLLISION | GameplayEntityWorld.SYSFLAG_SPIDER | GameplayEntityWorld.SYSFLAG_DRAW),
                 new DatastoreForEW[] {
                     world.avatarDatastore,
                     world.mobilityDatastore,
@@ -215,7 +234,7 @@ public class GameplayCore
         projectile = new Projectile("spell");
         
         world.addEntity(
-            (char) (GameplayEntityWorld.flagAvatar | GameplayEntityWorld.flagCollision | GameplayEntityWorld.flagTexture),
+            (char) (GameplayEntityWorld.SYSFLAG_AVATAR | GameplayEntityWorld.SYSFLAG_COLLISION | GameplayEntityWorld.SYSFLAG_DRAW),
             new DatastoreForEW[] {
                 world.avatarDatastore,
                 world.mobilityDatastore,

@@ -22,6 +22,9 @@ import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.gameplay.architecture.Spider;
 import quyaze.stsj.gameplay.systems.AvatarSystem;
 import quyaze.stsj.gameplay.systems.CollisionSystem;
+import quyaze.stsj.gameplay.systems.DrawSystem;
+import quyaze.stsj.gameplay.systems.PlayerSystem;
+import quyaze.stsj.gameplay.systems.SpiderSystem;
 import quyaze.stsj.screens.GameplayScreen;
 
 public class GameplayEntityWorld extends EntityWorld
@@ -42,48 +45,66 @@ public class GameplayEntityWorld extends EntityWorld
     final public DatastoreForEW<Spider> spiderDatastore;
     final public DatastoreForEW<Projectile> projectileDatastore;
     
+    final private PlayerSystem playerSystem;
     final private AvatarSystem avatarSystem;
     final private CollisionSystem collisionSystem;
+    final private SpiderSystem spiderSystem;
+    final private DrawSystem drawSystem;
     
-    final static public char flagPlayer = 1;        //      1 = 1 << 0
-    final static public char flagAvatar = 2;        //     10 = 1 << 1
-    final static public char flagCollision = 4;     //    100 = 1 << 2
-    final static public char flagSpider = 8;        //   1000 = 1 << 3
-    final static public char flagTexture = 16;      //  10000 = 1 << 4
+    final static public char SYSFLAG_PLAYER = 1;     //      1 = 1 << 0
+    final static public char SYSFLAG_AVATAR = 2;     //     10 = 1 << 1
+    final static public char SYSFLAG_COLLISION = 4;  //    100 = 1 << 2
+    final static public char SYSFLAG_SPIDER = 8;     //   1000 = 1 << 3
+    final static public char SYSFLAG_DRAW = 16;      //  10000 = 1 << 4
     
-    final static private int capacity = 64;
-    final static private float solveInterval = 1 / 30f;
+    final static private int CAPACITY = 64;
+    final static private float SOLVE_INTERVAL = 1 / 30f;
     private SystemForEW iteratingSystem;
     private Task collisionSolveTask;
     private float timeToNextSolve;
     
     
     //  Constructor
-    public GameplayEntityWorld(GameplayScreen owner, GameMaster gameMaster, GameplayCore core)
+    public GameplayEntityWorld(GameplayScreen owner, GameMaster gameMaster)
     {
         super(owner);
         this.gameMaster = gameMaster;
-        this.core = core;
-        entityFlags = new CharArray(false, capacity);
-        entityDatastores = new Array<>(false, capacity);
-        entityDebris = new IntArray(false, capacity);
-        isEntityDebris = new IntSet(capacity);
+        this.core = new GameplayCore(gameMaster, this)
+        {
+            @Override public void onPaused()
+            {
+                setSolverEnabled(false);
+            }
+            
+            @Override public void onUnpaused()
+            {
+                setSolverEnabled(true);
+            }
+        };
         
-        playerDatastore = new DatastoreForEW<>(capacity);
-        avatarDatastore = new DatastoreForEW<>(capacity);
-        mobilityDatastore = new DatastoreForEW<>(capacity);
-        collisionDatastore = new DatastoreForEW<>(capacity);
-        spiderDatastore = new DatastoreForEW<>(capacity);
-        projectileDatastore = new DatastoreForEW<>(capacity);
+        entityFlags = new CharArray(false, CAPACITY);
+        entityDatastores = new Array<>(false, CAPACITY);
+        entityDebris = new IntArray(false, CAPACITY);
+        isEntityDebris = new IntSet(CAPACITY);
         
+        playerDatastore = new DatastoreForEW<>(CAPACITY);
+        avatarDatastore = new DatastoreForEW<>(CAPACITY);
+        mobilityDatastore = new DatastoreForEW<>(CAPACITY);
+        collisionDatastore = new DatastoreForEW<>(CAPACITY);
+        spiderDatastore = new DatastoreForEW<>(CAPACITY);
+        projectileDatastore = new DatastoreForEW<>(CAPACITY);
+        
+        playerSystem = new PlayerSystem(this);
         avatarSystem = new AvatarSystem(this);
-        collisionSystem = new CollisionSystem(this, capacity);
+        collisionSystem = new CollisionSystem(this, CAPACITY);
+        spiderSystem = new SpiderSystem(this);
+        drawSystem = new DrawSystem(this, gameMaster.getBatch());
         
         collisionSolveTask = new Task()
         {
             @Override public void run()
             {
-                collisionSystem.solve();
+                collisionSystem.getSolver().solve();
             }
         };
     }
@@ -119,27 +140,30 @@ public class GameplayEntityWorld extends EntityWorld
         if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.Q))
         {}
         
-        for (char flag = 1; flag <= flagTexture; flag <<= 1)
+        for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
-            if (paused && flag != flagTexture) continue;
+            if (paused && flag != SYSFLAG_DRAW) continue;
             
             switch (flag)
             {
-                case flagPlayer: break;
+                case SYSFLAG_PLAYER: iteratingSystem = playerSystem; break;
                 
-                case flagCollision: iteratingSystem = collisionSystem; break;
+                case SYSFLAG_COLLISION: iteratingSystem = collisionSystem; break;
                 
-                case flagAvatar: iteratingSystem = avatarSystem; break;
+                case SYSFLAG_AVATAR: iteratingSystem = avatarSystem; break;
                 
-                case flagSpider: break;
+                case SYSFLAG_SPIDER: iteratingSystem = spiderSystem; break;
                 
-                case flagTexture:
+                case SYSFLAG_DRAW:
+                    iteratingSystem = drawSystem;
+                    
                     ScreenUtils.clear(Color.BLACK);
                     gameMaster.getViewport().apply();
                     gameMaster.getBatch().setProjectionMatrix(
                         gameMaster.getViewport().getCamera().combined
                     );
                     gameMaster.getBatch().begin();
+                    
                     break;
             }
             
@@ -149,7 +173,7 @@ public class GameplayEntityWorld extends EntityWorld
                 if ((entityFlags.get(entity) & flag) != 0) iteratingSystem.iterate(entity);
             }
             
-            if (flag == flagTexture) gameMaster.getBatch().end();
+            if (flag == SYSFLAG_DRAW) gameMaster.getBatch().end();
         }
         iteratingSystem = null;
         
@@ -200,12 +224,7 @@ public class GameplayEntityWorld extends EntityWorld
      */
     public void show()
     {
-        gameMaster.getTimer().scheduleTask(
-            collisionSolveTask,
-            0f,
-            solveInterval,
-            -1
-        );
+        setSolverEnabled(true);
         core.spawnBackground();
         core.spawnPlayer();
         core.spawnSpiders();
@@ -222,7 +241,7 @@ public class GameplayEntityWorld extends EntityWorld
         entities = 0;
         entityFlags.clear();
         entityDebris.clear();
-        isEntityDebris.clear(capacity);
+        isEntityDebris.clear(CAPACITY);
         entityDatastores.clear();
         playerDatastore.clear();
         avatarDatastore.clear();
@@ -232,5 +251,44 @@ public class GameplayEntityWorld extends EntityWorld
         projectileDatastore.clear();
         core.setPaused(false);
         collisionSolveTask.cancel();
+    }
+    
+    
+    /**
+     * On {@code GameplayScreen.pause()}
+     * <p></p>
+     * Executes pause functionality.
+     */
+    public void pause()
+    {
+        core.setPaused(true);
+    }
+    
+    
+    /** Enable to disable the solver. */
+    private void setSolverEnabled(boolean enabled)
+    {
+        /*  Some functionality below makes the solver appear to freeze when
+            the player is pausing during gameplay. When unpausing, the
+            solver resumes not with the full interval delay, but rather, the
+            time after when it was supposed to run next. A small detail
+            although it is highly unnoticeable since the solver waits for a
+            frame.
+        */
+       
+        if (enabled)
+        {
+            gameMaster.getTimer().scheduleTask(
+                collisionSolveTask,
+                timeToNextSolve,
+                SOLVE_INTERVAL,
+                -1
+            );
+        }
+        else
+        {
+            timeToNextSolve = collisionSolveTask.getExecuteTimeMillis() * 0.001f;
+            collisionSolveTask.cancel();
+        }
     }
 }

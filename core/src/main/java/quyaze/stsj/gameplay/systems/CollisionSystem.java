@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
 import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayEntityWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
 
@@ -28,9 +29,15 @@ final public class CollisionSystem implements SystemForEW
     public CollisionSystem(GameplayEntityWorld world, int initialCapacity)
     {
         this.world = world;
-        solver = new CollisionSolver();
         collidableEntities = new IntArray(false, initialCapacity);
         collidableEntityToIndex = new IntIntMap(initialCapacity);
+        solver = new CollisionSolver(world, collidableEntities)
+        {
+            @Override public void onCleanup()
+            {
+                collidableEntityToIndex.clear(defaultCapacity);
+            }
+        };
         defaultCapacity = initialCapacity;
     }
     
@@ -63,61 +70,8 @@ final public class CollisionSystem implements SystemForEW
     }
     
     
-    /** Call to solve collision. */
-    public void solve()
+    public CollisionSolver getSolver()
     {
-        solver.solve();
-    }
-    
-    
-    /** Call to clean the solver. */
-    public void clean()
-    {
-        solver.clean();
-    }
-    
-    
-    /** Helper class in charge of collision detection. */
-    final private class CollisionSolver
-    {
-        //  Fields
-        private Collision collisionA, collisionB;
-        private int entityA, entityB;
-        
-        
-        /** Solve collision. */
-        public void solve()
-        {
-            for (int i = 0; i < collidableEntities.size; i++)
-            {
-                entityA = collidableEntities.get(i);
-                collisionA = world.collisionDatastore.get(entityA);
-                
-                if (collisionA.skipSolving) continue;
-                for (int j = i + 1; j < collidableEntities.size; j++)
-                {
-                    entityB = collidableEntities.get(j);
-                    collisionB = world.collisionDatastore.get(entityB);
-                    
-                    if (collisionB.skipSolving) continue;
-                    if (collisionA.collisionBox.overlaps(collisionB.collisionBox))
-                    {
-                        collisionA.onCollided(entityB, collisionB);
-                        collisionB.onCollided(entityA, collisionA);
-                    }
-                }
-            }
-            clean();
-        }
-        
-        
-        /** Solver cleanup. */
-        public void clean()
-        {
-            entityA = 0; entityB = 0;
-            collisionA = null; collisionB = null;
-            collidableEntities.clear();
-            collidableEntityToIndex.clear(defaultCapacity);
-        }
+        return solver;
     }
 }

@@ -1,7 +1,6 @@
 package quyaze.stsj.gameplay.architecture;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.IntSet;
 
 /**
  * Provides basic collision capabilities to {@link Avatar}s
