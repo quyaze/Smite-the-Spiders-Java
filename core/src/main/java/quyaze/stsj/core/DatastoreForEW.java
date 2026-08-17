@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.IntMap;
  * Base class for {@link EntityWorld}. Contains data for associated
  * entities.
  */
-public class EWDatastore<T>
+public class DatastoreForEW<T>
 {
     //  Fields
     final private IntMap<T> data;
@@ -14,7 +14,7 @@ public class EWDatastore<T>
     
     
     //  Constructor
-    public EWDatastore(int initialCapacity)
+    public DatastoreForEW(int initialCapacity)
     {
         data = new IntMap<T>(initialCapacity);
         defaultCapacity = initialCapacity;

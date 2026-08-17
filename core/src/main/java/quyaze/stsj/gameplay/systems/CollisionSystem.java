@@ -3,18 +3,18 @@ package quyaze.stsj.gameplay.systems;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
-import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.gameplay.GameplayWorld;
+import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.gameplay.GameplayEntityWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
 
 /**
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
  */
-final public class CollisionSystem implements EWSystem
+final public class CollisionSystem implements SystemForEW
 {
     //  Fields
-    final private GameplayWorld world;
+    final private GameplayEntityWorld world;
     final private CollisionSolver solver;
     
     public int defaultCapacity;
@@ -25,7 +25,7 @@ final public class CollisionSystem implements EWSystem
     //  Constructor
     
     /** Start system with an initial capacity. */
-    public CollisionSystem(GameplayWorld world, int initialCapacity)
+    public CollisionSystem(GameplayEntityWorld world, int initialCapacity)
     {
         this.world = world;
         solver = new CollisionSolver();

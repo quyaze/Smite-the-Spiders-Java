@@ -2,7 +2,8 @@ package quyaze.stsj.screens;
 
 import quyaze.stsj.GameMaster;
 import quyaze.stsj.core.StarterScreen;
-import quyaze.stsj.gameplay.GameplayWorld;
+import quyaze.stsj.gameplay.GameplayCore;
+import quyaze.stsj.gameplay.GameplayEntityWorld;
 
 /**
  * Screen for the gameplay.
@@ -10,14 +11,16 @@ import quyaze.stsj.gameplay.GameplayWorld;
 public class GameplayScreen extends StarterScreen
 {
     //  Fields
-    final private GameplayWorld world;
+    final private GameplayEntityWorld world;
+    final private GameplayCore core;
     
     
     //  Constructor
     public GameplayScreen(GameMaster gameMaster)
     {
         super(gameMaster);
-        world = new GameplayWorld(this, gameMaster);
+        core = new GameplayCore(gameMaster, world);
+        world = new GameplayEntityWorld(this, gameMaster, core);
     }
     
     

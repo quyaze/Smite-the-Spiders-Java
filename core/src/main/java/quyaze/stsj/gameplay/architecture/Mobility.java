@@ -33,27 +33,46 @@ public class Mobility
     
     //  Constructors
     
-    /** Set speed and angle (degrees). */
-    public Mobility(float speed, float angle)
+    private Mobility()
     {
         velocity = Vector2.Zero.cpy();
-        this.angle = angle;
-        this.speed = speed;
-        applyDirection2D();
     }
     
     
-    /** Set speed going right. */
+    /** Set speed and go right. */
     public Mobility(float speed)
     {
-        this(0f, speed);
+        this();
+        this.speed = speed;
+        setDirection(Vector2.X.cpy());
     }
     
     
-    /** Go right with a default speed of 100. */
-    public Mobility()
+    /** Set speed and direction with a Vector2. */
+    public Mobility(float speed, Vector2 relative)
     {
-        this(0f, 100f);
+        this();
+        this.speed = speed;
+        setDirection(relative);
+    }
+    
+    
+    /** Set speed and direction with xy-coordinates. */
+    public Mobility(float speed, float relativeX, float relativeY)
+    {
+        this();
+        this.speed = speed;
+        setDirection(relativeX, relativeY);
+    }
+    
+    
+    /** Set speed and an exact angle in degrees. */
+    public Mobility(float speed, float angleDeg)
+    {
+        this();
+        this.speed = speed;
+        angle = angleDeg * MathUtils.degreesToRadians;
+        applyDirection2D();
     }
     
     
