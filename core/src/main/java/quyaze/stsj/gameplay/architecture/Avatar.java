@@ -1,13 +1,13 @@
 package quyaze.stsj.gameplay.architecture;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /** Represents visible characters, beings, objects, etc. */
 public class Avatar
 {
     //  Fields
-    private AtlasRegion texture;
+    public TextureRegion texture;
     public Vector2 position;
     public float opacity;
     private Vector2 trueSize;
@@ -16,7 +16,7 @@ public class Avatar
     //  Constructors
     
     /** Set avatar texture, position, opacity, and scale. */
-    public Avatar(AtlasRegion texture, Vector2 position, float opacity, float scale)
+    public Avatar(TextureRegion texture, Vector2 position, float opacity, float scale)
     {
         this.texture = texture;
         this.position = position;
@@ -29,7 +29,7 @@ public class Avatar
     
     
     /** Set avatar texture. */
-    public Avatar(AtlasRegion texture)
+    public Avatar(TextureRegion texture)
     {
         this(
             texture,
@@ -41,7 +41,7 @@ public class Avatar
     
     
     /** Set avatar texture and position. */
-    public Avatar(AtlasRegion texture, Vector2 position)
+    public Avatar(TextureRegion texture, Vector2 position)
     {
         this(
             texture,
@@ -52,8 +52,20 @@ public class Avatar
     }
     
     
+    /** Set avatar texture and scale. */
+    public Avatar(TextureRegion texture, float scale)
+    {
+        this(
+            texture,
+            Vector2.Zero.cpy(),
+            1f,
+            scale
+        );
+    }
+    
+    
     /** Set avatar texture, position, and scale. */
-    public Avatar(AtlasRegion texture, Vector2 position, float scale)
+    public Avatar(TextureRegion texture, Vector2 position, float scale)
     {
         this(
             texture,
@@ -65,7 +77,7 @@ public class Avatar
     
     
     /** Set avatar texture, opacity, and position. */
-    public Avatar(AtlasRegion texture, float opacity, Vector2 position)
+    public Avatar(TextureRegion texture, float opacity, Vector2 position)
     {
         this(
             texture,
@@ -77,7 +89,16 @@ public class Avatar
     
     
     /**
-     * @return Original texture width with its scale applied; the actual pixel length that the end user sees.
+     * @return A copy of the true size
+     */
+    public Vector2 getTrueSize()
+    {
+        return trueSize.cpy();
+    }
+    
+    
+    /**
+     * @return Original texture width with its scale applied; the actual pixel length that the end user sees
      */
     public float getTrueWidth()
     {
@@ -86,7 +107,7 @@ public class Avatar
     
     
     /**
-     * @return Original texture height with its scale applied; the actual pixel length that the end user sees.
+     * @return Original texture height with its scale applied; the actual pixel length that the end user sees
      */
     public float getTrueHeight()
     {

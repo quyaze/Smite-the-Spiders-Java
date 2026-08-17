@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.GameText;
@@ -24,6 +25,7 @@ public class GameMaster extends Game
     private TextureAtlas atlas;
     private Music music;
     private GameText gameText;
+    private Timer timer;
     
     private MainMenuScreen mainMenuScreen;
     private GameplayScreen gameplayScreen;
@@ -59,6 +61,7 @@ public class GameMaster extends Game
         batch.dispose();
         atlas.dispose();
         music.dispose();
+        gameText.dispose();
         mainMenuScreen.dispose();
         gameplayScreen.dispose();
     }
@@ -106,6 +109,15 @@ public class GameMaster extends Game
     public GameText getGameText()
     {
         return gameText;
+    }
+    
+    
+    /**
+     * @return Global Timer utility
+     */
+    public Timer getTimer()
+    {
+        return timer;
     }
     
     

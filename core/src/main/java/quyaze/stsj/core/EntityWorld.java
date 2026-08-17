@@ -17,18 +17,4 @@ public abstract class EntityWorld extends World
     {
         super(owner);
     }
-    
-    
-    /**
-     * Spawn a new entity.
-     * @return The created entity's Id
-     */
-    public abstract int addEntity();
-    
-    
-    /**
-     * Remove the entity.
-     * @param entity
-     */
-    public abstract void removeEntity(int entity);
 }

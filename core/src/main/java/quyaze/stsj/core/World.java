@@ -17,8 +17,6 @@ public abstract class World
     }
     
     
-    /**
-     * @param deltaSeconds
-     */
+    /** For an owning {@code Screen.render()}. */
     public abstract void render();
 }

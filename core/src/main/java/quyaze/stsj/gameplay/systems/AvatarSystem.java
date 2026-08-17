@@ -12,13 +12,13 @@ import quyaze.stsj.gameplay.architecture.Mobility;
 public class AvatarSystem implements EWSystem
 {
     //  Fields
-    final private GameplayWorld gameplayWorld;
+    final private GameplayWorld gameplay;
     
     
     //  Constructor
-    public AvatarSystem(GameplayWorld gameplayWorld)
+    public AvatarSystem(GameplayWorld gameplay)
     {
-        this.gameplayWorld = gameplayWorld;
+        this.gameplay = gameplay;
     }
     
     
@@ -26,8 +26,8 @@ public class AvatarSystem implements EWSystem
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = gameplayWorld.avatarDatastore.get(entity);
-        Mobility mobility = gameplayWorld.mobilityDatastore.get(entity);
+        Avatar avatar = gameplay.avatarDatastore.get(entity);
+        Mobility mobility = gameplay.mobilityDatastore.get(entity);
         
         avatar.position.add(
             new Vector2(

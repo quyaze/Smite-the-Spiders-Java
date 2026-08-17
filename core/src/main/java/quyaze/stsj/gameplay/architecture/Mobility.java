@@ -34,7 +34,7 @@ public class Mobility
     //  Constructors
     
     /** Set speed and angle (degrees). */
-    public Mobility(float angle, float speed)
+    public Mobility(float speed, float angle)
     {
         velocity = Vector2.Zero.cpy();
         this.angle = angle;
@@ -43,10 +43,10 @@ public class Mobility
     }
     
     
-    /** Set angle with a default speed of 100. */
-    public Mobility(float angle)
+    /** Set speed going right. */
+    public Mobility(float speed)
     {
-        this(angle, 100f);
+        this(0f, speed);
     }
     
     

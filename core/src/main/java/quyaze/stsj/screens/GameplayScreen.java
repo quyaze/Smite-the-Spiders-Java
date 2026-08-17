@@ -2,16 +2,22 @@ package quyaze.stsj.screens;
 
 import quyaze.stsj.GameMaster;
 import quyaze.stsj.core.StarterScreen;
+import quyaze.stsj.gameplay.GameplayWorld;
 
 /**
- * Screen for the main menu.
+ * Screen for the gameplay.
  */
 public class GameplayScreen extends StarterScreen
 {
+    //  Fields
+    final private GameplayWorld world;
+    
+    
     //  Constructor
     public GameplayScreen(GameMaster gameMaster)
     {
         super(gameMaster);
+        world = new GameplayWorld(this, gameMaster);
     }
     
     
@@ -19,7 +25,7 @@ public class GameplayScreen extends StarterScreen
     @Override
     public void show()
     {
-        
+        world.show();
     }
     
     
@@ -27,7 +33,7 @@ public class GameplayScreen extends StarterScreen
     @Override
     public void hide()
     {
-        
+        world.hide();
     }
     
     
@@ -35,38 +41,26 @@ public class GameplayScreen extends StarterScreen
     @Override
     public void pause()
     {
-        
+        world.setGamePaused(true);
     }
     
     
     //  Resume
-    @Override
-    public void resume()
-    {
-        
-    }
+    @Override public void resume() {}
     
     
     //  Resize
-    @Override
-    public void resize(int width, int height)
-    {
-        if (0 == width || 0 == height) return;
-    }
+    @Override public void resize(int width, int height) {}
     
     
     //  Render
     @Override
     public void render(float delta)
     {
-        
+        world.render();
     }
     
     
     //  Dispose
-    @Override
-    public void dispose()
-    {
-        
-    }
+    @Override public void dispose() {}
 }
