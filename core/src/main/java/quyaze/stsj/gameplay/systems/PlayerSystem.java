@@ -2,7 +2,6 @@ package quyaze.stsj.gameplay.systems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import quyaze.stsj.core.SystemForEW;
@@ -58,7 +57,7 @@ public class PlayerSystem implements SystemForEW
         if (keyMap[1]) movementInput.x += 1f;
         if (keyMap[2]) movementInput.y -= 1f;
         if (keyMap[3]) movementInput.x -= 1f;
-        if (keyMap[4]) player.onCastFireball();
+        if (keyMap[4]) player.onCastFireball(avatar);
         
         //  Gamepad controllers coming soon
         final float inputStrength = movementInput.len2();
@@ -71,18 +70,5 @@ public class PlayerSystem implements SystemForEW
         }
         mobility.setSpeed(speed);
         mobility.setDirection(movementInput);
-        
-        avatar.position.set(
-            MathUtils.clamp(
-                avatar.position.x,
-                0f,
-                player.upperScreenBounds.x
-            ),
-            MathUtils.clamp(
-                avatar.position.y,
-                0f,
-                player.upperScreenBounds.y
-            )
-        );
     }
 }

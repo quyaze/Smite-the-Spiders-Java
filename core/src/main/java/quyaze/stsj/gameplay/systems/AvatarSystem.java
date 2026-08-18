@@ -1,11 +1,13 @@
 package quyaze.stsj.gameplay.systems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 
 import quyaze.stsj.core.SystemForEW;
 import quyaze.stsj.gameplay.GameplayEntityWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
+import quyaze.stsj.gameplay.architecture.Player;
 
 /** System in charge of avatar movement. */
 public class AvatarSystem implements SystemForEW
@@ -25,14 +27,28 @@ public class AvatarSystem implements SystemForEW
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = world.avatarDatastore.get(entity);
         Mobility mobility = world.mobilityDatastore.get(entity);
         
-        float dS = Gdx.graphics.getDeltaTime();
+        if (mobility == null) return; // Entity is just a static avatar
         
-        avatar.position.add(
-            mobility.getVelocityX() * dS,
-            mobility.getVelocityY() * dS
+        Avatar avatar = world.avatarDatastore.get(entity);
+        Player player = world.playerDatastore.get(entity);
+        
+        avatar.position.add(mobility.getVelocity().scl(Gdx.graphics.getDeltaTime()));
+        
+        if (player == null) return;
+        
+        avatar.position.set(
+            MathUtils.clamp(
+                avatar.position.x,
+                0,
+                player.upperScreenBounds.x
+            ),
+            MathUtils.clamp(
+                avatar.position.y,
+                0,
+                player.upperScreenBounds.y
+            )
         );
     }
 }

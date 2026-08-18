@@ -21,7 +21,7 @@ public abstract class GameplayCore
     final private GameMaster gameMaster;
     final private GameplayEntityWorld world;
     
-    private boolean paused;
+    private boolean paused = true;
     
     
     //  Constructor
@@ -69,7 +69,6 @@ public abstract class GameplayCore
     
     
     /** Create the background. */
-    @SuppressWarnings("unchecked")
     public void spawnBackground()
     {
         final Avatar avatar;
@@ -82,13 +81,16 @@ public abstract class GameplayCore
         
         avatar = new Avatar(
             background,
-            widthScreen / heightScreen > widthBackground / heightBackground ?
-            widthScreen / (float) widthBackground :
-            heightScreen / (float) heightBackground
+            widthScreen / (float) heightScreen < widthBackground / (float) heightBackground ?
+            heightScreen / (float) heightBackground :
+            widthScreen / (float) widthBackground
         );
         
         world.addEntity(
-            GameplayEntityWorld.SYSFLAG_AVATAR,
+            (char) (
+                GameplayEntityWorld.SYSFLAG_AVATAR |
+                GameplayEntityWorld.SYSFLAG_DRAW
+            ),
             new DatastoreForEW[] {
                 world.avatarDatastore
             },
@@ -98,7 +100,6 @@ public abstract class GameplayCore
     
     
     /** Create the player. */
-    @SuppressWarnings("unchecked")
     public void spawnPlayer()
     {
         final Player player;
@@ -112,9 +113,9 @@ public abstract class GameplayCore
         
         player = new Player()
         {
-            @Override public void onCastFireball()
+            @Override public void onCastFireball(Avatar playerCharacter)
             {
-                spawnFireball();
+                spawnFireball(playerCharacter);
             }
         };
         
@@ -122,7 +123,9 @@ public abstract class GameplayCore
             gameMaster.getAtlas().findRegion("wizard"),
             4f
         );
-        avatar.position.set(center.sub(avatar.getTrueSize()));
+        center.sub(avatar.getTrueSize().scl(0.5f));
+        avatar.position.set(center);
+        player.setAvatar(avatar);
         
         mobility = new Mobility(0f);
         
@@ -132,7 +135,12 @@ public abstract class GameplayCore
         };
         
         world.addEntity(
-            (char) (GameplayEntityWorld.SYSFLAG_PLAYER | GameplayEntityWorld.SYSFLAG_AVATAR | GameplayEntityWorld.SYSFLAG_COLLISION | GameplayEntityWorld.SYSFLAG_DRAW),
+            (char) (
+                GameplayEntityWorld.SYSFLAG_PLAYER |
+                GameplayEntityWorld.SYSFLAG_AVATAR |
+                GameplayEntityWorld.SYSFLAG_COLLISION |
+                GameplayEntityWorld.SYSFLAG_DRAW
+            ),
             new DatastoreForEW[] {
                 world.playerDatastore,
                 world.avatarDatastore,
@@ -145,7 +153,6 @@ public abstract class GameplayCore
     
     
     /** Create the spiders. */
-    @SuppressWarnings("unchecked")
     public void spawnSpiders()
     {
         for (
@@ -194,7 +201,12 @@ public abstract class GameplayCore
             spider = new Spider();
             
             world.addEntity(
-                (char) (GameplayEntityWorld.SYSFLAG_AVATAR | GameplayEntityWorld.SYSFLAG_COLLISION | GameplayEntityWorld.SYSFLAG_SPIDER | GameplayEntityWorld.SYSFLAG_DRAW),
+                (char) (
+                    GameplayEntityWorld.SYSFLAG_AVATAR |
+                    GameplayEntityWorld.SYSFLAG_COLLISION |
+                    GameplayEntityWorld.SYSFLAG_SPIDER |
+                    GameplayEntityWorld.SYSFLAG_DRAW
+                ),
                 new DatastoreForEW[] {
                     world.avatarDatastore,
                     world.mobilityDatastore,
@@ -208,8 +220,7 @@ public abstract class GameplayCore
     
     
     /** Cast a fireball spell. */
-    @SuppressWarnings("unchecked")
-    public void spawnFireball()
+    public void spawnFireball(Avatar playerCharacter)
     {
         final Avatar avatar;
         final Mobility mobility;
@@ -219,7 +230,13 @@ public abstract class GameplayCore
         final TextureRegion spellTexture = new TextureRegion(gameMaster.getAtlas().findRegion("spell"));
         spellTexture.flip(false, true);
         
-        avatar = new Avatar(spellTexture);
+        avatar = new Avatar(
+            spellTexture,
+            2f
+        );
+        avatar.position.set(
+            playerCharacter.position.cpy().add(playerCharacter.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
+        );
         
         mobility = new Mobility(1000f, Vector2.Y.cpy());
         
@@ -234,7 +251,11 @@ public abstract class GameplayCore
         projectile = new Projectile("spell");
         
         world.addEntity(
-            (char) (GameplayEntityWorld.SYSFLAG_AVATAR | GameplayEntityWorld.SYSFLAG_COLLISION | GameplayEntityWorld.SYSFLAG_DRAW),
+            (char) (
+                GameplayEntityWorld.SYSFLAG_AVATAR |
+                GameplayEntityWorld.SYSFLAG_COLLISION |
+                GameplayEntityWorld.SYSFLAG_DRAW
+            ),
             new DatastoreForEW[] {
                 world.avatarDatastore,
                 world.mobilityDatastore,

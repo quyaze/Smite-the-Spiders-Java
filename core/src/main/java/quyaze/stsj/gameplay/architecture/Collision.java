@@ -26,6 +26,7 @@ public abstract class Collision
             avatar.getTrueWidth(),
             avatar.getTrueHeight()
         );
+        this.avatar = avatar;
     }
     
     

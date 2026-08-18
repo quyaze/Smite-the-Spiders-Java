@@ -13,7 +13,7 @@ public class Avatar
     private Vector2 trueSize;
     
     
-    //  Constructors
+    //  Constructor
     
     /** Set avatar texture, position, opacity, and scale. */
     public Avatar(TextureRegion texture, Vector2 position, float opacity, float scale)
@@ -52,6 +52,18 @@ public class Avatar
     }
     
     
+    /** Set avatar texture and position. */
+    public Avatar(TextureRegion texture, float x, float y)
+    {
+        this(
+            texture,
+            new Vector2(x, y),
+            1f,
+            1f
+        );
+    }
+    
+    
     /** Set avatar texture and scale. */
     public Avatar(TextureRegion texture, float scale)
     {
@@ -76,14 +88,14 @@ public class Avatar
     }
     
     
-    /** Set avatar texture, opacity, and position. */
-    public Avatar(TextureRegion texture, float opacity, Vector2 position)
+    /** Set avatar texture, position, and scale. */
+    public Avatar(TextureRegion texture, float x, float y, float scale)
     {
         this(
             texture,
-            position,
-            opacity,
-            1f
+            new Vector2(x, y),
+            1f,
+            scale
         );
     }
     

@@ -43,11 +43,12 @@ public class GameMaster extends Game
         );
         music = Gdx.audio.newMusic(Gdx.files.internal("audio" + File.separator + "Lord of the Land.mp3"));
         gameText = new GameText();
+        timer = new Timer();
         
         mainMenuScreen = new MainMenuScreen(this);
         gameplayScreen = new GameplayScreen(this);
         
-        goToMainMenuScreen();
+        goToGameplayScreen();
         music.setLooping(true);
         music.play();
     }

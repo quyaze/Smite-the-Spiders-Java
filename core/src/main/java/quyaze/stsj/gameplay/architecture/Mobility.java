@@ -77,6 +77,15 @@ public class Mobility
     
     
     /**
+     * @return A copy of the velocity
+     */
+    public Vector2 getVelocity()
+    {
+        return velocity.cpy();
+    }
+    
+    
+    /**
      * @return x-velocity
      */
     public float getVelocityX()

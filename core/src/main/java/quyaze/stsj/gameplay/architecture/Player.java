@@ -40,6 +40,10 @@ public abstract class Player
     }
     
     
-    /** Event for when the player is casting a fireball. */
-    public abstract void onCastFireball();
+    /**
+     * Event for when the player is casting a fireball.
+     * <p></p>
+     * Passes the player wizard for positioning.
+     */
+    public abstract void onCastFireball(Avatar playerCharacter);
 }

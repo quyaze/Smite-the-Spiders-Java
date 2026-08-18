@@ -8,6 +8,9 @@ import quyaze.stsj.core.StarterScreen;
  */
 public class MainMenuScreen extends StarterScreen
 {
+    //  Fields
+    
+    
     //  Constructor
     public MainMenuScreen(GameMaster gameMaster)
     {
@@ -51,7 +54,8 @@ public class MainMenuScreen extends StarterScreen
     @Override
     public void resize(int width, int height)
     {
-        if (0 == width || 0 == height) return;
+        if (width <= 0 || height <= 0) return;
+        gameMaster.getViewport().update(width, height, true);
     }
     
     

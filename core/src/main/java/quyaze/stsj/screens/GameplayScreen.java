@@ -50,7 +50,12 @@ public class GameplayScreen extends StarterScreen
     
     
     //  Resize
-    @Override public void resize(int width, int height) {}
+    @Override
+    public void resize(int width, int height)
+    {
+        if (width <= 0 || height <= 0) return;
+        gameMaster.getViewport().update(width, height, true);
+    }
     
     
     //  Render

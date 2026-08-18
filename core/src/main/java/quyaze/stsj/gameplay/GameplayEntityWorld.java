@@ -138,7 +138,9 @@ public class GameplayEntityWorld extends EntityWorld
         }
         
         if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.Q))
-        {}
+        {
+            core.spawnSpiders();
+        }
         
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
@@ -148,9 +150,9 @@ public class GameplayEntityWorld extends EntityWorld
             {
                 case SYSFLAG_PLAYER: iteratingSystem = playerSystem; break;
                 
-                case SYSFLAG_COLLISION: iteratingSystem = collisionSystem; break;
-                
                 case SYSFLAG_AVATAR: iteratingSystem = avatarSystem; break;
+                
+                case SYSFLAG_COLLISION: iteratingSystem = collisionSystem; break;
                 
                 case SYSFLAG_SPIDER: iteratingSystem = spiderSystem; break;
                 
@@ -179,17 +181,19 @@ public class GameplayEntityWorld extends EntityWorld
         
         /*  Deferred entity removal.
         */
-        for (int debris = 0; debris < entityDebris.size; debris++)
+        if (entityDebris.isEmpty()) return;
+        for (int i = 0; i < entityDebris.size; i++)
         {
+            int debris = entityDebris.get(i);
             DatastoreForEW<?>[] datastores = entityDatastores.get(debris);
             
             entityFlags.removeIndex(debris);
-            for (int i = 0 ; i < datastores.length; i++) datastores[i].remove(debris);
+            for (int j = 0 ; j < datastores.length; j++) datastores[j].remove(debris);
             entityDatastores.removeIndex(debris);
-            entityDebris.removeIndex(debris);
-            isEntityDebris.remove(debris);
-            entities--;
         }
+        entities -= entityDebris.size;
+        entityDebris.clear();
+        isEntityDebris.clear();
     }
     
     
@@ -200,9 +204,13 @@ public class GameplayEntityWorld extends EntityWorld
      * {@code data} corresponds to the {@code datastore} in the
      * correct order.
      */
-    public void addEntity(char systems, DatastoreForEW<Object>[] datastores, Object... data)
+    @SuppressWarnings("unchecked")
+    public void addEntity(char systems, DatastoreForEW<?>[] datastores, Object... data)
     {
-        for (int i = 0; i < datastores.length; i++) datastores[i].add(i, data);
+        for (int i = 0; i < datastores.length; i++)
+        {
+            ((DatastoreForEW<Object>) datastores[i]).add(entities, data[i]);
+        }
         entityDatastores.add(datastores);
         entityFlags.add(systems);
         entities++;
@@ -224,7 +232,7 @@ public class GameplayEntityWorld extends EntityWorld
      */
     public void show()
     {
-        setSolverEnabled(true);
+        core.setPaused(false);
         core.spawnBackground();
         core.spawnPlayer();
         core.spawnSpiders();
@@ -249,8 +257,7 @@ public class GameplayEntityWorld extends EntityWorld
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        core.setPaused(false);
-        collisionSolveTask.cancel();
+        core.setPaused(true);
     }
     
     
@@ -276,6 +283,7 @@ public class GameplayEntityWorld extends EntityWorld
             frame.
         */
        
+        if (enabled == collisionSolveTask.isScheduled()) return;
         if (enabled)
         {
             gameMaster.getTimer().scheduleTask(
