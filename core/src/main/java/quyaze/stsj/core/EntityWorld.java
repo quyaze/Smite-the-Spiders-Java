@@ -3,7 +3,7 @@ package quyaze.stsj.core;
 /**
  * A World with entities (integer).
  * <p></p>
- * Within {@code render()The World should iterate over all entities and pass each into a
+ * Within {@code render()}, The World should iterate over all entities and pass each into a
  * {@link EWSystem}. {@link EWDatastore}
  */
 public abstract class EntityWorld extends World
@@ -16,5 +16,23 @@ public abstract class EntityWorld extends World
     public EntityWorld(StarterScreen owner)
     {
         super(owner);
+    }
+    
+    
+    /**
+     * @return Number of entities that exist
+    */
+    public int getEntityCount()
+    {
+        return entities;
+    }
+    
+    
+    /**
+     * @return The last existant entity
+    */
+    public int getLastEntity()
+    {
+        return entities - 1;
     }
 }

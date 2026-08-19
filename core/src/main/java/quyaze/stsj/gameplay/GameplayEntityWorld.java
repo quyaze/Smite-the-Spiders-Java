@@ -184,11 +184,16 @@ public class GameplayEntityWorld extends EntityWorld
         if (entityDebris.isEmpty()) return;
         for (int i = 0; i < entityDebris.size; i++)
         {
-            int debris = entityDebris.get(i);
-            DatastoreForEW<?>[] datastores = entityDatastores.get(debris);
+            final int debris = entityDebris.get(i);
+            final DatastoreForEW<?>[] datastores = entityDatastores.get(debris);
             
             entityFlags.removeIndex(debris);
-            for (int j = 0 ; j < datastores.length; j++) datastores[j].remove(debris);
+            for (int j = 0 ; j < datastores.length; j++)
+            {
+                /*  The last entity replaces the removing entity in the datastore.
+                */
+                datastores[j].transfer(entities - 1, debris);
+            }
             entityDatastores.removeIndex(debris);
         }
         entities -= entityDebris.size;
@@ -209,7 +214,7 @@ public class GameplayEntityWorld extends EntityWorld
     {
         for (int i = 0; i < datastores.length; i++)
         {
-            ((DatastoreForEW<Object>) datastores[i]).add(entities, data[i]);
+            ((DatastoreForEW<Object>) datastores[i]).put(entities, data[i]);
         }
         entityDatastores.add(datastores);
         entityFlags.add(systems);
@@ -249,7 +254,7 @@ public class GameplayEntityWorld extends EntityWorld
         entities = 0;
         entityFlags.clear();
         entityDebris.clear();
-        isEntityDebris.clear(CAPACITY);
+        isEntityDebris.clear();
         entityDatastores.clear();
         playerDatastore.clear();
         avatarDatastore.clear();

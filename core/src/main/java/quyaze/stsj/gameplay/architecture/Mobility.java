@@ -33,16 +33,19 @@ public class Mobility
     
     //  Constructors
     
-    private Mobility()
+    /** Set a default speed of 100 and go right. */
+    public Mobility()
     {
         velocity = Vector2.Zero.cpy();
+        speed = 100f;
+        setDirection(Vector2.X.cpy());
     }
     
     
     /** Set speed and go right. */
     public Mobility(float speed)
     {
-        this();
+        velocity = Vector2.Zero.cpy();
         this.speed = speed;
         setDirection(Vector2.X.cpy());
     }
@@ -51,7 +54,7 @@ public class Mobility
     /** Set speed and direction with a Vector2. */
     public Mobility(float speed, Vector2 relative)
     {
-        this();
+        velocity = Vector2.Zero.cpy();
         this.speed = speed;
         setDirection(relative);
     }
@@ -60,7 +63,7 @@ public class Mobility
     /** Set speed and direction with xy-coordinates. */
     public Mobility(float speed, float relativeX, float relativeY)
     {
-        this();
+        velocity = Vector2.Zero.cpy();
         this.speed = speed;
         setDirection(relativeX, relativeY);
     }

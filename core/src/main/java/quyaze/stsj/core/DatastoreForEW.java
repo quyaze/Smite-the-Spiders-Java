@@ -10,21 +10,19 @@ public class DatastoreForEW<T>
 {
     //  Fields
     final private IntMap<T> data;
-    public int defaultCapacity;
     
     
     //  Constructor
     public DatastoreForEW(int initialCapacity)
     {
         data = new IntMap<T>(initialCapacity);
-        defaultCapacity = initialCapacity;
     }
     
     
     /**
      * Associate {@code data} with the {@code entity}.
      */
-    public void add(int entity, T data)
+    public void put(int entity, T data)
     {
         this.data.put(entity, data);
     }
@@ -64,7 +62,7 @@ public class DatastoreForEW<T>
      * {@code newEntity}. This is needed in entity
      * swap-removal.
      */
-    public void entityChanged(int oldEntity, int newEntity)
+    public void transfer(int oldEntity, int newEntity)
     {
         data.put(newEntity, data.remove(oldEntity));
     }
@@ -75,6 +73,6 @@ public class DatastoreForEW<T>
      */
     public void clear()
     {
-        data.clear(defaultCapacity);
+        data.clear();
     }
 }

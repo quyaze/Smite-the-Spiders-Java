@@ -40,12 +40,16 @@ public abstract class GameplayCore
     }
     
     
-    /** Set paused state, */
-    public void setPaused(boolean paused)
+    /**
+     * Set paused state.
+     * @return Paused state switched successfully (current state was not already the desired state)
+     */
+    public boolean setPaused(boolean paused)
     {
-        if (this.paused == paused) return;
+        if (this.paused == paused) return false;
         if (paused) onPaused(); else onUnpaused();
         this.paused = paused;
+        return true;
     }
     
     
@@ -161,10 +165,10 @@ public abstract class GameplayCore
             i++
         )
         {
-            Avatar avatar;
-            Mobility mobility;
-            Collision collision;
-            Spider spider;
+            final Avatar avatar;
+            final Mobility mobility;
+            final Collision collision;
+            final Spider spider;
             
             float posX = Gdx.graphics.getWidth();
             
@@ -176,19 +180,18 @@ public abstract class GameplayCore
             switch (i)
             {
                 case 0: posX *= 0.5f; break;
-                
                 case 1: posX *= 0.25f; break;
-                
                 case 2: posX *= 0.75f; break;
             }
             posX -= avatar.getTrueWidth() * 0.5f;
             avatar.position.set(
                 posX,
-                //  Spider should not spawn-clip off the screen
+                /*  Spider should not spawn-clip off the screen
+                */
                 Gdx.graphics.getHeight() * 0.8f
             );
             
-            mobility = new Mobility(Spider.randomSpeed());
+            mobility = new Mobility();
             
             collision = new Collision(avatar)
             {
@@ -199,6 +202,7 @@ public abstract class GameplayCore
             };
             
             spider = new Spider();
+            spider.newPath(avatar, mobility);
             
             world.addEntity(
                 (char) (

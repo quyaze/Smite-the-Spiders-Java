@@ -1,5 +1,6 @@
 package quyaze.stsj.gameplay.architecture;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -17,9 +18,20 @@ public class Spider
     }
     
     
-    /** Generate a random speed for a spider. */
-    public static float randomSpeed()
+    /** Set the spider's new path to follow. References its {@link Avatar} and {@link Mobility}. */
+    public void newPath(Avatar avatar, Mobility mobility)
     {
-        return MathUtils.random(180, 220); // 200 ± 20
+        destination.set(
+            MathUtils.random(
+                0,
+                Gdx.graphics.getWidth() - avatar.getTrueWidth()
+            ),
+            MathUtils.random(
+                Gdx.graphics.getHeight() * 0.5f,
+                Gdx.graphics.getHeight() - avatar.getTrueHeight()
+            )
+        );
+        mobility.setDirection(destination.cpy().sub(avatar.position));
+        mobility.setSpeed(MathUtils.random(180, 220));
     }
 }

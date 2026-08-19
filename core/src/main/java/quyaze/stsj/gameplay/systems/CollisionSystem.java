@@ -54,23 +54,24 @@ final public class CollisionSystem implements SystemForEW
     //  Iterate
     @Override
     public void iterate(int entity)
-    { System.out.println("%d".formatted(entity));
-        if (collidableEntityToIndex.containsKey(entity)) return;
+    {
+        final Collision collision = world.collisionDatastore.get(entity);
+        final Projectile projectile = world.projectileDatastore.get(entity);
         
-        Collision collision = world.collisionDatastore.get(entity);
-        Projectile projectile = world.projectileDatastore.get(entity);
+        collision.update();
+        
+        /*  Cull projectiles that have left the screen.
+        */
+        if (projectile != null && !collision.collisionBox.overlaps(screen))
+        {
+            world.removeEntityRequest(entity);
+            return;
+        }
+        
+        if (collidableEntityToIndex.containsKey(entity)) return;
         
         collidableEntityToIndex.put(entity, collidableEntities.size);
         collidableEntities.add(entity);
-        collision.update();
-        
-        if (projectile == null) return;
-        if (collision.collisionBox.overlaps(screen)) return;
-        
-        /*  Entity is a projectile that has left the screen. Should be
-            culled.
-        */
-        world.removeEntityRequest(entity);
     }
     
     

@@ -25,18 +25,24 @@ public abstract class CollisionSolver
     /** Solve collision. */
     public void solve()
     {
+        /*  Null guards exist because collidableEntities is not yet designed
+            to be fully in sync with World entities. This allows the solver
+            to receive both removed entities and removed collision data.
+        */
         for (int i = 0; i < collidableEntities.size; i++)
         {
             entityA = collidableEntities.get(i);
             collisionA = world.collisionDatastore.get(entityA);
+            if (collisionA == null || collisionA.skipSolving) continue;
             
-            if (collisionA.skipSolving) continue;
             for (int j = i + 1; j < collidableEntities.size; j++)
             {
                 entityB = collidableEntities.get(j);
                 collisionB = world.collisionDatastore.get(entityB);
+                if (collisionB == null || collisionB.skipSolving) continue;
                 
-                if (collisionB.skipSolving) continue;
+                /*  Collision detection is calculated here.
+                */
                 if (collisionA.collisionBox.overlaps(collisionB.collisionBox))
                 {
                     collisionA.onCollided(entityB, collisionB);

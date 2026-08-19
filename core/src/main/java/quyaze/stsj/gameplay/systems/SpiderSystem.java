@@ -1,8 +1,5 @@
 package quyaze.stsj.gameplay.systems;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
-
 import quyaze.stsj.core.SystemForEW;
 import quyaze.stsj.gameplay.GameplayEntityWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
@@ -30,20 +27,6 @@ public class SpiderSystem implements SystemForEW
         final Mobility mobility = world.mobilityDatastore.get(entity);
         final Spider spider = world.spiderDatastore.get(entity);
         
-        if (avatar.position.dst2(spider.destination) < 36f)
-        {
-            spider.destination.set(
-                MathUtils.random(
-                    0,
-                    Gdx.graphics.getWidth() - avatar.getTrueWidth()
-                ),
-                MathUtils.random(
-                    Gdx.graphics.getHeight() * 0.5f,
-                    Gdx.graphics.getHeight() - avatar.getTrueHeight()
-                )
-            );
-            mobility.setDirection(spider.destination.cpy().sub(avatar.position));
-            mobility.setSpeed(Spider.randomSpeed());
-        }
+        if (avatar.position.dst2(spider.destination.cpy()) < 36f) spider.newPath(avatar, mobility);
     }
 }
