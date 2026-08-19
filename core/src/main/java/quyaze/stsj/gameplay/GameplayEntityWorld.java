@@ -27,11 +27,12 @@ import quyaze.stsj.gameplay.systems.PlayerSystem;
 import quyaze.stsj.gameplay.systems.SpiderSystem;
 import quyaze.stsj.screens.GameplayScreen;
 
-public class GameplayEntityWorld extends EntityWorld
+final public class GameplayEntityWorld extends EntityWorld
 {
     //  Fields
     final private GameMaster gameMaster;
     final private GameplayCore core;
+    final private GameplayState state;
     
     final private CharArray entityFlags;
     final private Array<DatastoreForEW<?>[]> entityDatastores;
@@ -59,8 +60,8 @@ public class GameplayEntityWorld extends EntityWorld
     
     final static private int CAPACITY = 64;
     final static private float SOLVE_INTERVAL = 1 / 30f;
+    final private Task collisionSolveTask;
     private SystemForEW iteratingSystem;
-    private Task collisionSolveTask;
     private float timeToNextSolve;
     
     
@@ -69,18 +70,8 @@ public class GameplayEntityWorld extends EntityWorld
     {
         super(owner);
         this.gameMaster = gameMaster;
-        this.core = new GameplayCore(gameMaster, this)
-        {
-            @Override public void onPaused()
-            {
-                setSolverEnabled(false);
-            }
-            
-            @Override public void onUnpaused()
-            {
-                setSolverEnabled(true);
-            }
-        };
+        this.core = new GameplayCore(gameMaster, this);
+        this.state = new GameplayState();
         
         entityFlags = new CharArray(false, CAPACITY);
         entityDatastores = new Array<>(false, CAPACITY);
@@ -102,9 +93,10 @@ public class GameplayEntityWorld extends EntityWorld
         
         collisionSolveTask = new Task()
         {
+            final private CollisionSolver solver = collisionSystem.getSolver();
             @Override public void run()
             {
-                collisionSystem.getSolver().solve();
+                solver.solve();
             }
         };
     }
@@ -128,9 +120,8 @@ public class GameplayEntityWorld extends EntityWorld
             "debris" and are then removed at the very end of render().
         */
         
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) core.togglePaused();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) paused = !paused;
         
-        final boolean paused = core.getPaused();
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
             gameMaster.goToMainMenuScreen();
@@ -237,7 +228,7 @@ public class GameplayEntityWorld extends EntityWorld
      */
     public void show()
     {
-        core.setPaused(false);
+        paused = false;
         core.spawnBackground();
         core.spawnPlayer();
         core.spawnSpiders();
@@ -262,7 +253,8 @@ public class GameplayEntityWorld extends EntityWorld
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        core.setPaused(true);
+        paused = true;
+        setSolverEnabled(false);
     }
     
     
@@ -273,7 +265,8 @@ public class GameplayEntityWorld extends EntityWorld
      */
     public void pause()
     {
-        core.setPaused(true);
+        paused = true;
+        setSolverEnabled(false);
     }
     
     

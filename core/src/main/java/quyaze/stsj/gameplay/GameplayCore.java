@@ -15,13 +15,11 @@ import quyaze.stsj.gameplay.architecture.Player;
 import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.gameplay.architecture.Spider;
 
-public abstract class GameplayCore
+final public class GameplayCore
 {
     //  Fields
     final private GameMaster gameMaster;
     final private GameplayEntityWorld world;
-    
-    private boolean paused = true;
     
     
     //  Constructor
@@ -31,45 +29,6 @@ public abstract class GameplayCore
         this.gameMaster = gameMaster;
         this.world = world;
     }
-    
-    
-    /** Get paused state. */
-    public boolean getPaused()
-    {
-        return paused;
-    }
-    
-    
-    /**
-     * Set paused state.
-     * @return Paused state switched successfully (current state was not already the desired state)
-     */
-    public boolean setPaused(boolean paused)
-    {
-        if (this.paused == paused) return false;
-        if (paused) onPaused(); else onUnpaused();
-        this.paused = paused;
-        return true;
-    }
-    
-    
-    /**
-     * Toggle paused state.
-     * @return New paused state
-    */
-    public boolean togglePaused()
-    {
-        setPaused(!paused);
-        return paused;
-    }
-    
-    
-    /** On paused. It is not {@code Screen.pause()}. */
-    public abstract void onPaused();
-    
-    
-    /** On unpaused. It is not {@code Screen.resume}. */
-    public abstract void onUnpaused();
     
     
     /** Create the background. */
