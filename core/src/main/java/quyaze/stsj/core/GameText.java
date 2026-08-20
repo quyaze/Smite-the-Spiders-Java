@@ -35,6 +35,7 @@ public class GameText implements Disposable
     public void dispose()
     {
         regularGenerator.dispose();
+        regular.dispose();
     }
     
     

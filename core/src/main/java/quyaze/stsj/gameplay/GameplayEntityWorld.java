@@ -75,7 +75,7 @@ final public class GameplayEntityWorld extends EntityWorld
         {
             @Override public void onPausedStateChanged(boolean paused)
             {
-                setSolverEnabled(paused);
+                setSolverEnabled(!paused);
             }
         };
         
@@ -209,6 +209,7 @@ final public class GameplayEntityWorld extends EntityWorld
     @SuppressWarnings("unchecked")
     public void addEntity(char systems, DatastoreForEW<?>[] datastores, Object... data)
     {
+        if (datastores.length != data.length) return;
         for (int i = 0; i < datastores.length; i++)
         {
             ((DatastoreForEW<Object>) datastores[i]).put(entities, data[i]);
@@ -259,7 +260,7 @@ final public class GameplayEntityWorld extends EntityWorld
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        if (state.setGamePaused(true)) return;
+        state.setGamePaused(true);
         setSolverEnabled(false);
     }
     

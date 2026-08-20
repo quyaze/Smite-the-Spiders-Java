@@ -38,15 +38,11 @@ public class MainMenuScreen extends StarterScreen
     
     
     //  Pause
-    @Override
-    public void pause()
-    {}
+    @Override public void pause() {}
     
     
     //  Resume
-    @Override
-    public void resume()
-    {}
+    @Override public void resume() {}
     
     
     //  Resize
@@ -68,7 +64,5 @@ public class MainMenuScreen extends StarterScreen
     
     
     //  Dispose
-    @Override
-    public void dispose()
-    {}
+    @Override public void dispose() {}
 }

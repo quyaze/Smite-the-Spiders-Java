@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -14,8 +15,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.GameMaster;
 import quyaze.stsj.core.World;
+import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.screens.MainMenuScreen;
 
+/** World for the main menu. */
 public class MainMenuWorld extends World
 {
     //  Fields
@@ -24,7 +27,8 @@ public class MainMenuWorld extends World
     final private GlyphLayout subtitle;
     
     private boolean enableInput;
-    final private Vector2 titlePosition, titleSize;
+    final private Avatar backgroundAvatar;
+    final private Avatar titleAvatar;
     final private Vector2 subtitlePosition;
     
     
@@ -36,12 +40,9 @@ public class MainMenuWorld extends World
         title = gameMaster.getAtlas().findRegion("title");
         subtitle = gameMaster.getGameText().generateRegularGlyph("Click anywhere to play.");
         
-        titlePosition = Vector2.Zero.cpy();
+        backgroundAvatar = new Avatar(background);
+        titleAvatar = new Avatar(title, 2f);
         subtitlePosition = Vector2.Zero.cpy();
-        titleSize = new Vector2(
-            title.getRegionWidth(),
-            title.getRegionHeight()
-        ).scl(2f);
     }
     
     
@@ -51,24 +52,31 @@ public class MainMenuWorld extends World
     {
         /*  Input
         */
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
-        if (enableInput)
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
         {
-            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) gameMaster.goToGameplayScreen();
+            Gdx.app.exit();
+            return;
+        }
+        if (enableInput && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
+        {
+            gameMaster.goToGameplayScreen();
+            return;
         }
         
         /*  Logic
         */
-        
+        if (titleAvatar.opacity < 1f)
+        {
+            titleAvatar.opacity = MathUtils.clamp(
+                titleAvatar.opacity + Gdx.graphics.getDeltaTime() * 1.25f, 0f, 1f
+            );
+        }
         
         /*  Draw
         */
         final ScreenViewport viewport = gameMaster.getViewport();
         final SpriteBatch batch = gameMaster.getBatch();
         final BitmapFont regularFont = gameMaster.getGameText().getRegularFont();
-        final int width = Gdx.graphics.getWidth();
-        final int height = Gdx.graphics.getHeight();
-        
         
         ScreenUtils.clear(Color.BLACK);
         viewport.apply(true);
@@ -79,16 +87,18 @@ public class MainMenuWorld extends World
             background,
             0f,
             0f,
-            width,
-            height
+            backgroundAvatar.getTrueWidth(),
+            backgroundAvatar.getTrueHeight()
         );
+        batch.setColor(1f, 1f, 1f, titleAvatar.opacity);
         batch.draw(
             title,
-            titlePosition.x,
-            titlePosition.y,
-            titleSize.x,
-            titleSize.y
+            titleAvatar.position.x,
+            titleAvatar.position.y,
+            titleAvatar.getTrueWidth(),
+            titleAvatar.getTrueHeight()
         );
+        batch.setColor(Color.WHITE);
         if (enableInput)
         {
             regularFont.draw(
@@ -120,6 +130,7 @@ public class MainMenuWorld extends World
             },
             1f
         );
+        titleAvatar.opacity = 0f;
     }
     
     
@@ -134,12 +145,16 @@ public class MainMenuWorld extends World
     }
     
     
-    /** On {@code MainMenuScreen.resize}. */
+    /** On {@code MainMenuScreen.resize()}. */
     public void resize(int width, int height)
     {
-        titlePosition.set(
-            (width - titleSize.x) * 0.5f,
-            (height - titleSize.y) * 0.5f
+        backgroundAvatar.setScale(Math.max(
+            width / (float) backgroundAvatar.texture.getRegionWidth(),
+            height / (float) backgroundAvatar.texture.getRegionHeight()
+        ));
+        titleAvatar.position.set(
+            (width - titleAvatar.getTrueWidth()) * 0.5f,
+            (height - titleAvatar.getTrueHeight()) * 0.5f
         );
         subtitlePosition.set(
             (width - subtitle.width) * 0.5f,
