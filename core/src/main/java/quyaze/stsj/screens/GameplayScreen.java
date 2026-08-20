@@ -17,7 +17,7 @@ public class GameplayScreen extends StarterScreen
     public GameplayScreen(GameMaster gameMaster)
     {
         super(gameMaster);
-        world = new GameplayEntityWorld(this, gameMaster);
+        world = new GameplayEntityWorld(gameMaster, this);
     }
     
     

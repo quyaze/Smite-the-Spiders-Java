@@ -66,17 +66,23 @@ final public class GameplayEntityWorld extends EntityWorld
     
     
     //  Constructor
-    public GameplayEntityWorld(GameplayScreen owner, GameMaster gameMaster)
+    public GameplayEntityWorld(GameMaster gameMaster, GameplayScreen owner)
     {
-        super(owner);
+        super(gameMaster, owner);
         this.gameMaster = gameMaster;
         this.core = new GameplayCore(gameMaster, this);
-        this.state = new GameplayState();
+        this.state = new GameplayState()
+        {
+            @Override public void onPausedStateChanged(boolean paused)
+            {
+                setSolverEnabled(paused);
+            }
+        };
         
         entityFlags = new CharArray(false, CAPACITY);
         entityDatastores = new Array<>(false, CAPACITY);
-        entityDebris = new IntArray(false, CAPACITY);
-        isEntityDebris = new IntSet(CAPACITY);
+        entityDebris = new IntArray(false, 2);
+        isEntityDebris = new IntSet(2);
         
         playerDatastore = new DatastoreForEW<>(CAPACITY);
         avatarDatastore = new DatastoreForEW<>(CAPACITY);
@@ -87,16 +93,15 @@ final public class GameplayEntityWorld extends EntityWorld
         
         playerSystem = new PlayerSystem(this);
         avatarSystem = new AvatarSystem(this);
-        collisionSystem = new CollisionSystem(this, CAPACITY);
+        collisionSystem = new CollisionSystem(this, (int) (CAPACITY * 0.8f));
         spiderSystem = new SpiderSystem(this);
         drawSystem = new DrawSystem(this, gameMaster.getBatch());
         
         collisionSolveTask = new Task()
         {
-            final private CollisionSolver solver = collisionSystem.getSolver();
             @Override public void run()
             {
-                solver.solve();
+                collisionSystem.getSolver().solve();
             }
         };
     }
@@ -120,7 +125,10 @@ final public class GameplayEntityWorld extends EntityWorld
             "debris" and are then removed at the very end of render().
         */
         
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) paused = !paused;
+        final boolean paused = (
+            Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?
+            state.toggleGamePaused() : state.isPaused()
+        );
         
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
@@ -151,7 +159,7 @@ final public class GameplayEntityWorld extends EntityWorld
                     iteratingSystem = drawSystem;
                     
                     ScreenUtils.clear(Color.BLACK);
-                    gameMaster.getViewport().apply();
+                    gameMaster.getViewport().apply(true);
                     gameMaster.getBatch().setProjectionMatrix(
                         gameMaster.getViewport().getCamera().combined
                     );
@@ -176,15 +184,13 @@ final public class GameplayEntityWorld extends EntityWorld
         for (int i = 0; i < entityDebris.size; i++)
         {
             final int debris = entityDebris.get(i);
-            final DatastoreForEW<?>[] datastores = entityDatastores.get(debris);
+            final int last = entities - 1;
+            final DatastoreForEW<?>[] dsDebris = entityDatastores.get(debris);
+            final DatastoreForEW<?>[] dsLast = entityDatastores.get(last);
             
             entityFlags.removeIndex(debris);
-            for (int j = 0 ; j < datastores.length; j++)
-            {
-                /*  The last entity replaces the removing entity in the datastore.
-                */
-                datastores[j].transfer(entities - 1, debris);
-            }
+            for (int j = 0; j < dsDebris.length; j++) dsDebris[j].remove(debris);
+            for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
             entityDatastores.removeIndex(debris);
         }
         entities -= entityDebris.size;
@@ -228,7 +234,7 @@ final public class GameplayEntityWorld extends EntityWorld
      */
     public void show()
     {
-        paused = false;
+        state.setGamePaused(false);
         core.spawnBackground();
         core.spawnPlayer();
         core.spawnSpiders();
@@ -253,7 +259,7 @@ final public class GameplayEntityWorld extends EntityWorld
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        paused = true;
+        if (state.setGamePaused(true)) return;
         setSolverEnabled(false);
     }
     
@@ -265,8 +271,7 @@ final public class GameplayEntityWorld extends EntityWorld
      */
     public void pause()
     {
-        paused = true;
-        setSolverEnabled(false);
+        state.setGamePaused(true);
     }
     
     
@@ -280,7 +285,7 @@ final public class GameplayEntityWorld extends EntityWorld
             although it is highly unnoticeable since the solver waits for a
             frame.
         */
-       
+        
         if (enabled == collisionSolveTask.isScheduled()) return;
         if (enabled)
         {

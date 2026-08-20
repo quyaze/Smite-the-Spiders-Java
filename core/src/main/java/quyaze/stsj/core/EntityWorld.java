@@ -1,5 +1,7 @@
 package quyaze.stsj.core;
 
+import quyaze.stsj.GameMaster;
+
 /**
  * A World with entities (integer).
  * <p></p>
@@ -13,26 +15,8 @@ public abstract class EntityWorld extends World
     
     
     //  Constructor
-    public EntityWorld(StarterScreen owner)
+    public EntityWorld(GameMaster gameMaster, StarterScreen owner)
     {
-        super(owner);
-    }
-    
-    
-    /**
-     * @return Number of entities that exist
-    */
-    public int getEntityCount()
-    {
-        return entities;
-    }
-    
-    
-    /**
-     * @return The last existant entity
-    */
-    public int getLastEntity()
-    {
-        return entities - 1;
+        super(gameMaster, owner);
     }
 }

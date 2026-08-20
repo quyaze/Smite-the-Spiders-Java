@@ -1,20 +1,20 @@
 package quyaze.stsj.gameplay;
 
-import quyaze.stsj.core.Event;
-import quyaze.stsj.gameplay.events.Paused;
-
-final public class GameplayState
+/** A class that keeps track of overlying data and states. */
+public abstract class GameplayState
 {
     //  Fields
-    private boolean paused = true;
-    
-    final public Event<Paused> eventPaused;
+    private boolean paused;
+    public int score;
+    public int lives;
     
     
     //  Constructor
     public GameplayState()
     {
-        eventPaused = new Event<>(2);
+        paused = true;
+        score = 0;
+        lives = 3;
     }
     
     
@@ -34,7 +34,7 @@ final public class GameplayState
     public boolean setGamePaused(boolean paused)
     {
         if (this.paused == paused) return false;
-        eventPaused.fire(new Paused(paused));
+        onPausedStateChanged(paused);
         this.paused = paused;
         return true;
     }
@@ -49,4 +49,8 @@ final public class GameplayState
         setGamePaused(!paused);
         return paused;
     }
+    
+    
+    /** Event for when the game switches pause states. */
+    public abstract void onPausedStateChanged(boolean paused);
 }

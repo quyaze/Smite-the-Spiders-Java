@@ -230,12 +230,55 @@ final public class GameplayCore
     }
     
     
+    /** Throw a web at the player. */
+    public void spawnWeb(Avatar spiderAvatar)
+    {
+        final Avatar avatar;
+        final Mobility mobility;
+        final Collision collision;
+        final Projectile projectile;
+        
+        avatar = new Avatar(
+            gameMaster.getAtlas().findRegion("web"),
+            2f
+        );
+        avatar.position.set(
+            spiderAvatar.position.cpy().add(spiderAvatar.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
+        );
+        
+        mobility = new Mobility(1000f, Vector2.Y.cpy());
+        
+        collision = new Collision(avatar)
+        {
+            @Override public void onCollided(int entity, Collision collider)
+            {
+                if (world.spiderDatastore.contains(entity)) onSpiderHit();
+            }
+        };
+        
+        projectile = new Projectile("spell");
+        
+        world.addEntity(
+            (char) (
+                GameplayEntityWorld.SYSFLAG_AVATAR |
+                GameplayEntityWorld.SYSFLAG_COLLISION |
+                GameplayEntityWorld.SYSFLAG_DRAW
+            ),
+            new DatastoreForEW[] {
+                world.avatarDatastore,
+                world.mobilityDatastore,
+                world.collisionDatastore,
+                world.projectileDatastore
+            },
+            avatar, mobility, collision, projectile
+        );
+    }
+    
+    
     /** Player is hit by a web or spider. */
-    public void onPlayerHit()
-    {}
+    public void onPlayerHit() {}
     
     
     /** A spider is hit by the player's spell. */
-    public void onSpiderHit()
-    {}
+    public void onSpiderHit() {}
 }

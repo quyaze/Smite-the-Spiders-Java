@@ -48,7 +48,7 @@ public class GameMaster extends Game
         mainMenuScreen = new MainMenuScreen(this);
         gameplayScreen = new GameplayScreen(this);
         
-        goToGameplayScreen();
+        goToMainMenuScreen();
         music.setLooping(true);
         music.play();
     }
