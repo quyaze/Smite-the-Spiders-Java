@@ -129,7 +129,7 @@ public abstract class GameplayCore
             float posX = Gdx.graphics.getWidth();
             
             avatar = new Avatar(
-                gameMaster.getAtlas().findRegion("spider"),
+                new TextureRegion(gameMaster.getAtlas().findRegion("spider")),
                 4f
             );
             

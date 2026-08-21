@@ -126,7 +126,7 @@ final public class GameplayWorld extends EntityWorld
             
             Entitiy removal is deferred. Systems can mark enities as
             "debris" and are then removed at the very end of render().
-        */
+        */ System.out.println(state.score);
         
         final boolean paused = (
             Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?

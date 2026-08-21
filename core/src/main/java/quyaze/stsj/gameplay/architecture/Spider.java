@@ -33,5 +33,6 @@ public class Spider
         );
         mobility.setDirection(destination.cpy().sub(avatar.position));
         mobility.setSpeed(MathUtils.random(180, 220));
+        avatar.texture.flip((mobility.getVelocityX() < 0) == avatar.texture.isFlipX(), false);
     }
 }

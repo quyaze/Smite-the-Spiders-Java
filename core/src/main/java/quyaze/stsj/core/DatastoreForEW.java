@@ -61,10 +61,11 @@ public class DatastoreForEW<T>
      * Reallocate data from the {@code oldEntity} to the
      * {@code newEntity}. This is needed in entity
      * swap-removal.
+     * @return The data that was transferred
      */
-    public void transfer(int oldEntity, int newEntity)
+    public T transfer(int oldEntity, int newEntity)
     {
-        data.put(newEntity, data.remove(oldEntity));
+        return data.put(newEntity, data.remove(oldEntity));
     }
     
     
