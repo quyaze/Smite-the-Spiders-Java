@@ -1,13 +1,12 @@
 package quyaze.stsj.gameplay.systems;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
 import quyaze.stsj.core.SystemForEW;
 import quyaze.stsj.gameplay.CollisionSolver;
-import quyaze.stsj.gameplay.GameplayEntityWorld;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Projectile;
 
@@ -18,7 +17,7 @@ import quyaze.stsj.gameplay.architecture.Projectile;
 final public class CollisionSystem implements SystemForEW
 {
     //  Fields
-    final private GameplayEntityWorld world;
+    final private GameplayWorld world;
     final private CollisionSolver solver;
     
     public int defaultCapacity;
@@ -30,7 +29,7 @@ final public class CollisionSystem implements SystemForEW
     //  Constructor
     
     /** Start system with an initial capacity. */
-    public CollisionSystem(GameplayEntityWorld world, int initialCapacity)
+    public CollisionSystem(GameplayWorld world, int initialCapacity)
     {
         this.world = world;
         collidableEntities = new IntArray(false, initialCapacity);
@@ -44,10 +43,6 @@ final public class CollisionSystem implements SystemForEW
         };
         defaultCapacity = initialCapacity;
         screen = new Rectangle();
-        screen.setSize(
-            Gdx.graphics.getWidth(),
-            Gdx.graphics.getHeight()
-        );
     }
     
     

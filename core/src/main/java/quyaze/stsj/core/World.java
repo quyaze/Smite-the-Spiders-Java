@@ -22,5 +22,5 @@ public abstract class World
     
     
     /** For an owning {@code Screen.render()}. */
-    public abstract void render();
+    public abstract void render(float delta);
 }

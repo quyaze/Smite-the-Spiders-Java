@@ -19,12 +19,12 @@ public abstract class GameplayCore
 {
     //  Fields
     final private GameMaster gameMaster;
-    final private GameplayEntityWorld world;
+    final private GameplayWorld world;
     
     
     //  Constructor
     
-    public GameplayCore(GameMaster gameMaster, GameplayEntityWorld world)
+    public GameplayCore(GameMaster gameMaster, GameplayWorld world)
     {
         this.gameMaster = gameMaster;
         this.world = world;
@@ -50,10 +50,7 @@ public abstract class GameplayCore
         );
         
         world.addEntity(
-            (char) (
-                GameplayEntityWorld.SYSFLAG_AVATAR |
-                GameplayEntityWorld.SYSFLAG_DRAW
-            ),
+            (char) GameplayWorld.SYSFLAG_DRAW,
             new DatastoreForEW[] {
                 world.avatarDatastore
             },
@@ -99,10 +96,10 @@ public abstract class GameplayCore
         
         world.addEntity(
             (char) (
-                GameplayEntityWorld.SYSFLAG_PLAYER |
-                GameplayEntityWorld.SYSFLAG_AVATAR |
-                GameplayEntityWorld.SYSFLAG_COLLISION |
-                GameplayEntityWorld.SYSFLAG_DRAW
+                GameplayWorld.SYSFLAG_PLAYER |
+                GameplayWorld.SYSFLAG_AVATAR |
+                GameplayWorld.SYSFLAG_COLLISION |
+                GameplayWorld.SYSFLAG_DRAW
             ),
             new DatastoreForEW[] {
                 world.playerDatastore,
@@ -165,10 +162,10 @@ public abstract class GameplayCore
             
             world.addEntity(
                 (char) (
-                    GameplayEntityWorld.SYSFLAG_AVATAR |
-                    GameplayEntityWorld.SYSFLAG_COLLISION |
-                    GameplayEntityWorld.SYSFLAG_SPIDER |
-                    GameplayEntityWorld.SYSFLAG_DRAW
+                    GameplayWorld.SYSFLAG_AVATAR |
+                    GameplayWorld.SYSFLAG_COLLISION |
+                    GameplayWorld.SYSFLAG_SPIDER |
+                    GameplayWorld.SYSFLAG_DRAW
                 ),
                 new DatastoreForEW[] {
                     world.avatarDatastore,
@@ -215,9 +212,9 @@ public abstract class GameplayCore
         
         world.addEntity(
             (char) (
-                GameplayEntityWorld.SYSFLAG_AVATAR |
-                GameplayEntityWorld.SYSFLAG_COLLISION |
-                GameplayEntityWorld.SYSFLAG_DRAW
+                GameplayWorld.SYSFLAG_AVATAR |
+                GameplayWorld.SYSFLAG_COLLISION |
+                GameplayWorld.SYSFLAG_DRAW
             ),
             new DatastoreForEW[] {
                 world.avatarDatastore,
@@ -260,9 +257,9 @@ public abstract class GameplayCore
         
         world.addEntity(
             (char) (
-                GameplayEntityWorld.SYSFLAG_AVATAR |
-                GameplayEntityWorld.SYSFLAG_COLLISION |
-                GameplayEntityWorld.SYSFLAG_DRAW
+                GameplayWorld.SYSFLAG_AVATAR |
+                GameplayWorld.SYSFLAG_COLLISION |
+                GameplayWorld.SYSFLAG_DRAW
             ),
             new DatastoreForEW[] {
                 world.avatarDatastore,

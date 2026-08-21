@@ -32,8 +32,9 @@ public class Lwjgl3Launcher {
         
         configuration.setTitle("Smite the Spiders");
         configuration.useVsync(true);
-        configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
-        configuration.setFullscreenMode(displayMode);
+        configuration.setForegroundFPS(displayMode.refreshRate + 1);
+        // configuration.setFullscreenMode(displayMode);
+        configuration.setWindowedMode(640, 480);
         configuration.setWindowIcon(
             "icon_16.png",
             "icon_24.png",

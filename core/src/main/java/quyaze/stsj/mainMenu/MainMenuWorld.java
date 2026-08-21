@@ -48,7 +48,7 @@ public class MainMenuWorld extends World
     
     //  Render
     @Override
-    public void render()
+    public void render(float delta)
     {
         /*  Input
         */
@@ -68,7 +68,7 @@ public class MainMenuWorld extends World
         if (titleAvatar.opacity < 1f)
         {
             titleAvatar.opacity = MathUtils.clamp(
-                titleAvatar.opacity + Gdx.graphics.getDeltaTime() * 1.25f, 0f, 1f
+                titleAvatar.opacity + delta * 1.25f, 0f, 1f
             );
         }
         

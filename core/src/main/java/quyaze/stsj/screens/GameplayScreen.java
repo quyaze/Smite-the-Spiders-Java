@@ -2,7 +2,7 @@ package quyaze.stsj.screens;
 
 import quyaze.stsj.GameMaster;
 import quyaze.stsj.core.StarterScreen;
-import quyaze.stsj.gameplay.GameplayEntityWorld;
+import quyaze.stsj.gameplay.GameplayWorld;
 
 /**
  * Screen for the gameplay.
@@ -10,14 +10,14 @@ import quyaze.stsj.gameplay.GameplayEntityWorld;
 public class GameplayScreen extends StarterScreen
 {
     //  Fields
-    final private GameplayEntityWorld world;
+    final private GameplayWorld world;
     
     
     //  Constructor
     public GameplayScreen(GameMaster gameMaster)
     {
         super(gameMaster);
-        world = new GameplayEntityWorld(gameMaster, this);
+        world = new GameplayWorld(gameMaster, this);
     }
     
     
@@ -55,6 +55,7 @@ public class GameplayScreen extends StarterScreen
     {
         if (width <= 0 || height <= 0) return;
         gameMaster.getViewport().update(width, height, true);
+        world.resize(width, height);
     }
     
     
@@ -62,7 +63,7 @@ public class GameplayScreen extends StarterScreen
     @Override
     public void render(float delta)
     {
-        world.render();
+        world.render(delta);
     }
     
     

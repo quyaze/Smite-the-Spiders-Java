@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import quyaze.stsj.core.SystemForEW;
-import quyaze.stsj.gameplay.GameplayEntityWorld;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
@@ -13,11 +13,11 @@ import quyaze.stsj.gameplay.architecture.Player;
 public class PlayerSystem implements SystemForEW
 {
     //  Fields
-    final private GameplayEntityWorld world;
+    final private GameplayWorld world;
     
     
     //  Constructor
-    public PlayerSystem(GameplayEntityWorld world)
+    public PlayerSystem(GameplayWorld world)
     {
         this.world = world;
     }

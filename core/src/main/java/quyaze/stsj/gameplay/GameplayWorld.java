@@ -27,7 +27,7 @@ import quyaze.stsj.gameplay.systems.PlayerSystem;
 import quyaze.stsj.gameplay.systems.SpiderSystem;
 import quyaze.stsj.screens.GameplayScreen;
 
-final public class GameplayEntityWorld extends EntityWorld
+final public class GameplayWorld extends EntityWorld
 {
     //  Fields
     final private GameMaster gameMaster;
@@ -59,14 +59,14 @@ final public class GameplayEntityWorld extends EntityWorld
     final static public char SYSFLAG_DRAW = 16;      //  10000 = 1 << 4
     
     final static private int CAPACITY = 64;
-    final static private float SOLVE_INTERVAL = 1 / 30f;
+    final static private float SOLVE_INTERVAL = 1 / 24f;
     final private Task collisionSolveTask;
     private SystemForEW iteratingSystem;
     private float timeToNextSolve;
     
     
     //  Constructor
-    public GameplayEntityWorld(GameMaster gameMaster, GameplayScreen owner)
+    public GameplayWorld(GameMaster gameMaster, GameplayScreen owner)
     {
         super(gameMaster, owner);
         this.gameMaster = gameMaster;
@@ -112,7 +112,7 @@ final public class GameplayEntityWorld extends EntityWorld
     
     //  Render
     @Override
-    public void render()
+    public void render(float delta)
     {
         /*  First see if pausing or exiting to the main menu.
             
@@ -139,7 +139,7 @@ final public class GameplayEntityWorld extends EntityWorld
             return;
         }
         
-        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) core.spawnSpiders();
+        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) core.spawnSpiders();
         
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
@@ -174,7 +174,10 @@ final public class GameplayEntityWorld extends EntityWorld
                 if ((entityFlags.get(entity) & flag) != 0) iteratingSystem.iterate(entity);
             }
             
-            if (flag == SYSFLAG_DRAW) gameMaster.getBatch().end();
+            if (flag == SYSFLAG_DRAW)
+            {
+                gameMaster.getBatch().end();
+            }
         }
         iteratingSystem = null;
         
@@ -294,6 +297,13 @@ final public class GameplayEntityWorld extends EntityWorld
     }
     
     
+    /** On {@code GameplayScreen.resize()}. */
+    public void resize(int width, int height)
+    {
+        collisionSystem.resize(width, height);
+    }
+    
+    
     /** Enable to disable the solver. */
     private void setSolverEnabled(boolean enabled)
     {
@@ -311,13 +321,14 @@ final public class GameplayEntityWorld extends EntityWorld
             gameMaster.getTimer().scheduleTask(
                 collisionSolveTask,
                 timeToNextSolve,
-                SOLVE_INTERVAL,
-                -1
+                SOLVE_INTERVAL
             );
         }
         else
         {
-            timeToNextSolve = collisionSolveTask.getExecuteTimeMillis() * 0.001f;
+            final long then = collisionSolveTask.getExecuteTimeMillis();
+            final long now = System.nanoTime() / 1000000;
+            timeToNextSolve = (then - now) * 0.001f;
             collisionSolveTask.cancel();
         }
     }

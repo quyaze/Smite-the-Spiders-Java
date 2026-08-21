@@ -1,7 +1,7 @@
 package quyaze.stsj.gameplay.systems;
 
 import quyaze.stsj.core.SystemForEW;
-import quyaze.stsj.gameplay.GameplayEntityWorld;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Spider;
@@ -9,11 +9,11 @@ import quyaze.stsj.gameplay.architecture.Spider;
 public class SpiderSystem implements SystemForEW
 {
     //  Fields
-    final private GameplayEntityWorld world;
+    final private GameplayWorld world;
     
     
     //  Constructor
-    public SpiderSystem(GameplayEntityWorld world)
+    public SpiderSystem(GameplayWorld world)
     {
         this.world = world;
     }

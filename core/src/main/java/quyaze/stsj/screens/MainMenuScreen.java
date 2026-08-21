@@ -59,7 +59,7 @@ public class MainMenuScreen extends StarterScreen
     @Override
     public void render(float delta)
     {
-        world.render();
+        world.render(delta);
     }
     
     

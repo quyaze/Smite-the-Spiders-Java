@@ -7,7 +7,7 @@ import quyaze.stsj.gameplay.architecture.Collision;
 public abstract class CollisionSolver
 {
     //  Fields
-    final private GameplayEntityWorld world;
+    final private GameplayWorld world;
     final private IntArray collidableEntities;
     private Collision collisionA, collisionB;
     private int entityA, entityB;
@@ -16,7 +16,7 @@ public abstract class CollisionSolver
     //  Constructor
     
     /** Keep a reference to the CollisionSystem's entities. */
-    public CollisionSolver(GameplayEntityWorld world, IntArray collidableEntities)
+    public CollisionSolver(GameplayWorld world, IntArray collidableEntities)
     {
         this.world = world;
         this.collidableEntities = collidableEntities;
@@ -29,6 +29,7 @@ public abstract class CollisionSolver
             to be fully in sync with World entities. This allows the solver
             to receive both removed entities and removed collision data.
         */
+        
         for (int i = 0; i < collidableEntities.size; i++)
         {
             entityA = collidableEntities.get(i);

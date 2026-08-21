@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 import quyaze.stsj.core.SystemForEW;
-import quyaze.stsj.gameplay.GameplayEntityWorld;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
@@ -13,11 +13,11 @@ import quyaze.stsj.gameplay.architecture.Player;
 public class AvatarSystem implements SystemForEW
 {
     //  Fields
-    final private GameplayEntityWorld world;
+    final private GameplayWorld world;
     
     
     //  Constructor
-    public AvatarSystem(GameplayEntityWorld world)
+    public AvatarSystem(GameplayWorld world)
     {
         this.world = world;
     }
@@ -29,15 +29,17 @@ public class AvatarSystem implements SystemForEW
     {
         Mobility mobility = world.mobilityDatastore.get(entity);
         
-        if (mobility == null) return; // Entity is just a static avatar
-        
         Avatar avatar = world.avatarDatastore.get(entity);
         Player player = world.playerDatastore.get(entity);
         
-        avatar.position.add(mobility.getVelocity().scl(Gdx.graphics.getDeltaTime()));
+        final float delta = Gdx.graphics.getDeltaTime();
+        
+        avatar.position.add(mobility.getVelocity().scl(delta));
         
         if (player == null) return;
         
+        /*  Keep player from going off-screen
+        */
         avatar.position.set(
             MathUtils.clamp(
                 avatar.position.x,
