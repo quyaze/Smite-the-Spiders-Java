@@ -45,8 +45,8 @@ public abstract class CollisionSolver
                 */
                 if (collisionA.collisionBox.overlaps(collisionB.collisionBox))
                 {
-                    collisionA.onCollided(entityB, collisionB);
-                    collisionB.onCollided(entityA, collisionA);
+                    collisionA.onCollided(entityA, entityB, collisionA, collisionB);
+                    collisionB.onCollided(entityB, entityA, collisionB, collisionA);
                 }
             }
         }

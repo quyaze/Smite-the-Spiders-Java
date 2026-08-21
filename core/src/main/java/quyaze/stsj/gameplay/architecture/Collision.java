@@ -38,5 +38,5 @@ public abstract class Collision
     
     
     /** Collision with another Collision object is detected. */
-    public abstract void onCollided(int entity, Collision collider);
+    public abstract void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision);
 }

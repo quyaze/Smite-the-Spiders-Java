@@ -70,7 +70,10 @@ final public class GameplayEntityWorld extends EntityWorld
     {
         super(gameMaster, owner);
         this.gameMaster = gameMaster;
-        this.core = new GameplayCore(gameMaster, this);
+        this.core = new GameplayCore(gameMaster, this)
+        {
+            @Override public void requestGameOver() {}
+        };
         this.state = new GameplayState()
         {
             @Override public void onPausedStateChanged(boolean paused)
@@ -136,10 +139,7 @@ final public class GameplayEntityWorld extends EntityWorld
             return;
         }
         
-        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.Q))
-        {
-            core.spawnSpiders();
-        }
+        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) core.spawnSpiders();
         
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
@@ -181,21 +181,40 @@ final public class GameplayEntityWorld extends EntityWorld
         /*  Deferred entity removal.
         */
         if (entityDebris.isEmpty()) return;
-        for (int i = 0; i < entityDebris.size; i++)
+        entityDebris.sort();
+        for (int i = entityDebris.size - 1; i >= 0; i--)
         {
             final int debris = entityDebris.get(i);
-            final int last = entities - 1;
+            final int last = entities - entityDebris.size + i;
             final DatastoreForEW<?>[] dsDebris = entityDatastores.get(debris);
             final DatastoreForEW<?>[] dsLast = entityDatastores.get(last);
             
-            entityFlags.removeIndex(debris);
             for (int j = 0; j < dsDebris.length; j++) dsDebris[j].remove(debris);
-            for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
+            if (debris != last) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
+            entityFlags.removeIndex(debris);
             entityDatastores.removeIndex(debris);
         }
         entities -= entityDebris.size;
         entityDebris.clear();
         isEntityDebris.clear();
+    }
+    
+    
+    /**
+     * @return Gameplay core object
+     */
+    public GameplayCore getCore()
+    {
+        return core;
+    }
+    
+    
+    /**
+     * @return Gameplay state object
+     */
+    public GameplayState getState()
+    {
+        return state;
     }
     
     
@@ -223,8 +242,7 @@ final public class GameplayEntityWorld extends EntityWorld
     /** Mark an entity for deferred removal. */
     public void removeEntityRequest(int entity)
     {
-        entityDebris.add(entity);
-        isEntityDebris.add(entity);
+        if (isEntityDebris.add(entity)) entityDebris.add(entity);
     }
     
     

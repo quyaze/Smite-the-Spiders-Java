@@ -15,7 +15,7 @@ import quyaze.stsj.gameplay.architecture.Player;
 import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.gameplay.architecture.Spider;
 
-final public class GameplayCore
+public abstract class GameplayCore
 {
     //  Fields
     final private GameMaster gameMaster;
@@ -94,7 +94,7 @@ final public class GameplayCore
         
         collision = new Collision(avatar)
         {
-            @Override public void onCollided(int entity, Collision collider) {}
+            @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision) {}
         };
         
         world.addEntity(
@@ -154,9 +154,9 @@ final public class GameplayCore
             
             collision = new Collision(avatar)
             {
-                @Override public void onCollided(int entity, Collision collider)
+                @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision)
                 {
-                    if (world.playerDatastore.contains(entity)) onPlayerHit();
+                    if (world.playerDatastore.contains(otherEntity)) onSpiderHitPlayer(thisEntity, otherEntity);
                 }
             };
             
@@ -205,9 +205,9 @@ final public class GameplayCore
         
         collision = new Collision(avatar)
         {
-            @Override public void onCollided(int entity, Collision collider)
+            @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision)
             {
-                if (world.spiderDatastore.contains(entity)) onSpiderHit();
+                if (world.spiderDatastore.contains(otherEntity)) onSpellHitSpider(thisEntity, otherEntity);
             }
         };
         
@@ -250,9 +250,9 @@ final public class GameplayCore
         
         collision = new Collision(avatar)
         {
-            @Override public void onCollided(int entity, Collision collider)
+            @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision)
             {
-                if (world.spiderDatastore.contains(entity)) onSpiderHit();
+                if (world.playerDatastore.contains(otherEntity)) onWebHitPlayer(thisEntity, otherEntity);
             }
         };
         
@@ -275,10 +275,37 @@ final public class GameplayCore
     }
     
     
-    /** Player is hit by a web or spider. */
-    public void onPlayerHit() {}
+    /** Player is hit by a web. */
+    public void onWebHitPlayer(int webEntity, int playerEntity)
+    {
+        final GameplayState state = world.getState();
+        
+        state.score += GameplayState.POINTS_WEB_HIT_PLAYER;
+        if (state.lives-- < 0) requestGameOver();
+    }
+    
+    
+    /** Player is hit by a spider. */
+    public void onSpiderHitPlayer(int spiderEntity, int playerEntity)
+    {
+        final GameplayState state = world.getState();
+        
+        state.score += GameplayState.POINTS_SPIDER_HIT_PLAYER;
+        if (state.lives-- < 0) requestGameOver();
+    }
     
     
     /** A spider is hit by the player's spell. */
-    public void onSpiderHit() {}
+    public void onSpellHitSpider(int spellEntity, int spiderEntity)
+    {
+        final GameplayState state = world.getState();
+        
+        state.score += GameplayState.POINTS_SPELL_HIT_SPIDER;
+        world.removeEntityRequest(spellEntity);
+        world.removeEntityRequest(spiderEntity);
+    }
+    
+    
+    /** Event for when the player is out of lives. */
+    public abstract void requestGameOver();
 }
