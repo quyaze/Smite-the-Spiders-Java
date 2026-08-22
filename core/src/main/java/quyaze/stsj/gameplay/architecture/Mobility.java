@@ -3,7 +3,7 @@ package quyaze.stsj.gameplay.architecture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-/** Provide movement to game {@link Avatar}s. */
+/** Provides movement to {@link Avatar}s. */
 public class Mobility
 {
     //  Fields
@@ -32,8 +32,7 @@ public class Mobility
     
     
     //  Constructors
-    
-    /** Set a default speed of 100 and go right. */
+    /** Set a speed of 100 going right. */
     public Mobility()
     {
         velocity = Vector2.Zero.cpy();
@@ -42,7 +41,7 @@ public class Mobility
     }
     
     
-    /** Set speed and go right. */
+    /** Set the speed and going right. */
     public Mobility(float speed)
     {
         velocity = Vector2.Zero.cpy();
@@ -51,7 +50,7 @@ public class Mobility
     }
     
     
-    /** Set speed and direction with a Vector2. */
+    /** Set the speed and direction with a relative Vector2. */
     public Mobility(float speed, Vector2 relative)
     {
         velocity = Vector2.Zero.cpy();
@@ -60,7 +59,7 @@ public class Mobility
     }
     
     
-    /** Set speed and direction with xy-coordinates. */
+    /** Set speed and direction with relative xy-coordinates. */
     public Mobility(float speed, float relativeX, float relativeY)
     {
         velocity = Vector2.Zero.cpy();
@@ -69,7 +68,7 @@ public class Mobility
     }
     
     
-    /** Set speed and an exact angle in degrees. */
+    /** Set the speed and an exact angle in degrees. */
     public Mobility(float speed, float angleDeg)
     {
         this();
@@ -107,7 +106,7 @@ public class Mobility
     
     
     /**
-     * @return Actual speed
+     * @return Actual linear speed
      */
     public float getSpeed()
     {
@@ -115,9 +114,7 @@ public class Mobility
     }
     
     
-    /**
-     * Set speed.
-     */
+    /** Set speed. */
     public void setSpeed(float speed)
     {
         if (this.speed <= 0f) this.speed = 1f;
@@ -126,9 +123,7 @@ public class Mobility
     }
     
     
-    /**
-     * Set angular direction with the given Vector2 coordinates.
-     */
+    /** Set angular direction with the given Vector2 coordinates. */
     public void setDirection(Vector2 relative)
     {
         angle = MathUtils.atan2(relative.y, relative.x);
@@ -136,9 +131,7 @@ public class Mobility
     }
     
     
-    /**
-     * Set angular direction with the given x- and y-coordinates.
-     */
+    /** Set angular direction with the given x- and y-coordinates. */
     public void setDirection(float relativeX, float relativeY)
     {
         angle = MathUtils.atan2(relativeY, relativeX);

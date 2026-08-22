@@ -3,21 +3,19 @@ package quyaze.stsj.gameplay.architecture;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
- * Provides basic collision capabilities to {@link Avatar}s
- * <p></p>
- * The collision box is the Avatar's texture.
+ * Represents basic collision. The collision box is determined by
+ * the assigned avatar's position and size.
  */
-public abstract class Collision
+public class Collision
 {
     //  Fields
-    final public Rectangle collisionBox;
+    public Rectangle collisionBox;
     public Avatar avatar;
     public boolean skipSolving;
     
     
-    //  Constructor
-    
-    /** Set the Collision's reference avatar. */
+    //  Constructors
+    /** Construct and set collision to represent the avatar. */
     public Collision(Avatar avatar)
     {
         collisionBox = new Rectangle(
@@ -30,13 +28,16 @@ public abstract class Collision
     }
     
     
-    /** Update the collision box. */
-    public void update()
+    /** Update the collision box to its avatar's position. */
+    public void updatePosition()
     {
         collisionBox.setPosition(avatar.position);
     }
     
     
-    /** Collision with another Collision object is detected. */
-    public abstract void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision);
+    /** Update the collision box to be its avatar's size. */
+    public void updateSize()
+    {
+        collisionBox.setSize(avatar.getTrueWidth(), avatar.getTrueHeight());
+    }
 }

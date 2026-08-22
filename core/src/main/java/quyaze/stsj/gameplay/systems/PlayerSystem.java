@@ -10,6 +10,7 @@ import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
 
+/** Handles the player. */
 public class PlayerSystem implements SystemForEW
 {
     //  Fields
@@ -27,16 +28,16 @@ public class PlayerSystem implements SystemForEW
     @Override
     public void iterate(int entity)
     {
-        final Player player = world.playerDatastore.get(entity);
-        final Avatar avatar = world.avatarDatastore.get(entity);
-        final Mobility mobility = world.mobilityDatastore.get(entity);
+        Player player = world.playerDatastore.get(entity);
+        Avatar avatar = world.avatarDatastore.get(entity);
+        Mobility mobility = world.mobilityDatastore.get(entity);
         
-        final Vector2 movementInput = player.movementInput;
+        Vector2 movementInput = player.movementInput;
         
         /*  Input
         */
         movementInput.setZero();
-        final boolean[] keyMap = new boolean[] {
+        boolean[] keyMap = new boolean[] {
             Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_8),
             Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6),
             Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2),

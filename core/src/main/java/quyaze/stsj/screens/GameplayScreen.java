@@ -1,7 +1,11 @@
 package quyaze.stsj.screens;
 
 import quyaze.stsj.GameMaster;
+import quyaze.stsj.core.EventHub;
 import quyaze.stsj.core.StarterScreen;
+import quyaze.stsj.gameplay.CollisionSolver;
+import quyaze.stsj.gameplay.GameplayCore;
+import quyaze.stsj.gameplay.GameplayState;
 import quyaze.stsj.gameplay.GameplayWorld;
 
 /**
@@ -10,7 +14,11 @@ import quyaze.stsj.gameplay.GameplayWorld;
 public class GameplayScreen extends StarterScreen
 {
     //  Fields
-    final private GameplayWorld world;
+    final public GameplayWorld world;
+    final public GameplayCore core;
+    final public GameplayState state;
+    final public CollisionSolver solver;
+    final public EventHub eventHub;
     
     
     //  Constructor
@@ -18,6 +26,10 @@ public class GameplayScreen extends StarterScreen
     {
         super(gameMaster);
         world = new GameplayWorld(gameMaster, this);
+        core = new GameplayCore(gameMaster, this);
+        state = new GameplayState(this);
+        solver = new CollisionSolver(this);
+        eventHub = new EventHub(12, gameMaster.getTimer());
     }
     
     
@@ -41,7 +53,7 @@ public class GameplayScreen extends StarterScreen
     @Override
     public void pause()
     {
-        world.pause();
+        state.setGamePaused(true);
     }
     
     

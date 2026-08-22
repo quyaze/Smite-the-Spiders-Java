@@ -4,21 +4,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-/** Represents the spider. */
-public class Spider
+/** Represents a spider. */
+public abstract class Spider
 {
     //  Fields
-    final public Vector2 destination;
+    public Vector2 destination;
     
     
     //  Constructor
-    public Spider()
+    /** Create a spider and immediately move to its destination. */
+    public Spider(Avatar avatar, Mobility mobility)
     {
         destination = Vector2.Zero.cpy();
+        newPath(avatar, mobility);
     }
     
     
-    /** Set the spider's new path to follow. References its {@link Avatar} and {@link Mobility}. */
+    /**
+     * Set the spider's new path to follow.
+     * <p></p>
+     * References its {@link Avatar} and {@link Mobility}.
+     */
     public void newPath(Avatar avatar, Mobility mobility)
     {
         destination.set(
@@ -35,4 +41,8 @@ public class Spider
         mobility.setSpeed(MathUtils.random(180, 220));
         avatar.texture.flip((mobility.getVelocityX() < 0) == avatar.texture.isFlipX(), false);
     }
+    
+    
+    /** Event for when the spider shoots a web. */
+    public abstract void onShootWeb();
 }

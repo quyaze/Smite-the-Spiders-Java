@@ -4,99 +4,81 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /** Represents visible characters, beings, objects, etc. */
-public class Avatar
+final public class Avatar
 {
     //  Fields
     public TextureRegion texture;
     public Vector2 position;
-    public float opacity;
     private Vector2 trueSize;
+    public float opacity = 1f;
     
     
-    //  Constructor
-    
-    /** Set avatar texture, position, opacity, and scale. */
-    public Avatar(TextureRegion texture, Vector2 position, float opacity, float scale)
+    //  Constructors
+    private Avatar()
     {
-        this.texture = texture;
-        this.position = position;
-        this.opacity = opacity;
-        trueSize = new Vector2(
-            texture.getRegionWidth(),
-            texture.getRegionHeight()
-        ).scl(scale);
+        position = Vector2.Zero.cpy();
+        trueSize = Vector2.Zero.cpy();
     }
     
-    
-    /** Set avatar texture. */
+    /** Set the avatar's texture */
     public Avatar(TextureRegion texture)
     {
-        this(
-            texture,
-            Vector2.Zero.cpy(),
-            1f,
-            1f
-        );
+        this();
+        this.texture = texture;
+        setScale(1f);
     }
     
-    
-    /** Set avatar texture and position. */
+    /** Set the avatar's texture and position. */
     public Avatar(TextureRegion texture, Vector2 position)
     {
-        this(
-            texture,
-            position,
-            1f,
-            1f
-        );
+        this();
+        this.texture = texture;
+        position.set(position);
+        setScale(1f);
     }
     
-    
-    /** Set avatar texture and position. */
+    /** Set the avatar's texture and position. */
     public Avatar(TextureRegion texture, float x, float y)
     {
-        this(
-            texture,
-            new Vector2(x, y),
-            1f,
-            1f
-        );
+        this();
+        this.texture = texture;
+        position.set(x, y);
+        setScale(1f);
     }
     
-    
-    /** Set avatar texture and scale. */
+    /** Set the avatar's texture and scale. */
     public Avatar(TextureRegion texture, float scale)
     {
-        this(
-            texture,
-            Vector2.Zero.cpy(),
-            1f,
-            scale
-        );
+        this();
+        this.texture = texture;
+        setScale(scale);
+    }
+    
+    /** Set the avatar's texture, scale, and position. */
+    public Avatar(TextureRegion texture, float scale, Vector2 position)
+    {
+        this();
+        this.texture = texture;
+        this.position.set(position);
+        setScale(scale);
+    }
+    
+    /** Set the avatar's texture, scale, and position. */
+    public Avatar(TextureRegion texture, float scale, float x, float y)
+    {
+        this();
+        this.texture = texture;
+        position.set(x, y);
+        setScale(scale);
     }
     
     
-    /** Set avatar texture, position, and scale. */
-    public Avatar(TextureRegion texture, Vector2 position, float scale)
+    /**
+     * @return A copy of the position
+     */
+    public Vector2 readPosition()
     {
-        this(
-            texture,
-            position,
-            1f,
-            scale
-        );
-    }
-    
-    
-    /** Set avatar texture, position, and scale. */
-    public Avatar(TextureRegion texture, float x, float y, float scale)
-    {
-        this(
-            texture,
-            new Vector2(x, y),
-            1f,
-            scale
-        );
+        return position.cpy();
     }
     
     
@@ -163,20 +145,30 @@ public class Avatar
     }
     
     
-    /**
-     * Set the x-scale of the texture (width).
-     */
+    /** Set the x-scale of the texture (width). */
     public void setScaleX(float scale)
     {
         trueSize.x = scale * texture.getRegionWidth();
     }
     
     
-    /**
-     * Set the y-scale of the texture (height).
-     */
+    /** Set the y-scale of the texture (height). */
     public void setScaleY(float scale)
     {
         trueSize.y = scale * texture.getRegionHeight();
+    }
+    
+    
+    /** Center coordinate of the avatar. */
+    public Vector2 getCenter()
+    {
+        return position.cpy().add(trueSize.cpy().scl(0.5f));
+    }
+    
+    
+    /** Get the top right coordinate; opposite corner from the position. */
+    public Vector2 getTopRight()
+    {
+        return position.cpy().add(trueSize);
     }
 }

@@ -14,33 +14,35 @@ import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
 import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.gameplay.architecture.Spider;
+import quyaze.stsj.screens.GameplayScreen;
 
-public abstract class GameplayCore
+public class GameplayCore
 {
     //  Fields
     final private GameMaster gameMaster;
-    final private GameplayWorld world;
+    final private GameplayScreen owner;
     
     
     //  Constructor
     
-    public GameplayCore(GameMaster gameMaster, GameplayWorld world)
+    public GameplayCore(GameMaster gameMaster, GameplayScreen owner)
     {
         this.gameMaster = gameMaster;
-        this.world = world;
+        this.owner = owner;
     }
     
     
     /** Create the background. */
     public void spawnBackground()
     {
-        final Avatar avatar;
+        Avatar avatar;
         
-        final AtlasRegion background = gameMaster.getAtlas().findRegion("bg");
-        final int widthScreen = Gdx.graphics.getWidth();
-        final int heightScreen = Gdx.graphics.getHeight();
-        final int widthBackground = background.getRegionWidth();
-        final int heightBackground = background.getRegionHeight();
+        GameplayWorld world = owner.world;
+        AtlasRegion background = gameMaster.getAtlas().findRegion("bg");
+        int widthScreen = Gdx.graphics.getWidth();
+        int heightScreen = Gdx.graphics.getHeight();
+        int widthBackground = background.getRegionWidth();
+        int heightBackground = background.getRegionHeight();
         
         avatar = new Avatar(
             background,
@@ -62,14 +64,15 @@ public abstract class GameplayCore
     /** Create the player. */
     public void spawnPlayer()
     {
-        final Player player;
-        final Avatar avatar;
-        final Mobility mobility;
-        final Collision collision;
+        Player player;
+        Avatar avatar;
+        Mobility mobility;
+        Collision collision;
         
+        GameplayWorld world = owner.world;
         final int width = Gdx.graphics.getWidth();
         final int height = Gdx.graphics.getHeight();
-        final Vector2 center = new Vector2(width * 0.5f, height * 0.5f);
+        Vector2 center = new Vector2(width * 0.5f, height * 0.5f);
         
         player = new Player()
         {
@@ -89,10 +92,7 @@ public abstract class GameplayCore
         
         mobility = new Mobility(0f);
         
-        collision = new Collision(avatar)
-        {
-            @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision) {}
-        };
+        collision = new Collision(avatar);
         
         world.addEntity(
             (char) (
@@ -121,11 +121,12 @@ public abstract class GameplayCore
             i++
         )
         {
-            final Avatar avatar;
-            final Mobility mobility;
-            final Collision collision;
-            final Spider spider;
+            Avatar avatar;
+            Mobility mobility;
+            Collision collision;
+            Spider spider;
             
+            GameplayWorld world = owner.world;
             float posX = Gdx.graphics.getWidth();
             
             avatar = new Avatar(
@@ -149,15 +150,15 @@ public abstract class GameplayCore
             
             mobility = new Mobility();
             
-            collision = new Collision(avatar)
+            collision = new Collision(avatar);
+            
+            spider = new Spider(avatar, mobility)
             {
-                @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision)
+                @Override public void onShootWeb()
                 {
-                    if (world.playerDatastore.contains(otherEntity)) onSpiderHitPlayer(thisEntity, otherEntity);
+                    spawnWeb(avatar, avatar);
                 }
             };
-            
-            spider = new Spider();
             spider.newPath(avatar, mobility);
             
             world.addEntity(
@@ -182,12 +183,13 @@ public abstract class GameplayCore
     /** Cast a fireball spell. */
     public void spawnFireball(Avatar playerCharacter)
     {
-        final Avatar avatar;
-        final Mobility mobility;
-        final Collision collision;
-        final Projectile projectile;
+        Avatar avatar;
+        Mobility mobility;
+        Collision collision;
+        Projectile projectile;
         
-        final TextureRegion spellTexture = new TextureRegion(gameMaster.getAtlas().findRegion("spell"));
+        GameplayWorld world = owner.world;
+        TextureRegion spellTexture = new TextureRegion(gameMaster.getAtlas().findRegion("spell"));
         spellTexture.flip(false, true);
         
         avatar = new Avatar(
@@ -200,13 +202,7 @@ public abstract class GameplayCore
         
         mobility = new Mobility(1000f, Vector2.Y.cpy());
         
-        collision = new Collision(avatar)
-        {
-            @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision)
-            {
-                if (world.spiderDatastore.contains(otherEntity)) onSpellHitSpider(thisEntity, otherEntity);
-            }
-        };
+        collision = new Collision(avatar);
         
         projectile = new Projectile("spell");
         
@@ -228,12 +224,14 @@ public abstract class GameplayCore
     
     
     /** Throw a web at the player. */
-    public void spawnWeb(Avatar spiderAvatar)
+    public void spawnWeb(Avatar spiderAvatar, Avatar playerCharacter)
     {
-        final Avatar avatar;
-        final Mobility mobility;
-        final Collision collision;
-        final Projectile projectile;
+        Avatar avatar;
+        Mobility mobility;
+        Collision collision;
+        Projectile projectile;
+        
+        GameplayWorld world = owner.world;
         
         avatar = new Avatar(
             gameMaster.getAtlas().findRegion("web"),
@@ -243,17 +241,14 @@ public abstract class GameplayCore
             spiderAvatar.position.cpy().add(spiderAvatar.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
         );
         
-        mobility = new Mobility(1000f, Vector2.Y.cpy());
+        mobility = new Mobility(
+            1000f,
+            playerCharacter.getCenter().sub(avatar.getCenter())
+        );
         
-        collision = new Collision(avatar)
-        {
-            @Override public void onCollided(int thisEntity, int otherEntity, Collision thisCollision, Collision otherCollision)
-            {
-                if (world.playerDatastore.contains(otherEntity)) onWebHitPlayer(thisEntity, otherEntity);
-            }
-        };
+        collision = new Collision(avatar);
         
-        projectile = new Projectile("spell");
+        projectile = new Projectile("web");
         
         world.addEntity(
             (char) (
@@ -275,34 +270,30 @@ public abstract class GameplayCore
     /** Player is hit by a web. */
     public void onWebHitPlayer(int webEntity, int playerEntity)
     {
-        final GameplayState state = world.getState();
+        final GameplayState state = owner.state;
         
         state.score += GameplayState.POINTS_WEB_HIT_PLAYER;
-        if (state.lives-- < 0) requestGameOver();
+        if (state.lives-- < 0) owner.eventHub.fireEvent("onGameOver", null);
     }
     
     
     /** Player is hit by a spider. */
     public void onSpiderHitPlayer(int spiderEntity, int playerEntity)
     {
-        final GameplayState state = world.getState();
+        final GameplayState state = owner.state;
         
         state.score += GameplayState.POINTS_SPIDER_HIT_PLAYER;
-        if (state.lives-- < 0) requestGameOver();
+        if (state.lives-- < 0) owner.eventHub.fireEvent("onGameOver", null);
     }
     
     
     /** A spider is hit by the player's spell. */
     public void onSpellHitSpider(int spellEntity, int spiderEntity)
     {
-        final GameplayState state = world.getState();
+        final GameplayState state = owner.state;
         
         state.score += GameplayState.POINTS_SPELL_HIT_SPIDER;
-        world.removeEntityRequest(spellEntity);
-        world.removeEntityRequest(spiderEntity);
+        owner.world.removeEntityRequest(spellEntity);
+        owner.world.removeEntityRequest(spiderEntity);
     }
-    
-    
-    /** Event for when the player is out of lives. */
-    public abstract void requestGameOver();
 }

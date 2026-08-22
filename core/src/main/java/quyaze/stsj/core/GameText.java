@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Disposable;
 
-/**
- * Utility class for game text.
- */
+/** Utility class for game text. */
 public class GameText implements Disposable
 {
     //  Fields

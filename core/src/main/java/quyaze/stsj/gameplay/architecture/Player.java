@@ -6,13 +6,18 @@ import com.badlogic.gdx.math.Vector2;
 /** Represents the player. */
 public abstract class Player
 {
-    final public Vector2 movementInput;
+    //  Fields
+    public Vector2 movementInput;
     public float maxSpeed = 600f;
     public Vector2 upperScreenBounds;
     
     
     //  Constructors
-    
+    /**
+     * Create a player pending the character.
+     * <p></p>
+     * Must call {@link #setAvatar(Avatar)}.
+    */
     public Player()
     {
         movementInput = Vector2.Zero.cpy();
@@ -22,7 +27,7 @@ public abstract class Player
         );
     }
     
-    /** Screen bounds is set based on {@code avatar}. */
+    /** Create a player with reference to the character. */
     public Player(Avatar avatar)
     {
         this();
@@ -30,7 +35,7 @@ public abstract class Player
     }
     
     
-    /** Set screen bounds with the player character. */
+    /** Set player character. */
     public void setAvatar(Avatar avatar)
     {
         upperScreenBounds.set(
@@ -43,7 +48,7 @@ public abstract class Player
     /**
      * Event for when the player is casting a fireball.
      * <p></p>
-     * Passes the player wizard for positioning.
+     * Pass the player wizard for positioning.
      */
     public abstract void onCastFireball(Avatar playerCharacter);
 }

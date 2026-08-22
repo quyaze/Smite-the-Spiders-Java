@@ -6,6 +6,7 @@ import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Spider;
 
+/** Handles the spider. */
 public class SpiderSystem implements SystemForEW
 {
     //  Fields
@@ -23,9 +24,9 @@ public class SpiderSystem implements SystemForEW
     @Override
     public void iterate(int entity)
     {
-        final Avatar avatar = world.avatarDatastore.get(entity);
-        final Mobility mobility = world.mobilityDatastore.get(entity);
-        final Spider spider = world.spiderDatastore.get(entity);
+        Avatar avatar = world.avatarDatastore.get(entity);
+        Mobility mobility = world.mobilityDatastore.get(entity);
+        Spider spider = world.spiderDatastore.get(entity);
         
         if (avatar.position.dst2(spider.destination.cpy()) < 36f) spider.newPath(avatar, mobility);
     }

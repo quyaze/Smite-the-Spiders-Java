@@ -9,7 +9,7 @@ import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Projectile;
-
+import quyaze.stsj.screens.GameplayScreen;
 /**
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
@@ -18,31 +18,24 @@ final public class CollisionSystem implements SystemForEW
 {
     //  Fields
     final private GameplayWorld world;
-    final private CollisionSolver solver;
     
     public int defaultCapacity;
-    final private IntArray collidableEntities;
-    final private IntIntMap collidableEntityToIndex;
-    final private Rectangle screen;
+    private IntArray collidableEntities;
+    private IntIntMap collidableEntityToIndex;
+    private Rectangle screen;
     
     
     //  Constructor
     
     /** Start system with an initial capacity. */
-    public CollisionSystem(GameplayWorld world, int initialCapacity)
+    public CollisionSystem(GameplayScreen owner, int initialCapacity)
     {
-        this.world = world;
+        this.world = owner.world;
         collidableEntities = new IntArray(false, initialCapacity);
         collidableEntityToIndex = new IntIntMap(initialCapacity);
-        solver = new CollisionSolver(world, collidableEntities)
-        {
-            @Override public void onCleanup()
-            {
-                collidableEntityToIndex.clear(defaultCapacity);
-            }
-        };
         defaultCapacity = initialCapacity;
         screen = new Rectangle();
+        owner.solver.setCollisionEntitiesReference(collidableEntities);
     }
     
     
@@ -50,10 +43,10 @@ final public class CollisionSystem implements SystemForEW
     @Override
     public void iterate(int entity)
     {
-        final Collision collision = world.collisionDatastore.get(entity);
-        final Projectile projectile = world.projectileDatastore.get(entity);
+        Collision collision = world.collisionDatastore.get(entity);
+        Projectile projectile = world.projectileDatastore.get(entity);
         
-        collision.update();
+        collision.updatePosition();
         
         /*  Cull projectiles that have left the screen.
         */
@@ -67,15 +60,6 @@ final public class CollisionSystem implements SystemForEW
         
         collidableEntityToIndex.put(entity, collidableEntities.size);
         collidableEntities.add(entity);
-    }
-    
-    
-    /**
-     * @return Collision solver
-     */
-    public CollisionSolver getSolver()
-    {
-        return solver;
     }
     
     

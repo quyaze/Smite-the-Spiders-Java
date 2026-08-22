@@ -1,9 +1,13 @@
 package quyaze.stsj.gameplay;
 
+import quyaze.stsj.screens.GameplayScreen;
+
 /** A class that keeps track of overlying data and states. */
-public abstract class GameplayState
+public class GameplayState
 {
     //  Fields
+    final private GameplayScreen owner;
+    
     private boolean paused;
     public int score;
     public int lives;
@@ -14,8 +18,9 @@ public abstract class GameplayState
     
     
     //  Constructor
-    public GameplayState()
+    public GameplayState(GameplayScreen owner)
     {
+        this.owner = owner;
         paused = true;
         score = 0;
         lives = 3;
@@ -38,7 +43,7 @@ public abstract class GameplayState
     public boolean setGamePaused(boolean paused)
     {
         if (this.paused == paused) return false;
-        onPausedStateChanged(paused);
+        owner.eventHub.fireEvent("onPausedStateChanged", paused);
         this.paused = paused;
         return true;
     }
@@ -53,8 +58,4 @@ public abstract class GameplayState
         setGamePaused(!paused);
         return paused;
     }
-    
-    
-    /** Event for when the game switches pause states. */
-    public abstract void onPausedStateChanged(boolean paused);
 }

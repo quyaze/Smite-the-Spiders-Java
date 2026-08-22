@@ -31,8 +31,7 @@ final public class GameplayWorld extends EntityWorld
 {
     //  Fields
     final private GameMaster gameMaster;
-    final private GameplayCore core;
-    final private GameplayState state;
+    final private GameplayScreen owner;
     
     final private CharArray entityFlags;
     final private Array<DatastoreForEW<?>[]> entityDatastores;
@@ -70,17 +69,7 @@ final public class GameplayWorld extends EntityWorld
     {
         super(gameMaster, owner);
         this.gameMaster = gameMaster;
-        this.core = new GameplayCore(gameMaster, this)
-        {
-            @Override public void requestGameOver() {}
-        };
-        this.state = new GameplayState()
-        {
-            @Override public void onPausedStateChanged(boolean paused)
-            {
-                setSolverEnabled(!paused);
-            }
-        };
+        this.owner = owner;
         
         entityFlags = new CharArray(false, CAPACITY);
         entityDatastores = new Array<>(false, CAPACITY);
@@ -96,7 +85,7 @@ final public class GameplayWorld extends EntityWorld
         
         playerSystem = new PlayerSystem(this);
         avatarSystem = new AvatarSystem(this);
-        collisionSystem = new CollisionSystem(this, (int) (CAPACITY * 0.8f));
+        collisionSystem = new CollisionSystem(owner, (int) (CAPACITY * 0.8f));
         spiderSystem = new SpiderSystem(this);
         drawSystem = new DrawSystem(this, gameMaster.getBatch());
         
@@ -104,7 +93,7 @@ final public class GameplayWorld extends EntityWorld
         {
             @Override public void run()
             {
-                collisionSystem.getSolver().solve();
+                owner.solver.solve();
             }
         };
     }
@@ -114,6 +103,9 @@ final public class GameplayWorld extends EntityWorld
     @Override
     public void render(float delta)
     {
+        GameplayCore core = owner.core;
+        GameplayState state = owner.state;
+        
         /*  First see if pausing or exiting to the main menu.
             
             Every call to this function, EWSystems each perform a pass in
@@ -126,7 +118,7 @@ final public class GameplayWorld extends EntityWorld
             
             Entitiy removal is deferred. Systems can mark enities as
             "debris" and are then removed at the very end of render().
-        */ System.out.println(state.score);
+        */
         
         final boolean paused = (
             Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?
@@ -204,24 +196,6 @@ final public class GameplayWorld extends EntityWorld
     
     
     /**
-     * @return Gameplay core object
-     */
-    public GameplayCore getCore()
-    {
-        return core;
-    }
-    
-    
-    /**
-     * @return Gameplay state object
-     */
-    public GameplayState getState()
-    {
-        return state;
-    }
-    
-    
-    /**
      * Spawn an entity and subscribe it to the specified systems.
      * <p></p>
      * Data is being added to the datastores blindly. Ensure
@@ -256,10 +230,10 @@ final public class GameplayWorld extends EntityWorld
      */
     public void show()
     {
-        state.setGamePaused(false);
-        core.spawnBackground();
-        core.spawnPlayer();
-        core.spawnSpiders();
+        owner.state.setGamePaused(false);
+        owner.core.spawnBackground();
+        owner.core.spawnPlayer();
+        owner.core.spawnSpiders();
     }
     
     
@@ -281,19 +255,8 @@ final public class GameplayWorld extends EntityWorld
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        state.setGamePaused(true);
+        owner.state.setGamePaused(true);
         setSolverEnabled(false);
-    }
-    
-    
-    /**
-     * On {@code GameplayScreen.pause()}
-     * <p></p>
-     * Executes pause functionality.
-     */
-    public void pause()
-    {
-        state.setGamePaused(true);
     }
     
     
