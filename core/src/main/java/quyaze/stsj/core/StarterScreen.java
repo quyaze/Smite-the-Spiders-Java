@@ -2,18 +2,18 @@ package quyaze.stsj.core;
 
 import com.badlogic.gdx.Screen;
 
-import quyaze.stsj.GameMaster;
+import quyaze.stsj.SmiteTheSpiders;
 
 /**
  * A template class for Screens.
  * <p></p>
- * Contains a reference to the owning GameMaster and a constructor.
+ * Contains a reference to the owning game and a constructor.
  */
 public abstract class StarterScreen implements Screen
 {
-    final protected GameMaster gameMaster;
-    public StarterScreen(GameMaster gameMaster)
+    final protected SmiteTheSpiders game;
+    public StarterScreen(SmiteTheSpiders game)
     {
-        this.gameMaster = gameMaster;
+        this.game = game;
     }
 }

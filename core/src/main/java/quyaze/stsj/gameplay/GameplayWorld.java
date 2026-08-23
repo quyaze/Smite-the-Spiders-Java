@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer.Task;
 
-import quyaze.stsj.GameMaster;
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.DatastoreForEW;
 import quyaze.stsj.core.SystemForEW;
 import quyaze.stsj.core.EntityWorld;
@@ -30,7 +30,7 @@ import quyaze.stsj.screens.GameplayScreen;
 final public class GameplayWorld extends EntityWorld
 {
     //  Fields
-    final private GameMaster gameMaster;
+    final private SmiteTheSpiders game;
     final private GameplayScreen owner;
     
     final private CharArray entityFlags;
@@ -65,10 +65,10 @@ final public class GameplayWorld extends EntityWorld
     
     
     //  Constructor
-    public GameplayWorld(GameMaster gameMaster, GameplayScreen owner)
+    public GameplayWorld(SmiteTheSpiders game, GameplayScreen owner)
     {
-        super(gameMaster, owner);
-        this.gameMaster = gameMaster;
+        super(game, owner);
+        this.game = game;
         this.owner = owner;
         
         entityFlags = new CharArray(false, CAPACITY);
@@ -87,7 +87,7 @@ final public class GameplayWorld extends EntityWorld
         avatarSystem = new AvatarSystem(this);
         collisionSystem = new CollisionSystem(owner, (int) (CAPACITY * 0.8f));
         spiderSystem = new SpiderSystem(this);
-        drawSystem = new DrawSystem(this, gameMaster.getBatch());
+        drawSystem = new DrawSystem(this, game.getBatch());
         
         collisionSolveTask = new Task()
         {
@@ -96,6 +96,16 @@ final public class GameplayWorld extends EntityWorld
                 owner.solver.solve();
             }
         };
+        
+        game.getTimer().postTask(
+            new Task()
+            {
+                @Override public void run()
+                {
+                    owner.solver.setCollisionEntitiesReference(collisionSystem.collidableEntities);
+                }
+            }
+        );
     }
     
     
@@ -127,7 +137,7 @@ final public class GameplayWorld extends EntityWorld
         
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
-            gameMaster.goToMainMenuScreen();
+            game.goToMainMenuScreen();
             return;
         }
         
@@ -151,11 +161,11 @@ final public class GameplayWorld extends EntityWorld
                     iteratingSystem = drawSystem;
                     
                     ScreenUtils.clear(Color.BLACK);
-                    gameMaster.getViewport().apply(true);
-                    gameMaster.getBatch().setProjectionMatrix(
-                        gameMaster.getViewport().getCamera().combined
+                    game.getViewport().apply(true);
+                    game.getBatch().setProjectionMatrix(
+                        game.getViewport().getCamera().combined
                     );
-                    gameMaster.getBatch().begin();
+                    game.getBatch().begin();
                     
                     break;
             }
@@ -168,7 +178,7 @@ final public class GameplayWorld extends EntityWorld
             
             if (flag == SYSFLAG_DRAW)
             {
-                gameMaster.getBatch().end();
+                game.getBatch().end();
             }
         }
         iteratingSystem = null;
@@ -281,7 +291,7 @@ final public class GameplayWorld extends EntityWorld
         if (enabled == collisionSolveTask.isScheduled()) return;
         if (enabled)
         {
-            gameMaster.getTimer().scheduleTask(
+            game.getTimer().scheduleTask(
                 collisionSolveTask,
                 timeToNextSolve,
                 SOLVE_INTERVAL

@@ -1,6 +1,6 @@
 package quyaze.stsj.core;
 
-import quyaze.stsj.GameMaster;
+import quyaze.stsj.SmiteTheSpiders;
 
 /**
  * A base class for a StarterScreen and seperate from it. Meant to
@@ -9,14 +9,14 @@ import quyaze.stsj.GameMaster;
 public abstract class World
 {
     //  Fields
-    final protected GameMaster gameMaster;
+    final protected SmiteTheSpiders game;
     final protected StarterScreen owner;
     
     
     //  Constructor
-    public World(GameMaster gameMaster, StarterScreen owner)
+    public World(SmiteTheSpiders game, StarterScreen owner)
     {
-        this.gameMaster = gameMaster;
+        this.game = game;
         this.owner = owner;
     }
     

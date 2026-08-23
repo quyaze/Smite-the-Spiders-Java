@@ -14,10 +14,8 @@ import quyaze.stsj.core.GameText;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
 
-/**
- * Define the game entry point.
-*/
-public class GameMaster extends Game
+/** The game entry point and definition. */
+public class SmiteTheSpiders extends Game
 {
     //  Fields
     private SpriteBatch batch;

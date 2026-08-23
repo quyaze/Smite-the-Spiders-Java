@@ -20,7 +20,7 @@ final public class CollisionSystem implements SystemForEW
     final private GameplayWorld world;
     
     public int defaultCapacity;
-    private IntArray collidableEntities;
+    public IntArray collidableEntities;
     private IntIntMap collidableEntityToIndex;
     private Rectangle screen;
     
@@ -35,7 +35,6 @@ final public class CollisionSystem implements SystemForEW
         collidableEntityToIndex = new IntIntMap(initialCapacity);
         defaultCapacity = initialCapacity;
         screen = new Rectangle();
-        owner.solver.setCollisionEntitiesReference(collidableEntities);
     }
     
     

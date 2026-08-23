@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import quyaze.stsj.GameMaster;
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.World;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.screens.MainMenuScreen;
@@ -33,12 +33,12 @@ public class MainMenuWorld extends World
     
     
     //  Constructor
-    public MainMenuWorld(GameMaster gameMaster, MainMenuScreen owner)
+    public MainMenuWorld(SmiteTheSpiders game, MainMenuScreen owner)
     {
-        super(gameMaster, owner);
-        background = gameMaster.getAtlas().findRegion("bg");
-        title = gameMaster.getAtlas().findRegion("title");
-        subtitle = gameMaster.getGameText().generateRegularGlyph("Click anywhere to play.");
+        super(game, owner);
+        background = game.getAtlas().findRegion("bg");
+        title = game.getAtlas().findRegion("title");
+        subtitle = game.getGameText().generateRegularGlyph("Click anywhere to play.");
         
         backgroundAvatar = new Avatar(background);
         titleAvatar = new Avatar(title, 2f);
@@ -59,7 +59,7 @@ public class MainMenuWorld extends World
         }
         if (enableInput && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
         {
-            gameMaster.goToGameplayScreen();
+            game.goToGameplayScreen();
             return;
         }
         
@@ -74,9 +74,9 @@ public class MainMenuWorld extends World
         
         /*  Draw
         */
-        final ScreenViewport viewport = gameMaster.getViewport();
-        final SpriteBatch batch = gameMaster.getBatch();
-        final BitmapFont regularFont = gameMaster.getGameText().getRegularFont();
+        final ScreenViewport viewport = game.getViewport();
+        final SpriteBatch batch = game.getBatch();
+        final BitmapFont regularFont = game.getGameText().getRegularFont();
         
         ScreenUtils.clear(Color.BLACK);
         viewport.apply(true);
@@ -120,7 +120,7 @@ public class MainMenuWorld extends World
     */
     public void show()
     {
-        gameMaster.getTimer().scheduleTask(
+        game.getTimer().scheduleTask(
             new Task()
             {
                 @Override public void run()

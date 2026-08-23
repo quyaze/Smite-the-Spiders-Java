@@ -1,6 +1,6 @@
 package quyaze.stsj.screens;
 
-import quyaze.stsj.GameMaster;
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.StarterScreen;
 import quyaze.stsj.mainMenu.MainMenuWorld;
 
@@ -14,10 +14,10 @@ public class MainMenuScreen extends StarterScreen
     
     
     //  Constructor
-    public MainMenuScreen(GameMaster gameMaster)
+    public MainMenuScreen(SmiteTheSpiders game)
     {
-        super(gameMaster);
-        world = new MainMenuWorld(gameMaster, this);
+        super(game);
+        world = new MainMenuWorld(game, this);
     }
     
     
@@ -50,7 +50,7 @@ public class MainMenuScreen extends StarterScreen
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        gameMaster.getViewport().update(width, height, true);
+        game.getViewport().update(width, height, true);
         world.resize(width, height);
     }
     

@@ -1,6 +1,6 @@
 package quyaze.stsj.screens;
 
-import quyaze.stsj.GameMaster;
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EventHub;
 import quyaze.stsj.core.StarterScreen;
 import quyaze.stsj.gameplay.CollisionSolver;
@@ -22,14 +22,14 @@ public class GameplayScreen extends StarterScreen
     
     
     //  Constructor
-    public GameplayScreen(GameMaster gameMaster)
+    public GameplayScreen(SmiteTheSpiders game)
     {
-        super(gameMaster);
-        world = new GameplayWorld(gameMaster, this);
-        core = new GameplayCore(gameMaster, this);
+        super(game);
+        world = new GameplayWorld(game, this);
+        core = new GameplayCore(game, this);
         state = new GameplayState(this);
         solver = new CollisionSolver(this);
-        eventHub = new EventHub(12, gameMaster.getTimer());
+        eventHub = new EventHub(12, game.getTimer());
     }
     
     
@@ -66,7 +66,7 @@ public class GameplayScreen extends StarterScreen
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        gameMaster.getViewport().update(width, height, true);
+        game.getViewport().update(width, height, true);
         world.resize(width, height);
     }
     

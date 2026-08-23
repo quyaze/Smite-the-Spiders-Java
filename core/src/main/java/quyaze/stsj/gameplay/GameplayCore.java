@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import quyaze.stsj.GameMaster;
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.DatastoreForEW;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Collision;
@@ -19,15 +19,15 @@ import quyaze.stsj.screens.GameplayScreen;
 public class GameplayCore
 {
     //  Fields
-    final private GameMaster gameMaster;
+    final private SmiteTheSpiders game;
     final private GameplayScreen owner;
     
     
     //  Constructor
     
-    public GameplayCore(GameMaster gameMaster, GameplayScreen owner)
+    public GameplayCore(SmiteTheSpiders game, GameplayScreen owner)
     {
-        this.gameMaster = gameMaster;
+        this.game = game;
         this.owner = owner;
     }
     
@@ -38,7 +38,7 @@ public class GameplayCore
         Avatar avatar;
         
         GameplayWorld world = owner.world;
-        AtlasRegion background = gameMaster.getAtlas().findRegion("bg");
+        AtlasRegion background = game.getAtlas().findRegion("bg");
         int widthScreen = Gdx.graphics.getWidth();
         int heightScreen = Gdx.graphics.getHeight();
         int widthBackground = background.getRegionWidth();
@@ -83,7 +83,7 @@ public class GameplayCore
         };
         
         avatar = new Avatar(
-            gameMaster.getAtlas().findRegion("wizard"),
+            game.getAtlas().findRegion("wizard"),
             4f
         );
         center.sub(avatar.getTrueSize().scl(0.5f));
@@ -130,7 +130,7 @@ public class GameplayCore
             float posX = Gdx.graphics.getWidth();
             
             avatar = new Avatar(
-                new TextureRegion(gameMaster.getAtlas().findRegion("spider")),
+                new TextureRegion(game.getAtlas().findRegion("spider")),
                 4f
             );
             
@@ -189,7 +189,7 @@ public class GameplayCore
         Projectile projectile;
         
         GameplayWorld world = owner.world;
-        TextureRegion spellTexture = new TextureRegion(gameMaster.getAtlas().findRegion("spell"));
+        TextureRegion spellTexture = new TextureRegion(game.getAtlas().findRegion("spell"));
         spellTexture.flip(false, true);
         
         avatar = new Avatar(
@@ -234,7 +234,7 @@ public class GameplayCore
         GameplayWorld world = owner.world;
         
         avatar = new Avatar(
-            gameMaster.getAtlas().findRegion("web"),
+            game.getAtlas().findRegion("web"),
             2f
         );
         avatar.position.set(
