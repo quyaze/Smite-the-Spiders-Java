@@ -8,11 +8,11 @@ import com.badlogic.gdx.utils.IntMap;
  */
 public class EWDatastore<T>
 {
-    //  Fields
-    final private IntMap<T> data;
+    /*  Fields  */
+    private IntMap<T> data;
     
     
-    //  Constructor
+    /*  Constructor  */
     public EWDatastore(int initialCapacity)
     {
         data = new IntMap<T>(initialCapacity);

@@ -15,20 +15,6 @@ import quyaze.stsj.SmiteTheSpiders;
 */
 public abstract class World
 {
-    /*  Fields  */
-    final protected SmiteTheSpiders game;
-    final protected StarterScreen owner;
-    
-    
-    /*  Constructor  */
-    public World(SmiteTheSpiders game, StarterScreen owner)
-    {
-        this.game = game;
-        this.owner = owner;
-    }
-    
-    /**
-     * World's render pass.
-     */
+    /** World's render pass. */
     public abstract void render(float delta);
 }

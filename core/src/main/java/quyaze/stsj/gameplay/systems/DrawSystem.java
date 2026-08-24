@@ -1,34 +1,31 @@
 package quyaze.stsj.gameplay.systems;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
+import quyaze.stsj.screens.GameplayScreen;
 
-/** Handles the drawing and screen rendering. */
+/** System that draws and renders {@link Avatar}s to the screen. */
 public class DrawSystem implements EWSystem
 {
-    //  Field
-    final private GameplayWorld world;
-    final private SpriteBatch batch;
-    
-    
-    //  Constructor
-    public DrawSystem(GameplayWorld world, SpriteBatch batch)
-    {
-        this.world = world;
-        this.batch = batch;
-    }
-    
-    
-    //  Iterate
+    /*  Iterate  */
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = world.avatarDatastore.get(entity);
+        Avatar avatar = GameplayScreen.world.avatarDatastore.get(entity);
         
-        batch.setColor(1f, 1f, 1f, avatar.opacity);
+        SpriteBatch batch = SmiteTheSpiders.getBatch();
+        final float opacity = MathUtils.clamp(
+            GameplayScreen.state.isPaused() ? avatar.opacity * 0.2f : avatar.opacity,
+            0,
+            1f
+        );
+        
+        batch.setColor(1f, 1f, 1f, opacity);
         batch.draw(
             avatar.texture,
             avatar.position.x,
@@ -36,5 +33,6 @@ public class DrawSystem implements EWSystem
             avatar.getTrueWidth(),
             avatar.getTrueHeight()
         );
+        batch.setColor(Color.WHITE);
     }
 }

@@ -5,13 +5,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /** Represents a spider. */
-public abstract class Spider
+public class Spider
 {
-    //  Fields
+    /*  Fields  */
     public Vector2 destination;
     
     
-    //  Constructor
+    /*  Constructor  */
     /** Create a spider and immediately move to its destination. */
     public Spider(Avatar avatar, Mobility mobility)
     {
@@ -41,8 +41,4 @@ public abstract class Spider
         mobility.setSpeed(MathUtils.random(180, 220));
         avatar.texture.flip((mobility.getVelocityX() < 0) == avatar.texture.isFlipX(), false);
     }
-    
-    
-    /** Event for when the spider shoots a web. */
-    public abstract void onShootWeb();
 }

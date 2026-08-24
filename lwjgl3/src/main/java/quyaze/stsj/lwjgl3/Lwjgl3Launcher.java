@@ -23,7 +23,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new SmiteTheSpiders(), getDefaultConfiguration());
+        return new Lwjgl3Application(SmiteTheSpiders.gameInstance(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

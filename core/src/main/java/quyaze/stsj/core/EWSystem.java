@@ -1,14 +1,12 @@
 package quyaze.stsj.core;
 
 /**
- * An interface designed for {@link EntityWorld}. Handles
- * entities from World iteration.
+ * Allows implementing classes to define its interaction with
+ * entities and associated data from {@link EntityWorld} and
+ * {@link EWDatastore}.
  */
 public interface EWSystem
 {
-    /**
-     * Handle the entity.
-     * @param entity
-     */
+    /*  Iterate  */
     public void iterate(int entity);
 }

@@ -2,7 +2,7 @@ package quyaze.stsj.gameplay.eventDefs;
 
 import quyaze.stsj.gameplay.architecture.Collision;
 
-/** Event definition for the collision of two Collision objects. */
+/** Event definition for the colliding of two Collision objects. */
 final public class OnCollided
 {
     final int thisEntity, otherEntity;

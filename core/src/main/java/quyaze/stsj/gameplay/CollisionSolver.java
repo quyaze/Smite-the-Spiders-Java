@@ -1,55 +1,36 @@
 package quyaze.stsj.gameplay;
 
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.Timer.Task;
 
-import quyaze.stsj.SmiteTheSpiders;
+import quyaze.stsj.core.Event;
+import quyaze.stsj.core.Signal;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.eventDefs.OnCollided;
+import quyaze.stsj.gameplay.systems.CollisionSystem;
 import quyaze.stsj.screens.GameplayScreen;
 
-/** An engine that detects collision. */
+/**
+ * A static subsystem for {@link GameplayScreen}.
+ * <p></p>
+ * An engine that detects collision. Must access
+ * {@link CollisionSystem#collidableEntities}.
+*/
 public class CollisionSolver
 {
-    //  Fields
-    private GameplayScreen owner;
-    
+    /*  Fields  */
     private IntArray targetEntities;
     private Collision collisionA, collisionB;
     private int entityA, entityB;
     
-    /*  Target entities is a pointer to collisionSystem's
-        `collidableEntities` (IntArray). This is an array of all
-        entities with Collision data.
-    */
+    public Event<OnCollided> onCollided;
+    public Signal onSolverCleanup;
     
     
-    //  Constructor
-    /**
-     * Create the solver pending the reference to all collidable
-     * entites.
-     * <p></p>
-     * Should call {@link #setCollisionEntitiesReference(IntArray)}.
-    */
-    public CollisionSolver(GameplayScreen owner)
+    /*  Constructor  */
+    public CollisionSolver()
     {
-        this.owner = owner;
-    }
-    
-    
-    /** Post-construct helper. */
-    public void postConstruct(SmiteTheSpiders game)
-    {
-        game.getTimer().postTask(
-            new Task()
-            {
-                @Override public void run()
-                {
-                    owner.eventHub.addEvent("onColliding", OnCollided.class);
-                    owner.eventHub.addEvent("onSolverCleanup", Void.class);
-                }
-            }
-        );
+        onCollided = new Event<>();
+        onSolverCleanup = new Signal();
     }
     
     
@@ -67,31 +48,29 @@ public class CollisionSolver
         
         /*  Null guards exist because collidableEntities is not yet designed
             to be fully in sync with World entities. This allows the solver
-            to receive deleted entities and deleted collision data.
+            to receive deleted entities and deleted Collision data.
         */
         
         for (int i = 0; i < targetEntities.size; i++)
         {
             entityA = targetEntities.get(i);
-            collisionA = owner.world.collisionDatastore.get(entityA);
+            collisionA = GameplayScreen.world.collisionDatastore.get(entityA);
             if (collisionA == null || collisionA.skipSolving) continue;
             
             for (int j = i + 1; j < targetEntities.size; j++)
             {
                 entityB = targetEntities.get(j);
-                collisionB = owner.world.collisionDatastore.get(entityB);
+                collisionB = GameplayScreen.world.collisionDatastore.get(entityB);
                 if (collisionB == null || collisionB.skipSolving) continue;
                 
                 /*  Collision detection is calculated here.
                 */
                 if (collisionA.collisionBox.overlaps(collisionB.collisionBox))
                 {
-                    owner.eventHub.fireEvent(
-                        "onColliding",
+                    onCollided.fire(
                         new OnCollided(entityA, entityB, collisionA, collisionB)
                     );
-                    owner.eventHub.fireEvent(
-                        "onColliding",
+                    onCollided.fire(
                         new OnCollided(entityB, entityA, collisionB, collisionA)
                     );
                 }
@@ -106,6 +85,6 @@ public class CollisionSolver
     {
         entityA = 0; entityB = 0;
         collisionA = null; collisionB = null;
-        owner.eventHub.fireEvent("onSolverCleanup", null);
+        onSolverCleanup.fire();
     }
 }

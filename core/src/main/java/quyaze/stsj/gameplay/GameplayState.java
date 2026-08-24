@@ -1,29 +1,38 @@
 package quyaze.stsj.gameplay;
 
+import quyaze.stsj.core.Event;
+import quyaze.stsj.core.Signal;
 import quyaze.stsj.screens.GameplayScreen;
 
-/** A class that keeps track of overlying data and states. */
+/**
+ * A static subsystem to {@link GameplayScreen}.
+ * <p></p>
+ * Tracks any data or states, acting as a kind of game state
+ * object.
+*/
 public class GameplayState
 {
-    //  Fields
-    final private GameplayScreen owner;
-    
+    /*  Fields  */
     private boolean paused;
     public int score;
     public int lives;
+    
+    public Event<Boolean> onPausedStateChanged;
+    public Signal onGameOver;
     
     final static public int POINTS_SPELL_HIT_SPIDER = 50;
     final static public int POINTS_SPIDER_HIT_PLAYER = -5;
     final static public int POINTS_WEB_HIT_PLAYER = -20;
     
     
-    //  Constructor
-    public GameplayState(GameplayScreen owner)
+    /*  Constructor  */
+    public GameplayState()
     {
-        this.owner = owner;
         paused = true;
         score = 0;
         lives = 3;
+        onPausedStateChanged = new Event<>();
+        onGameOver = new Signal();
     }
     
     
@@ -43,7 +52,7 @@ public class GameplayState
     public boolean setGamePaused(boolean paused)
     {
         if (this.paused == paused) return false;
-        owner.eventHub.fireEvent("onPausedStateChanged", paused);
+        onPausedStateChanged.fire(paused);
         this.paused = paused;
         return true;
     }

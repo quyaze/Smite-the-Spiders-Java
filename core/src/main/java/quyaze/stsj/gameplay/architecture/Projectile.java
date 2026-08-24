@@ -1,12 +1,14 @@
 package quyaze.stsj.gameplay.architecture;
 
+/** Represents a projectile. */
 public class Projectile
 {
-    //  Fields
+    /*  Fields  */
     public String name;
     
     
-    //  Constructor
+    /*  Constructor  */
+    
     /** Give the projectile a unique name. */
     public Projectile(String name)
     {

@@ -8,13 +8,13 @@ import com.badlogic.gdx.math.Rectangle;
  */
 public class Collision
 {
-    //  Fields
+    /*  Fields  */
     public Rectangle collisionBox;
     public Avatar avatar;
     public boolean skipSolving;
     
     
-    //  Constructors
+    /*  Constructors  */
     /** Construct and set collision to represent the avatar. */
     public Collision(Avatar avatar)
     {

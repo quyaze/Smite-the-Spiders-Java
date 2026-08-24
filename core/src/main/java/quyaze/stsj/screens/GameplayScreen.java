@@ -1,8 +1,8 @@
 package quyaze.stsj.screens;
 
+import com.badlogic.gdx.Screen;
+
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.EventHub;
-import quyaze.stsj.core.StarterScreen;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayState;
@@ -11,29 +11,30 @@ import quyaze.stsj.gameplay.GameplayWorld;
 /**
  * Screen for the gameplay.
  */
-public class GameplayScreen extends StarterScreen
+public class GameplayScreen implements Screen
 {
-    //  Fields
-    final public GameplayWorld world;
-    final public GameplayCore core;
-    final public GameplayState state;
-    final public CollisionSolver solver;
-    final public EventHub eventHub;
+    /*  Fields  */
+    static public GameplayWorld world;
+    static public GameplayCore core;
+    static public GameplayState state;
+    static public CollisionSolver solver;
     
     
-    //  Constructor
+    /*  Constructor  */
     public GameplayScreen()
     {
-        super(game);
-        world = new GameplayWorld(game, this);
-        core = new GameplayCore(game);
-        state = new GameplayState(this);
-        solver = new CollisionSolver(this);
-        eventHub = new EventHub(12, SmiteTheSpiders.getTimer());
+        final boolean postWorld = world == null;
+        
+        if (world == null) world = new GameplayWorld();
+        if (core == null) core = new GameplayCore();
+        if (state == null) state = new GameplayState();
+        if (solver == null) solver = new CollisionSolver();
+        
+        if (postWorld) world.postConstruct();
     }
     
     
-    //  Show
+    /*  Show  */
     @Override
     public void show()
     {
@@ -41,7 +42,7 @@ public class GameplayScreen extends StarterScreen
     }
     
     
-    //  Hide
+    /*  Hide  */
     @Override
     public void hide()
     {
@@ -49,7 +50,7 @@ public class GameplayScreen extends StarterScreen
     }
     
     
-    //  Pause
+    /*  Pause  */
     @Override
     public void pause()
     {
@@ -57,11 +58,11 @@ public class GameplayScreen extends StarterScreen
     }
     
     
-    //  Resume
+    /*  Resume  */
     @Override public void resume() {}
     
     
-    //  Resize
+    /*  Resize  */
     @Override
     public void resize(int width, int height)
     {
@@ -71,7 +72,7 @@ public class GameplayScreen extends StarterScreen
     }
     
     
-    //  Render
+    /*  Render  */
     @Override
     public void render(float delta)
     {
@@ -79,6 +80,6 @@ public class GameplayScreen extends StarterScreen
     }
     
     
-    //  Dispose
+    /*  Dispose  */
     @Override public void dispose() {}
 }

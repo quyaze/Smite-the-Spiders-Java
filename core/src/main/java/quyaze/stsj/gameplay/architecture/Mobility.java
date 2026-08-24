@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 /** Provides movement to {@link Avatar}s. */
 public class Mobility
 {
-    //  Fields
+    /*  Fields  */
     private Vector2 velocity;
     private float angle;
     private float speed;
@@ -31,7 +31,7 @@ public class Mobility
     */
     
     
-    //  Constructors
+    /*  Constructors  */
     /** Set a speed of 100 going right. */
     public Mobility()
     {

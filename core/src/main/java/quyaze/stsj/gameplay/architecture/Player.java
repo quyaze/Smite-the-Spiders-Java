@@ -1,18 +1,24 @@
 package quyaze.stsj.gameplay.architecture;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
+import quyaze.stsj.core.Signal;
+
 /** Represents the player. */
-public abstract class Player
+public class Player
 {
-    //  Fields
+    /*  Fields  */
     public Vector2 movementInput;
     public float maxSpeed = 600f;
     public Vector2 upperScreenBounds;
+    public boolean[] keymap;
+    
+    public Signal onCastFireball;
     
     
-    //  Constructors
+    /*  Constructors  */
     /**
      * Create a player pending the character.
      * <p></p>
@@ -25,6 +31,8 @@ public abstract class Player
             Gdx.graphics.getWidth(),
             Gdx.graphics.getHeight()
         );
+        keymap = new boolean[5];
+        onCastFireball = new Signal();
     }
     
     /** Create a player with reference to the character. */
@@ -45,10 +53,42 @@ public abstract class Player
     }
     
     
-    /**
-     * Event for when the player is casting a fireball.
-     * <p></p>
-     * Pass the player wizard for positioning.
-     */
-    public abstract void onCastFireball(Avatar playerCharacter);
+    /** Updates keymap. */
+    public void updateKeymap()
+    {
+        /*  Keymap:
+            
+            [0] Move up
+            [1] Move right
+            [2] Move down
+            [3] Move left
+            [4] Cast spell
+        */
+       
+        keymap[0] = (
+            Gdx.input.isKeyPressed(Input.Keys.W) ||
+            Gdx.input.isKeyPressed(Input.Keys.UP) ||
+            Gdx.input.isKeyPressed(Input.Keys.NUMPAD_8)
+        );
+        
+        keymap[1] = (
+            Gdx.input.isKeyPressed(Input.Keys.D) ||
+            Gdx.input.isKeyPressed(Input.Keys.RIGHT) ||
+            Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6)
+        );
+        
+        keymap[2] = (
+            Gdx.input.isKeyPressed(Input.Keys.S) ||
+            Gdx.input.isKeyPressed(Input.Keys.DOWN) ||
+            Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2)
+        );
+        
+        keymap[3] = (
+            Gdx.input.isKeyPressed(Input.Keys.A) ||
+            Gdx.input.isKeyPressed(Input.Keys.LEFT) ||
+            Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)
+        );
+        
+        keymap[4] = Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
+    }
 }

@@ -11,26 +11,31 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.GameText;
+import quyaze.stsj.core.Utility;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
 
-/**
- * The game entry point and definition.
- * <p></p>
- * Has static utilities and instance-owned screens.
-*/
+/** The game entry point and definition. */
 final public class SmiteTheSpiders extends Game
 {
     /*  Fields  */
+    static private SmiteTheSpiders instance;
     static private SpriteBatch batch;
     static private ScreenViewport viewport;
     static private TextureAtlas atlas;
     static private Music music;
     static private GameText gameText;
     static private Timer timer;
+    static private Utility utility;
     
-    private MainMenuScreen mainMenuScreen;
-    private GameplayScreen gameplayScreen;
+    static private MainMenuScreen mainMenuScreen;
+    static private GameplayScreen gameplayScreen;
+    
+    final static public float ASPECT_RATIO_BG = 4/3f; // bg.png is 800px by 600px
+    
+    
+    /*  Constructor  */
+    private SmiteTheSpiders() {}
     
     
     /*  Create  */
@@ -46,12 +51,13 @@ final public class SmiteTheSpiders extends Game
         music = Gdx.audio.newMusic(Gdx.files.internal("audio" + File.separator + "Lord of the Land.mp3"));
         gameText = new GameText();
         timer = new Timer();
+        utility = new Utility();
         
-        mainMenuScreen = new MainMenuScreen(this);
+        mainMenuScreen = new MainMenuScreen();
         gameplayScreen = new GameplayScreen();
         
-        goToMainMenuScreen();
         music.setLooping(true);
+        goToMainMenuScreen();
         music.play();
     }
     
@@ -67,6 +73,16 @@ final public class SmiteTheSpiders extends Game
         gameText.dispose();
         mainMenuScreen.dispose();
         gameplayScreen.dispose();
+    }
+    
+    
+    /**
+     * @return Game instance
+     */
+    static public SmiteTheSpiders gameInstance()
+    {
+        if (instance == null) instance = new SmiteTheSpiders();
+        return instance;
     }
     
     
@@ -100,10 +116,10 @@ final public class SmiteTheSpiders extends Game
     /**
      * @return Globally played {@link Music}
      */
-    static public Music getMusic()
-    {
-        return music;
-    }
+    // static public Music getMusic()
+    // {
+    //     return music;
+    // }
     
     
     /**
@@ -121,6 +137,14 @@ final public class SmiteTheSpiders extends Game
     static public Timer getTimer()
     {
         return timer;
+    }
+    
+    /**
+     * Global {@link Utility}
+    */
+    static public Utility getUtility()
+    {
+        return utility;
     }
     
     

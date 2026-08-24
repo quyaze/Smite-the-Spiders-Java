@@ -4,16 +4,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /** Represents visible characters, beings, objects, etc. */
-final public class Avatar
+public class Avatar
 {
-    //  Fields
+    /*  Fields  */
     public TextureRegion texture;
     public Vector2 position;
     private Vector2 trueSize;
     public float opacity = 1f;
     
     
-    //  Constructors
+    /*  Constructors  */
     private Avatar()
     {
         position = Vector2.Zero.cpy();

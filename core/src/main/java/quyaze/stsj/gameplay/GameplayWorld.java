@@ -3,23 +3,27 @@ package quyaze.stsj.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EWDatastore;
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.EntityWorld;
+import quyaze.stsj.core.Event;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
 import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.gameplay.architecture.Spider;
+import quyaze.stsj.gameplay.eventDefs.OnEntityReassigned;
 import quyaze.stsj.gameplay.systems.AvatarSystem;
 import quyaze.stsj.gameplay.systems.CollisionSystem;
 import quyaze.stsj.gameplay.systems.DrawSystem;
@@ -27,12 +31,13 @@ import quyaze.stsj.gameplay.systems.PlayerSystem;
 import quyaze.stsj.gameplay.systems.SpiderSystem;
 import quyaze.stsj.screens.GameplayScreen;
 
-final public class GameplayWorld extends EntityWorld
+/**
+ * {@link EntityWorld} for gameplay and a static subsystem to
+ * {@link GameplayScreen}.
+*/
+public class GameplayWorld extends EntityWorld
 {
-    //  Fields
-    private SmiteTheSpiders game;
-    private GameplayScreen owner;
-    
+    /*  Fields  */
     private CharArray entityFlags;
     private Array<EWDatastore<?>[]> entityDatastores;
     private IntArray entityDebris;
@@ -51,11 +56,11 @@ final public class GameplayWorld extends EntityWorld
     private SpiderSystem spiderSystem;
     private DrawSystem drawSystem;
     
-    final static public char SYSFLAG_PLAYER = 1;     //      1 = 1 << 0
-    final static public char SYSFLAG_AVATAR = 2;     //     10 = 1 << 1
-    final static public char SYSFLAG_COLLISION = 4;  //    100 = 1 << 2
-    final static public char SYSFLAG_SPIDER = 8;     //   1000 = 1 << 3
-    final static public char SYSFLAG_DRAW = 16;      //  10000 = 1 << 4
+    final static public char SYSFLAG_PLAYER = 1;        //      1 = 1 << 0
+    final static public char SYSFLAG_AVATAR = 2;        //     10 = 1 << 1
+    final static public char SYSFLAG_COLLISION = 4;     //    100 = 1 << 2
+    final static public char SYSFLAG_SPIDER = 8;        //   1000 = 1 << 3
+    final static public char SYSFLAG_DRAW = 16;         //  10000 = 1 << 4
     
     final static private int CAPACITY = 64;
     final static private float SOLVE_INTERVAL = 1 / 24f;
@@ -63,14 +68,12 @@ final public class GameplayWorld extends EntityWorld
     private EWSystem iteratingSystem;
     private float timeToNextSolve;
     
+    public Event<OnEntityReassigned> onEntityReassigned;
     
-    //  Constructor
-    public GameplayWorld(SmiteTheSpiders game, GameplayScreen owner)
+    
+    /*  Constructor  */
+    public GameplayWorld()
     {
-        super(game, owner);
-        this.game = game;
-        this.owner = owner;
-        
         entityFlags = new CharArray(false, CAPACITY);
         entityDatastores = new Array<>(false, CAPACITY);
         entityDebris = new IntArray(false, 2);
@@ -83,35 +86,30 @@ final public class GameplayWorld extends EntityWorld
         spiderDatastore = new EWDatastore<>(CAPACITY);
         projectileDatastore = new EWDatastore<>(CAPACITY);
         
-        playerSystem = new PlayerSystem(this);
-        avatarSystem = new AvatarSystem(this);
+        playerSystem = new PlayerSystem();
+        avatarSystem = new AvatarSystem();
         collisionSystem = new CollisionSystem((int) (CAPACITY * 0.9f));
-        spiderSystem = new SpiderSystem(this);
-        drawSystem = new DrawSystem(this, game.getBatch());
+        spiderSystem = new SpiderSystem();
+        drawSystem = new DrawSystem();
         
         collisionSolveTask = new Task()
         {
             @Override public void run()
             {
-                owner.solver.solve();
+                GameplayScreen.solver.solve();
             }
         };
+        
+        onEntityReassigned = new Event<>();
     }
     
     
-    /** Post-construct helper. */
-    public void postConstruct()
-    {
-        owner.solver.setCollisionEntitiesReference(collisionSystem.collidableEntities);
-    }
-    
-    
-    //  Render
+    /*  Render  */
     @Override
     public void render(float delta)
     {
-        GameplayCore core = owner.core;
-        GameplayState state = owner.state;
+        GameplayCore core = GameplayScreen.core;
+        GameplayState state = GameplayScreen.state;
         
         /*  First see if pausing or exiting to the main menu.
             
@@ -134,7 +132,7 @@ final public class GameplayWorld extends EntityWorld
         
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
-            game.goToMainMenuScreen();
+            SmiteTheSpiders.gameInstance().goToMainMenuScreen();
             return;
         }
         
@@ -146,23 +144,22 @@ final public class GameplayWorld extends EntityWorld
             
             switch (flag)
             {
-                case SYSFLAG_PLAYER: iteratingSystem = playerSystem; break;
-                
-                case SYSFLAG_AVATAR: iteratingSystem = avatarSystem; break;
-                
-                case SYSFLAG_COLLISION: iteratingSystem = collisionSystem; break;
-                
-                case SYSFLAG_SPIDER: iteratingSystem = spiderSystem; break;
-                
+                case SYSFLAG_PLAYER:    iteratingSystem = playerSystem;     break;
+                case SYSFLAG_AVATAR:    iteratingSystem = avatarSystem;     break;
+                case SYSFLAG_COLLISION: iteratingSystem = collisionSystem;  break;
+                case SYSFLAG_SPIDER:    iteratingSystem = spiderSystem;     break;
                 case SYSFLAG_DRAW:
                     iteratingSystem = drawSystem;
                     
+                    SpriteBatch batch = SmiteTheSpiders.getBatch();
+                    ScreenViewport viewport = SmiteTheSpiders.getViewport();
+                    
                     ScreenUtils.clear(Color.BLACK);
-                    game.getViewport().apply(true);
-                    game.getBatch().setProjectionMatrix(
-                        game.getViewport().getCamera().combined
+                    viewport.apply(true);
+                    batch.setProjectionMatrix(
+                        SmiteTheSpiders.getViewport().getCamera().combined
                     );
-                    game.getBatch().begin();
+                    batch.begin();
                     
                     break;
             }
@@ -175,7 +172,8 @@ final public class GameplayWorld extends EntityWorld
             
             if (flag == SYSFLAG_DRAW)
             {
-                game.getBatch().end();
+                SmiteTheSpiders.getBatch().end();
+                // if (paused) pauseOverlay();
             }
         }
         iteratingSystem = null;
@@ -195,10 +193,20 @@ final public class GameplayWorld extends EntityWorld
             if (debris != last) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
             entityFlags.removeIndex(debris);
             entityDatastores.removeIndex(debris);
+            onEntityReassigned.fire(
+                new OnEntityReassigned(last, debris)
+            );
         }
         entities -= entityDebris.size;
         entityDebris.clear();
         isEntityDebris.clear();
+    }
+    
+    
+    /** Post-construct. */
+    public void postConstruct()
+    {
+        collisionSystem.postConstruct();
     }
     
     
@@ -210,16 +218,16 @@ final public class GameplayWorld extends EntityWorld
      * correct order.
      */
     @SuppressWarnings("unchecked")
-    public void addEntity(char systems, EWDatastore<?>[] datastores, Object... data)
+    public int addEntity(char systems, EWDatastore<?>[] datastores, Object... data)
     {
-        if (datastores.length != data.length) return;
+        if (datastores.length != data.length) throw new IllegalArgumentException("improper data to datastore assignment");
         for (int i = 0; i < datastores.length; i++)
         {
             ((EWDatastore<Object>) datastores[i]).put(entities, data[i]);
         }
         entityDatastores.add(datastores);
         entityFlags.add(systems);
-        entities++;
+        return entities++;
     }
     
     
@@ -233,22 +241,18 @@ final public class GameplayWorld extends EntityWorld
     /**
      * On {@code GameplayScreen.show()}
      * <p></p>
-     * Starts the game.
+     * Starts the SmiteTheSpiders.
      */
     public void show()
     {
-        owner.state.setGamePaused(false);
-        owner.core.spawnBackground();
-        owner.core.spawnPlayer();
-        owner.core.spawnSpiders();
+        GameplayScreen.state.setGamePaused(false);
+        GameplayScreen.core.spawnBackground();
+        GameplayScreen.core.spawnPlayer();
+        GameplayScreen.core.spawnSpiders();
     }
     
     
-    /**
-     * On {@code GameplayScreen.hide()}
-     * <p></p>
-     * Exits and clears the game.
-     */
+    /** On {@link GameplayScreen#hide()}. */
     public void hide()
     {
         entities = 0;
@@ -262,7 +266,7 @@ final public class GameplayWorld extends EntityWorld
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        owner.state.setGamePaused(true);
+        GameplayScreen.state.setGamePaused(true);
         setSolverEnabled(false);
     }
     
@@ -288,7 +292,7 @@ final public class GameplayWorld extends EntityWorld
         if (enabled == collisionSolveTask.isScheduled()) return;
         if (enabled)
         {
-            game.getTimer().scheduleTask(
+            SmiteTheSpiders.getTimer().scheduleTask(
                 collisionSolveTask,
                 timeToNextSolve,
                 SOLVE_INTERVAL

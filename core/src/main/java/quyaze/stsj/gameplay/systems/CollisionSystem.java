@@ -6,57 +6,59 @@ import com.badlogic.gdx.utils.IntIntMap;
 
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.gameplay.CollisionSolver;
-import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Projectile;
+import quyaze.stsj.screens.GameplayScreen;
 /**
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
  */
 final public class CollisionSystem implements EWSystem
 {
-    //  Fields
-    private GameplayWorld world;
-    
-    public int defaultCapacity;
-    public IntArray collidableEntities;
+    /*  Fields  */
+    private IntArray collidableEntities;
     private IntIntMap collidableEntityToIndex;
     private Rectangle screen;
     
     
-    //  Constructor
+    /*  Constructor  */
     
     /** Start system with an initial capacity. */
     public CollisionSystem(int initialCapacity)
     {
         collidableEntities = new IntArray(false, initialCapacity);
         collidableEntityToIndex = new IntIntMap(initialCapacity);
-        defaultCapacity = initialCapacity;
         screen = new Rectangle();
     }
     
     
-    /** Set a reference to the {@link GameplayWorld}. */
-    public void setWorld(GameplayWorld world)
+    /** Post-construct. */
+    public void postConstruct()
     {
-        this.world = world;
+        GameplayScreen.solver.setCollisionEntitiesReference(collidableEntities);
+        GameplayScreen.solver.onSolverCleanup.bindDeferred(
+            () -> {
+                collidableEntityToIndex.clear();
+                collidableEntities.clear();
+            }
+        );
     }
     
     
-    //  Iterate
+    /*  Iterate  */
     @Override
     public void iterate(int entity)
     {
-        Collision collision = world.collisionDatastore.get(entity);
-        Projectile projectile = world.projectileDatastore.get(entity);
+        Collision collision = GameplayScreen.world.collisionDatastore.get(entity);
+        Projectile projectile = GameplayScreen.world.projectileDatastore.get(entity);
         
         collision.updatePosition();
         
-        /*  Cull projectiles that have left the screen.
+        /*  Cull projectiles that have left the screen
         */
         if (projectile != null && !collision.collisionBox.overlaps(screen))
         {
-            world.removeEntityRequest(entity);
+            GameplayScreen.world.removeEntityRequest(entity);
             return;
         }
         
@@ -68,9 +70,7 @@ final public class CollisionSystem implements EWSystem
     
     
     /**
-     * On owning {@code GameplayScreen.resize()}.
-     * <p></p>
-     * Adjusts screen culling parameters.
+     * On {@link GameplayScreen#resize(int, int)}.
     */
     public void resize(int width, int height)
     {

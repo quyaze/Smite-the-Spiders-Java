@@ -1,27 +1,25 @@
 package quyaze.stsj.screens;
 
+import com.badlogic.gdx.Screen;
+
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.StarterScreen;
 import quyaze.stsj.mainMenu.MainMenuWorld;
 
-/**
- * Screen for the main menu.
- */
-public class MainMenuScreen extends StarterScreen
+/** {@link Screen} for the main menu. */
+public class MainMenuScreen implements Screen
 {
-    //  Fields
-    final private MainMenuWorld world;
+    /*  Fields  */
+    private MainMenuWorld world;
     
     
-    //  Constructor
-    public MainMenuScreen(SmiteTheSpiders game)
+    /*  Constructor  */
+    public MainMenuScreen()
     {
-        super(game);
-        world = new MainMenuWorld(game, this);
+        world = new MainMenuWorld();
     }
     
     
-    //  Show
+    /*  Show  */
     @Override
     public void show()
     {
@@ -29,7 +27,7 @@ public class MainMenuScreen extends StarterScreen
     }
     
     
-    //  Hide
+    /*  Hide  */
     @Override
     public void hide()
     {
@@ -37,25 +35,25 @@ public class MainMenuScreen extends StarterScreen
     }
     
     
-    //  Pause
+    /*  Pause  */
     @Override public void pause() {}
     
     
-    //  Resume
+    /*  Resume  */
     @Override public void resume() {}
     
     
-    //  Resize
+    /*  Resize  */
     @Override
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        game.getViewport().update(width, height, true);
+        SmiteTheSpiders.getViewport().update(width, height, true);
         world.resize(width, height);
     }
     
     
-    //  Render
+    /*  Render  */
     @Override
     public void render(float delta)
     {
@@ -63,6 +61,15 @@ public class MainMenuScreen extends StarterScreen
     }
     
     
-    //  Dispose
+    /*  Dispose  */
     @Override public void dispose() {}
+    
+    
+    /**
+     * @return {@link World} of the main menu
+     */
+    public MainMenuWorld getWorld()
+    {
+        return world;
+    }
 }
