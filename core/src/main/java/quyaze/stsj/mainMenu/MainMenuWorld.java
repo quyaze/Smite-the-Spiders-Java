@@ -38,7 +38,7 @@ public class MainMenuWorld extends World
         super(game, owner);
         background = game.getAtlas().findRegion("bg");
         title = game.getAtlas().findRegion("title");
-        subtitle = game.getGameText().generateRegularGlyph("Click anywhere to play.");
+        subtitle = game.getGameText().generateGlyphRegular("Click anywhere to play.");
         
         backgroundAvatar = new Avatar(background);
         titleAvatar = new Avatar(title, 2f);
@@ -74,9 +74,9 @@ public class MainMenuWorld extends World
         
         /*  Draw
         */
-        final ScreenViewport viewport = game.getViewport();
-        final SpriteBatch batch = game.getBatch();
-        final BitmapFont regularFont = game.getGameText().getRegularFont();
+        ScreenViewport viewport = game.getViewport();
+        SpriteBatch batch = game.getBatch();
+        BitmapFont regularFont = game.getGameText().regular;
         
         ScreenUtils.clear(Color.BLACK);
         viewport.apply(true);

@@ -3,24 +3,32 @@ package quyaze.stsj.core;
 import quyaze.stsj.SmiteTheSpiders;
 
 /**
- * A base class for a StarterScreen and seperate from it. Meant to
- * handle input, logic, drawing, etc.
- */
+ * A kind of base plug-in for {@link StarterScreen}s, which can be
+ * considered the {@code owner} of the {@code World}. Should
+ * separate andhold all primary source from the {@code owner}.
+ * <p></p>
+ * Includes references to the {@link SmiteTheSpiders} instance and
+ * {@code owner}. These should be initialized in the constructor
+ * {@link #World(SmiteTheSpiders, StarterScreen)}.
+ * <p></p>
+ * The {@code owner} should call {@link #render(float)}.
+*/
 public abstract class World
 {
-    //  Fields
+    /*  Fields  */
     final protected SmiteTheSpiders game;
     final protected StarterScreen owner;
     
     
-    //  Constructor
+    /*  Constructor  */
     public World(SmiteTheSpiders game, StarterScreen owner)
     {
         this.game = game;
         this.owner = owner;
     }
     
-    
-    /** For an owning {@code Screen.render()}. */
+    /**
+     * World's render pass.
+     */
     public abstract void render(float delta);
 }

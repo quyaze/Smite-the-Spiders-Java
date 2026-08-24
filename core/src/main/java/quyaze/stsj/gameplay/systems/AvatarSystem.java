@@ -3,14 +3,14 @@ package quyaze.stsj.gameplay.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
-import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
 
 /** System in charge of avatar movement. */
-public class AvatarSystem implements SystemForEW
+public class AvatarSystem implements EWSystem
 {
     //  Fields
     final private GameplayWorld world;

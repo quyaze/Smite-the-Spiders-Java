@@ -22,14 +22,14 @@ public class GameplayScreen extends StarterScreen
     
     
     //  Constructor
-    public GameplayScreen(SmiteTheSpiders game)
+    public GameplayScreen()
     {
         super(game);
         world = new GameplayWorld(game, this);
-        core = new GameplayCore(game, this);
+        core = new GameplayCore(game);
         state = new GameplayState(this);
         solver = new CollisionSolver(this);
-        eventHub = new EventHub(12, game.getTimer());
+        eventHub = new EventHub(12, SmiteTheSpiders.getTimer());
     }
     
     
@@ -66,7 +66,7 @@ public class GameplayScreen extends StarterScreen
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        game.getViewport().update(width, height, true);
+        SmiteTheSpiders.getViewport().update(width, height, true);
         world.resize(width, height);
     }
     

@@ -1,13 +1,13 @@
 package quyaze.stsj.gameplay.systems;
 
-import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Spider;
 
 /** Handles the spider. */
-public class SpiderSystem implements SystemForEW
+public class SpiderSystem implements EWSystem
 {
     //  Fields
     final private GameplayWorld world;

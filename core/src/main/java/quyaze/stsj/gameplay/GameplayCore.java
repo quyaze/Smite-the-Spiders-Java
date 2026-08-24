@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.DatastoreForEW;
+import quyaze.stsj.core.EWDatastore;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Mobility;
@@ -19,16 +20,30 @@ import quyaze.stsj.screens.GameplayScreen;
 public class GameplayCore
 {
     //  Fields
-    final private SmiteTheSpiders game;
-    final private GameplayScreen owner;
+    private SmiteTheSpiders game;
+    private GameplayScreen owner;
     
     
     //  Constructor
-    
-    public GameplayCore(SmiteTheSpiders game, GameplayScreen owner)
+    public GameplayCore(SmiteTheSpiders game)
     {
         this.game = game;
+    }
+    
+    
+    public void postConstruct(GameplayScreen owner)
+    {
         this.owner = owner;
+        game.getTimer().postTask(
+            new Task()
+            {
+                @Override public void run()
+                {
+                    owner.eventHub.addEvent("onPausedStateChanged", Boolean.class);
+                    owner.eventHub.addEvent("onGameOver", Void.class);
+                }
+            }
+        );
     }
     
     
@@ -53,7 +68,7 @@ public class GameplayCore
         
         world.addEntity(
             (char) GameplayWorld.SYSFLAG_DRAW,
-            new DatastoreForEW[] {
+            new EWDatastore[] {
                 world.avatarDatastore
             },
             avatar
@@ -101,7 +116,7 @@ public class GameplayCore
                 GameplayWorld.SYSFLAG_COLLISION |
                 GameplayWorld.SYSFLAG_DRAW
             ),
-            new DatastoreForEW[] {
+            new EWDatastore[] {
                 world.playerDatastore,
                 world.avatarDatastore,
                 world.mobilityDatastore,
@@ -168,7 +183,7 @@ public class GameplayCore
                     GameplayWorld.SYSFLAG_SPIDER |
                     GameplayWorld.SYSFLAG_DRAW
                 ),
-                new DatastoreForEW[] {
+                new EWDatastore[] {
                     world.avatarDatastore,
                     world.mobilityDatastore,
                     world.collisionDatastore,
@@ -212,7 +227,7 @@ public class GameplayCore
                 GameplayWorld.SYSFLAG_COLLISION |
                 GameplayWorld.SYSFLAG_DRAW
             ),
-            new DatastoreForEW[] {
+            new EWDatastore[] {
                 world.avatarDatastore,
                 world.mobilityDatastore,
                 world.collisionDatastore,
@@ -256,7 +271,7 @@ public class GameplayCore
                 GameplayWorld.SYSFLAG_COLLISION |
                 GameplayWorld.SYSFLAG_DRAW
             ),
-            new DatastoreForEW[] {
+            new EWDatastore[] {
                 world.avatarDatastore,
                 world.mobilityDatastore,
                 world.collisionDatastore,

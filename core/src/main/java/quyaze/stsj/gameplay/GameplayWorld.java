@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.DatastoreForEW;
-import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.core.EWDatastore;
+import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.EntityWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Collision;
@@ -30,26 +30,26 @@ import quyaze.stsj.screens.GameplayScreen;
 final public class GameplayWorld extends EntityWorld
 {
     //  Fields
-    final private SmiteTheSpiders game;
-    final private GameplayScreen owner;
+    private SmiteTheSpiders game;
+    private GameplayScreen owner;
     
-    final private CharArray entityFlags;
-    final private Array<DatastoreForEW<?>[]> entityDatastores;
-    final private IntArray entityDebris;
-    final private IntSet isEntityDebris;
+    private CharArray entityFlags;
+    private Array<EWDatastore<?>[]> entityDatastores;
+    private IntArray entityDebris;
+    private IntSet isEntityDebris;
     
-    final public DatastoreForEW<Player> playerDatastore;
-    final public DatastoreForEW<Avatar> avatarDatastore;
-    final public DatastoreForEW<Mobility> mobilityDatastore;
-    final public DatastoreForEW<Collision> collisionDatastore;
-    final public DatastoreForEW<Spider> spiderDatastore;
-    final public DatastoreForEW<Projectile> projectileDatastore;
+    public EWDatastore<Player> playerDatastore;
+    public EWDatastore<Avatar> avatarDatastore;
+    public EWDatastore<Mobility> mobilityDatastore;
+    public EWDatastore<Collision> collisionDatastore;
+    public EWDatastore<Spider> spiderDatastore;
+    public EWDatastore<Projectile> projectileDatastore;
     
-    final private PlayerSystem playerSystem;
-    final private AvatarSystem avatarSystem;
-    final private CollisionSystem collisionSystem;
-    final private SpiderSystem spiderSystem;
-    final private DrawSystem drawSystem;
+    private PlayerSystem playerSystem;
+    private AvatarSystem avatarSystem;
+    private CollisionSystem collisionSystem;
+    private SpiderSystem spiderSystem;
+    private DrawSystem drawSystem;
     
     final static public char SYSFLAG_PLAYER = 1;     //      1 = 1 << 0
     final static public char SYSFLAG_AVATAR = 2;     //     10 = 1 << 1
@@ -59,8 +59,8 @@ final public class GameplayWorld extends EntityWorld
     
     final static private int CAPACITY = 64;
     final static private float SOLVE_INTERVAL = 1 / 24f;
-    final private Task collisionSolveTask;
-    private SystemForEW iteratingSystem;
+    private Task collisionSolveTask;
+    private EWSystem iteratingSystem;
     private float timeToNextSolve;
     
     
@@ -76,16 +76,16 @@ final public class GameplayWorld extends EntityWorld
         entityDebris = new IntArray(false, 2);
         isEntityDebris = new IntSet(2);
         
-        playerDatastore = new DatastoreForEW<>(CAPACITY);
-        avatarDatastore = new DatastoreForEW<>(CAPACITY);
-        mobilityDatastore = new DatastoreForEW<>(CAPACITY);
-        collisionDatastore = new DatastoreForEW<>(CAPACITY);
-        spiderDatastore = new DatastoreForEW<>(CAPACITY);
-        projectileDatastore = new DatastoreForEW<>(CAPACITY);
+        playerDatastore = new EWDatastore<>(CAPACITY);
+        avatarDatastore = new EWDatastore<>(CAPACITY);
+        mobilityDatastore = new EWDatastore<>(CAPACITY);
+        collisionDatastore = new EWDatastore<>(CAPACITY);
+        spiderDatastore = new EWDatastore<>(CAPACITY);
+        projectileDatastore = new EWDatastore<>(CAPACITY);
         
         playerSystem = new PlayerSystem(this);
         avatarSystem = new AvatarSystem(this);
-        collisionSystem = new CollisionSystem(owner, (int) (CAPACITY * 0.8f));
+        collisionSystem = new CollisionSystem((int) (CAPACITY * 0.9f));
         spiderSystem = new SpiderSystem(this);
         drawSystem = new DrawSystem(this, game.getBatch());
         
@@ -96,16 +96,13 @@ final public class GameplayWorld extends EntityWorld
                 owner.solver.solve();
             }
         };
-        
-        game.getTimer().postTask(
-            new Task()
-            {
-                @Override public void run()
-                {
-                    owner.solver.setCollisionEntitiesReference(collisionSystem.collidableEntities);
-                }
-            }
-        );
+    }
+    
+    
+    /** Post-construct helper. */
+    public void postConstruct()
+    {
+        owner.solver.setCollisionEntitiesReference(collisionSystem.collidableEntities);
     }
     
     
@@ -191,8 +188,8 @@ final public class GameplayWorld extends EntityWorld
         {
             final int debris = entityDebris.get(i);
             final int last = entities - entityDebris.size + i;
-            final DatastoreForEW<?>[] dsDebris = entityDatastores.get(debris);
-            final DatastoreForEW<?>[] dsLast = entityDatastores.get(last);
+            final EWDatastore<?>[] dsDebris = entityDatastores.get(debris);
+            final EWDatastore<?>[] dsLast = entityDatastores.get(last);
             
             for (int j = 0; j < dsDebris.length; j++) dsDebris[j].remove(debris);
             if (debris != last) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
@@ -213,12 +210,12 @@ final public class GameplayWorld extends EntityWorld
      * correct order.
      */
     @SuppressWarnings("unchecked")
-    public void addEntity(char systems, DatastoreForEW<?>[] datastores, Object... data)
+    public void addEntity(char systems, EWDatastore<?>[] datastores, Object... data)
     {
         if (datastores.length != data.length) return;
         for (int i = 0; i < datastores.length; i++)
         {
-            ((DatastoreForEW<Object>) datastores[i]).put(entities, data[i]);
+            ((EWDatastore<Object>) datastores[i]).put(entities, data[i]);
         }
         entityDatastores.add(datastores);
         entityFlags.add(systems);
@@ -284,8 +281,8 @@ final public class GameplayWorld extends EntityWorld
             the player is pausing during gameplay. When unpausing, the
             solver resumes not with the full interval delay, but rather, the
             time after when it was supposed to run next. A small detail
-            although it is highly unnoticeable since the solver waits for a
-            frame.
+            although it is highly unnoticeable since the solver is frame-
+            scheduled.
         */
         
         if (enabled == collisionSolveTask.isScheduled()) return;

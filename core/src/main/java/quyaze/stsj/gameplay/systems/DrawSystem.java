@@ -2,12 +2,12 @@ package quyaze.stsj.gameplay.systems;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 
 /** Handles the drawing and screen rendering. */
-public class DrawSystem implements SystemForEW
+public class DrawSystem implements EWSystem
 {
     //  Field
     final private GameplayWorld world;

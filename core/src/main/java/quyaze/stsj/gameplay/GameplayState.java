@@ -38,7 +38,7 @@ public class GameplayState
     
     /**
      * Set the game paused.
-     * @return Able to change the pause state (current state was not already the desired state)
+     * @return Was able to change the pause state (current state was not already the desired state)
      */
     public boolean setGamePaused(boolean paused)
     {

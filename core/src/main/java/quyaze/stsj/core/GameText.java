@@ -8,15 +8,17 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.utils.Disposable;
 
 /** Utility class for game text. */
-public class GameText implements Disposable
+final public class GameText implements Disposable
 {
-    //  Fields
+    //  Fields  //
+    
     private FreeTypeFontGenerator regularGenerator;
     private FreeTypeFontParameter regularParams;
-    private BitmapFont regular;
+    public BitmapFont regular;
     
     
-    //  Constructor
+    //  Constructors  //
+    
     public GameText()
     {
         regularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/regular.otf"));
@@ -28,7 +30,7 @@ public class GameText implements Disposable
     }
     
     
-    //  Dispose
+    //  Dispose  //
     @Override
     public void dispose()
     {
@@ -38,19 +40,9 @@ public class GameText implements Disposable
     
     
     /**
-     * @return Regular (Cinzel) font
-     */
-    public BitmapFont getRegularFont()
-    {
-        return regular;
-    }
-    
-    
-    /**
-     * @param textContent
      * @return Generated glyph layout with the {@code textContent}
      */
-    public GlyphLayout generateRegularGlyph(String textContent)
+    public GlyphLayout generateGlyphRegular(String textContent)
     {
         return new GlyphLayout(regular, textContent);
     }

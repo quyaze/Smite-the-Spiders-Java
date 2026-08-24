@@ -14,22 +14,26 @@ import quyaze.stsj.core.GameText;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
 
-/** The game entry point and definition. */
-public class SmiteTheSpiders extends Game
+/**
+ * The game entry point and definition.
+ * <p></p>
+ * Has static utilities and instance-owned screens.
+*/
+final public class SmiteTheSpiders extends Game
 {
-    //  Fields
-    private SpriteBatch batch;
-    private ScreenViewport viewport;
-    private TextureAtlas atlas;
-    private Music music;
-    private GameText gameText;
-    private Timer timer;
+    /*  Fields  */
+    static private SpriteBatch batch;
+    static private ScreenViewport viewport;
+    static private TextureAtlas atlas;
+    static private Music music;
+    static private GameText gameText;
+    static private Timer timer;
     
     private MainMenuScreen mainMenuScreen;
     private GameplayScreen gameplayScreen;
     
     
-    //  Create
+    /*  Create  */
     @Override
     public void create()
     {
@@ -44,7 +48,7 @@ public class SmiteTheSpiders extends Game
         timer = new Timer();
         
         mainMenuScreen = new MainMenuScreen(this);
-        gameplayScreen = new GameplayScreen(this);
+        gameplayScreen = new GameplayScreen();
         
         goToMainMenuScreen();
         music.setLooping(true);
@@ -52,7 +56,7 @@ public class SmiteTheSpiders extends Game
     }
     
     
-    //  Dispose
+    /*  Dispose  */
     @Override
     public void dispose()
     {
@@ -67,61 +71,61 @@ public class SmiteTheSpiders extends Game
     
     
     /**
-     * @return Global batch for drawing
+     * @return Global {@link SpriteBatch} for drawing
      */
-    public SpriteBatch getBatch()
+    static public SpriteBatch getBatch()
     {
         return batch;
     }
     
     
     /**
-     * @return Global viewport
+     * @return Global viewport ({@link ScreenViewport})
      */
-    public ScreenViewport getViewport()
+    static public ScreenViewport getViewport()
     {
         return viewport;
     }
     
     
     /**
-     * @return Global texture atlas
+     * @return Global {@link TextureAtlas} for texture lookup
      */
-    public TextureAtlas getAtlas()
+    static public TextureAtlas getAtlas()
     {
         return atlas;
     }
     
     
     /**
-     * @return Globally played music
+     * @return Globally played {@link Music}
      */
-    public Music getMusic()
+    static public Music getMusic()
     {
         return music;
     }
     
     
     /**
-     * @return Global GameText
+     * @return Global {@link GameText} utility
      */
-    public GameText getGameText()
+    static public GameText getGameText()
     {
         return gameText;
     }
     
     
     /**
-     * @return Global Timer utility
+     * @return Global {@link Timer} utility
      */
-    public Timer getTimer()
+    static public Timer getTimer()
     {
         return timer;
     }
     
     
     /**
-     * Switch to the main menu screen.
+     * Switch to the {@link MainMenuScreen}.
     */
     public void goToMainMenuScreen()
     {
@@ -130,7 +134,7 @@ public class SmiteTheSpiders extends Game
     
     
     /**
-     * Switch to the gameplay screen.
+     * Switch to the {@link GameplayScreen}.
     */
     public void goToGameplayScreen()
     {

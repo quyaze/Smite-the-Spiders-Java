@@ -1,7 +1,9 @@
 package quyaze.stsj.gameplay;
 
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Timer.Task;
 
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.eventDefs.OnCollided;
 import quyaze.stsj.screens.GameplayScreen;
@@ -10,7 +12,7 @@ import quyaze.stsj.screens.GameplayScreen;
 public class CollisionSolver
 {
     //  Fields
-    final private GameplayScreen owner;
+    private GameplayScreen owner;
     
     private IntArray targetEntities;
     private Collision collisionA, collisionB;
@@ -34,11 +36,20 @@ public class CollisionSolver
         this.owner = owner;
     }
     
-    /** Keep a reference to the CollisionSystem's entities. */
-    public CollisionSolver(GameplayScreen owner, IntArray collidableEntities)
+    
+    /** Post-construct helper. */
+    public void postConstruct(SmiteTheSpiders game)
     {
-        this(owner);
-        setCollisionEntitiesReference(collidableEntities);
+        game.getTimer().postTask(
+            new Task()
+            {
+                @Override public void run()
+                {
+                    owner.eventHub.addEvent("onColliding", OnCollided.class);
+                    owner.eventHub.addEvent("onSolverCleanup", Void.class);
+                }
+            }
+        );
     }
     
     
@@ -47,6 +58,7 @@ public class CollisionSolver
     {
         targetEntities = reference;
     }
+    
     
     /** Solve collision. */
     public void solve()

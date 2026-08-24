@@ -4,20 +4,19 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
-import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Projectile;
-import quyaze.stsj.screens.GameplayScreen;
 /**
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
  */
-final public class CollisionSystem implements SystemForEW
+final public class CollisionSystem implements EWSystem
 {
     //  Fields
-    final private GameplayWorld world;
+    private GameplayWorld world;
     
     public int defaultCapacity;
     public IntArray collidableEntities;
@@ -28,13 +27,19 @@ final public class CollisionSystem implements SystemForEW
     //  Constructor
     
     /** Start system with an initial capacity. */
-    public CollisionSystem(GameplayScreen owner, int initialCapacity)
+    public CollisionSystem(int initialCapacity)
     {
-        this.world = owner.world;
         collidableEntities = new IntArray(false, initialCapacity);
         collidableEntityToIndex = new IntIntMap(initialCapacity);
         defaultCapacity = initialCapacity;
         screen = new Rectangle();
+    }
+    
+    
+    /** Set a reference to the {@link GameplayWorld}. */
+    public void setWorld(GameplayWorld world)
+    {
+        this.world = world;
     }
     
     

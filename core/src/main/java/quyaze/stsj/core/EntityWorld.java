@@ -3,18 +3,16 @@ package quyaze.stsj.core;
 import quyaze.stsj.SmiteTheSpiders;
 
 /**
- * A World with entities (integer).
- * <p></p>
- * Within {@code render()}, The World should iterate over all entities and pass each into a
- * {@link SystemForEW}. {@link DatastoreForEW}
+ * A {@link World} with entities (integer), allowing data-oriented
+ * design with {@link EWDatastore} and {@link EWSystem}.
  */
 public abstract class EntityWorld extends World
 {
-    //  Fields
+    /*  Fields  */
     protected int entities;
     
     
-    //  Constructor
+    /*  Constructor  */
     public EntityWorld(SmiteTheSpiders game, StarterScreen owner)
     {
         super(game, owner);

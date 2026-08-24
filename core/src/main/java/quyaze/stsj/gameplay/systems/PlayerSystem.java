@@ -4,14 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-import quyaze.stsj.core.SystemForEW;
+import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
 
 /** Handles the player. */
-public class PlayerSystem implements SystemForEW
+public class PlayerSystem implements EWSystem
 {
     //  Fields
     final private GameplayWorld world;
