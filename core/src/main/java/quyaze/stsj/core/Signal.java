@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * Enables signal and binding/listener functionality.
  * <p></p>
  * Unlike {@link Event}, {@code Signal} does not have argument
- * definitions; it is similar to {@code Event<Void>}.
+ * definitions. It is basically {@code Event<Void>}.
 */
 public class Signal
 {
@@ -47,7 +47,7 @@ public class Signal
     }
     
     
-    /** Fire the signal. Calls all {@link Bind#onSignal(Object)}s. */
+    /** Fire the signal. Calls all {@link Bind#onSignal()}s. */
     public void fire()
     {
         if (deferred.length > 0)

@@ -1,6 +1,6 @@
 package quyaze.stsj.gameplay.eventDefs;
 
-/** Event argument definition for when an entity is changed. */
+/** Event definition for when an entity is changed. */
 final public class OnEntityReassigned
 {
     final public int oldEntity, newEntity;

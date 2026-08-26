@@ -13,7 +13,7 @@ public class Player
     public Vector2 movementInput;
     public float maxSpeed = 600f;
     public Vector2 upperScreenBounds;
-    public boolean[] keymap;
+    public boolean[] keymap = new boolean[5];
     
     public Signal onCastFireball;
     
@@ -31,7 +31,6 @@ public class Player
             Gdx.graphics.getWidth(),
             Gdx.graphics.getHeight()
         );
-        keymap = new boolean[5];
         onCastFireball = new Signal();
     }
     

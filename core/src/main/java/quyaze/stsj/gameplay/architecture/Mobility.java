@@ -13,7 +13,6 @@ public class Mobility
     
     /*  Velocity and speed are in pixels per sceond
         Angle is in radians
-        Position is in pixels
         
         Velocity is an xy-coordinate vector that represents speed as the
         magnitude. It is used for character direction.
@@ -37,7 +36,7 @@ public class Mobility
     {
         velocity = Vector2.Zero.cpy();
         speed = 100f;
-        setDirection(Vector2.X.cpy());
+        applyDirection2D();
     }
     
     
@@ -46,7 +45,7 @@ public class Mobility
     {
         velocity = Vector2.Zero.cpy();
         this.speed = speed;
-        setDirection(Vector2.X.cpy());
+        applyDirection2D();
     }
     
     
@@ -139,7 +138,7 @@ public class Mobility
     }
     
     
-    /**  Apply direction from setDirection(...) */
+    /**  Apply direction with {@code angle} as is. */
     private void applyDirection2D()
     {
         velocity.set(MathUtils.cos(angle), MathUtils.sin(angle)).scl(speed);

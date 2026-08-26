@@ -18,11 +18,12 @@ import quyaze.stsj.gameplay.architecture.Spider;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
- * A static subsystem to {@link getOwner}.
+ * A subsystem to {@link getOwner}.
  * <p></p>
  * Acts as a database by spawning the player, spiders, projectiles,
  * etc.
 */
+@SuppressWarnings("unchecked")
 public class GameplayCore extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
@@ -35,8 +36,35 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     {
         getOwner().world.onEntityReassigned.bindDeferred(
             arg -> {
-                if (player == arg.oldEntity)
-                player = arg.newEntity;
+                if (player == arg.oldEntity) player = arg.newEntity;
+            }
+        );
+        
+        getOwner().solver.onCollided.bindDeferred(
+            arg -> {
+                Projectile projectileA = getOwner().world.projectileDatastore.get(arg.thisEntity);
+                
+                final boolean webHitPlayer = (
+                    (projectileA != null && "web".equals(projectileA.name))
+                    &&
+                    (player == arg.otherEntity)
+                );
+                
+                final boolean spiderHitPlayer = (
+                    getOwner().world.spiderDatastore.contains(arg.thisEntity)
+                    &&
+                    (player == arg.otherEntity)
+                );
+                
+                final boolean spellHitSpider = (
+                    (projectileA != null && "spell".equals(projectileA.name))
+                    &&
+                    (getOwner().world.spiderDatastore.contains(arg.otherEntity))
+                );
+                
+                if (webHitPlayer) onWebHitPlayer(arg.thisEntity, arg.otherEntity);
+                if (spiderHitPlayer) onSpiderHitPlayer(arg.thisEntity, arg.otherEntity);
+                if (spellHitSpider) onSpellHitSpider(arg.thisEntity, arg.otherEntity);
             }
         );
     }
@@ -88,6 +116,11 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         center.sub(avatar.getTrueSize().scl(0.5f));
         avatar.position.set(center);
         player.setAvatar(avatar);
+        player.onCastFireball.bindDeferred(
+            () -> {
+                spawnFireball(avatar);
+            }
+        );
         
         mobility = new Mobility(0f);
         

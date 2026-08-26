@@ -8,7 +8,6 @@ public class Projectile
     
     
     /*  Constructor  */
-    
     /** Give the projectile a unique name. */
     public Projectile(String name)
     {

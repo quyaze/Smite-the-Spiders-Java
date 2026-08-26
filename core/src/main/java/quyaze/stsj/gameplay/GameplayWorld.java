@@ -9,8 +9,6 @@ import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.EWDatastore;
@@ -32,7 +30,7 @@ import quyaze.stsj.gameplay.systems.SpiderSystem;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
- * {@link EntityWorld} for gameplay and a static subsystem to
+ * {@link EntityWorld} for gameplay and a subsystem to
  * {@link GameplayScreen}.
 */
 public class GameplayWorld extends EntityWorld<GameplayScreen>
@@ -63,10 +61,6 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     final static public char SYSFLAG_DRAW = 16;         //  10000 = 1 << 4
     
     final static private int CAPACITY = 64;
-    final static private float SOLVE_INTERVAL = 1 / 24f;
-    private Task collisionSolveTask;
-    private EWSystem iteratingSystem;
-    private float timeToNextSolve;
     
     public Event<OnEntityReassigned> onEntityReassigned;
     
@@ -80,12 +74,12 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         entityDebris = new IntArray(false, 2);
         isEntityDebris = new IntSet(2);
         
-        playerDatastore = new EWDatastore<>(CAPACITY);
-        avatarDatastore = new EWDatastore<>(CAPACITY);
-        mobilityDatastore = new EWDatastore<>(CAPACITY);
-        collisionDatastore = new EWDatastore<>(CAPACITY);
-        spiderDatastore = new EWDatastore<>(CAPACITY);
-        projectileDatastore = new EWDatastore<>(CAPACITY);
+        playerDatastore = new EWDatastore<>(CAPACITY, Player.class);
+        avatarDatastore = new EWDatastore<>(CAPACITY, Avatar.class);
+        mobilityDatastore = new EWDatastore<>(CAPACITY, Mobility.class);
+        collisionDatastore = new EWDatastore<>(CAPACITY, Collision.class);
+        spiderDatastore = new EWDatastore<>(CAPACITY, Spider.class);
+        projectileDatastore = new EWDatastore<>(CAPACITY, Projectile.class);
         
         playerSystem = new PlayerSystem();
         avatarSystem = new AvatarSystem();
@@ -98,14 +92,6 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         collisionSystem.setWorld(this);
         spiderSystem.setWorld(this);
         drawSystem.setWorld(this);
-        
-        collisionSolveTask = new Task()
-        {
-            @Override public void run()
-            {
-                getOwner().solver.solve();
-            }
-        };
         
         onEntityReassigned = new Event<>();
     }
@@ -144,18 +130,19 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         
         if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) getOwner().core.spawnSpiders();
         
+        EWSystem iterating;
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
             if (paused && flag != SYSFLAG_DRAW) continue;
             
             switch (flag)
             {
-                case SYSFLAG_PLAYER:    iteratingSystem = playerSystem;     break;
-                case SYSFLAG_AVATAR:    iteratingSystem = avatarSystem;     break;
-                case SYSFLAG_COLLISION: iteratingSystem = collisionSystem;  break;
-                case SYSFLAG_SPIDER:    iteratingSystem = spiderSystem;     break;
+                case SYSFLAG_PLAYER:    iterating = playerSystem;       break;
+                case SYSFLAG_AVATAR:    iterating = avatarSystem;       break;
+                case SYSFLAG_COLLISION: iterating = collisionSystem;    break;
+                case SYSFLAG_SPIDER:    iterating = spiderSystem;       break;
                 case SYSFLAG_DRAW:
-                    iteratingSystem = drawSystem;
+                    iterating = drawSystem;
                     
                     SpriteBatch batch = getOwner().getGameInstance().getBatch();
                     ScreenViewport viewport = getOwner().getGameInstance().getViewport();
@@ -168,20 +155,18 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                     batch.begin();
                     
                     break;
+                default: throw new IllegalStateException("missing system flag");
             }
             
             for (int entity = 0; entity < entities; entity++)
             {
                 if (isEntityDebris.contains(entity)) continue;
-                if ((entityFlags.get(entity) & flag) != 0) iteratingSystem.iterate(entity);
+                if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
             }
             
-            if (flag == SYSFLAG_DRAW)
-            {
-                getOwner().getGameInstance().getBatch().end();
-            }
+            if (flag == SYSFLAG_DRAW) getOwner().getGameInstance().getBatch().end();
         }
-        iteratingSystem = null;
+        iterating = null;
         
         /*  Deferred entity removal.
         */
@@ -191,8 +176,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         {
             final int debris = entityDebris.get(i);
             final int last = entities - entityDebris.size + i;
-            final EWDatastore<?>[] dsDebris = entityDatastores.get(debris);
-            final EWDatastore<?>[] dsLast = entityDatastores.get(last);
+            EWDatastore<?>[] dsDebris = entityDatastores.get(debris);
+            EWDatastore<?>[] dsLast = entityDatastores.get(last);
             
             for (int j = 0; j < dsDebris.length; j++) dsDebris[j].remove(debris);
             if (debris != last) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
@@ -215,13 +200,14 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
      * {@code data} corresponds to the {@code datastore} in the
      * correct order.
      */
-    @SuppressWarnings("unchecked")
-    public int addEntity(char systems, EWDatastore<?>[] datastores, Object... data)
+    public int addEntity(char systems, EWDatastore<Object>[] datastores, Object... data)
     {
-        if (datastores.length != data.length) throw new IllegalArgumentException("improper data to datastore assignment");
+        if (datastores.length != data.length)
+            throw new IllegalArgumentException("improper data to datastore assignment");
+        
         for (int i = 0; i < datastores.length; i++)
         {
-            ((EWDatastore<Object>) datastores[i]).put(entities, data[i]);
+            datastores[i].put(entities, data[i]);
         }
         entityDatastores.add(datastores);
         entityFlags.add(systems);
@@ -265,7 +251,6 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         spiderDatastore.clear();
         projectileDatastore.clear();
         getOwner().state.setGamePaused(true);
-        setSolverEnabled(false);
     }
     
     
@@ -273,35 +258,5 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     public void resize(int width, int height)
     {
         collisionSystem.resize(width, height);
-    }
-    
-    
-    /** Enable to disable the solver. */
-    private void setSolverEnabled(boolean enabled)
-    {
-        /*  Some functionality below makes the solver appear to freeze when
-            the player is pausing during gameplay. When unpausing, the
-            solver resumes not with the full interval delay, but rather, the
-            time after when it was supposed to run next. A small detail
-            although it is highly unnoticeable since the solver is frame-
-            scheduled.
-        */
-        
-        if (enabled == collisionSolveTask.isScheduled()) return;
-        if (enabled)
-        {
-            Timer.schedule(
-                collisionSolveTask,
-                timeToNextSolve,
-                SOLVE_INTERVAL
-            );
-        }
-        else
-        {
-            final long then = collisionSolveTask.getExecuteTimeMillis();
-            final long now = System.nanoTime() / 1000000;
-            timeToNextSolve = (then - now) * 0.001f;
-            collisionSolveTask.cancel();
-        }
     }
 }

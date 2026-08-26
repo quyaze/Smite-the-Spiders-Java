@@ -15,7 +15,7 @@ public class Collision
     
     
     /*  Constructors  */
-    /** Construct and set collision to represent the avatar. */
+    /** Set collision to represent the avatar. */
     public Collision(Avatar avatar)
     {
         collisionBox = new Rectangle(

@@ -10,12 +10,14 @@ public class EWDatastore<T>
 {
     /*  Fields  */
     private IntMap<T> data;
+    final public Class<T> type;
     
     
     /*  Constructor  */
-    public EWDatastore(int initialCapacity)
+    public EWDatastore(int initialCapacity, Class<T> type)
     {
         data = new IntMap<T>(initialCapacity);
+        this.type = type;
     }
     
     
@@ -24,6 +26,8 @@ public class EWDatastore<T>
      */
     public void put(int entity, T data)
     {
+        if (data.getClass() != type)
+            throw new IllegalArgumentException("attempt to add data of the incorrect type");
         this.data.put(entity, data);
     }
     

@@ -14,7 +14,8 @@ public class Avatar
     
     
     /*  Constructors  */
-    private Avatar()
+    /** Blank, unsafe avatar. */
+    public Avatar()
     {
         position = Vector2.Zero.cpy();
         trueSize = Vector2.Zero.cpy();

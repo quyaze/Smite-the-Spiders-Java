@@ -6,7 +6,7 @@ import quyaze.stsj.core.Signal;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
- * A static subsystem to {@link GameplayScreen}.
+ * A subsystem to {@link GameplayScreen}.
  * <p></p>
  * Tracks any data or states, acting as a kind of game state
  * object.
