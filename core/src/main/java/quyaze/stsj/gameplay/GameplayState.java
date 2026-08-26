@@ -16,8 +16,10 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     private boolean paused = true;
     public int score;
     public int lives;
+    private State state;
     
     public Event<Boolean> onPausedStateChanged;
+    public Event<State> onGameStateChanged;
     
     final static public int POINTS_SPELL_HIT_SPIDER = 50;
     final static public int POINTS_SPIDER_HIT_PLAYER = -5;
@@ -28,6 +30,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     public GameplayState()
     {
         onPausedStateChanged = new Event<>();
+        onGameStateChanged = new Event<>();
         reset();
     }
     
@@ -36,10 +39,29 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     @Override public void create() {}
     
     
-    public void reset()
+    /**
+     * @return Game {@link State}
+     */
+    public State getState()
     {
-        score = 0;
-        lives = 3;
+        return state;
+    }
+    
+    
+    /** Set the game state, which is controlled. */
+    public void setState(State state)
+    {
+        /*  Intermission can only change into Round
+            Round can only change into GameOver
+            Cannot set state if GameOver
+        */
+        switch (this.state) {
+            case INTERMISSION: if (state != State.ROUND) return; break;
+            case ROUND: if (state != State.GAME_OVER) return; break;
+            default: return; 
+        }
+        onGameStateChanged.fire(state);
+        this.state = state;
     }
     
     
@@ -73,5 +95,21 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     {
         setGamePaused(!paused);
         return paused;
+    }
+    
+    
+    /*  Reset game data.  */
+    public void reset()
+    {
+        state = State.INTERMISSION;
+        score = 0;
+        lives = 3;
+    }
+    
+    
+    /** Game State. */
+    static public enum State
+    {
+        INTERMISSION, ROUND, GAME_OVER
     }
 }
