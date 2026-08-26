@@ -14,6 +14,8 @@ public class Player
     public float maxSpeed = 600f;
     public Vector2 upperScreenBounds;
     public boolean[] keymap = new boolean[5];
+    public boolean respawn = true;
+    private Avatar wizard;
     
     public Signal onCastFireball;
     
@@ -49,6 +51,20 @@ public class Player
             Gdx.graphics.getWidth() - avatar.getTrueWidth(),
             Gdx.graphics.getHeight() - avatar.getTrueHeight()
         );
+        wizard = avatar;
+    }
+    
+    
+    /** Spawn the player, referencing its {@link Avatar}. */
+    public void spawnPlayer()
+    {
+        final int width = Gdx.graphics.getWidth();
+        final int height = Gdx.graphics.getHeight();
+        Vector2 location = new Vector2(width * 0.5f, height * 0.5f);
+        
+        location.sub(wizard.getTrueSize().scl(0.5f));
+        
+        wizard.position.set(location);
     }
     
     

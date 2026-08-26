@@ -1,7 +1,10 @@
 package quyaze.stsj.gameplay.systems;
 
+import com.badlogic.gdx.Gdx;
+
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
@@ -10,9 +13,22 @@ import quyaze.stsj.gameplay.architecture.Spider;
 /** System that enables {@link Spider} action. */
 public class SpiderSystem extends EWSystemContext<GameplayWorld> implements EWSystem
 {
+    /*  Fields  */
+    private boolean isGameOver;
+    private float opacityOverride;
+    
+    
     /*  Create  */
     @Override
-    public void create() {}
+    public void create()
+    {
+        getWorld().getOwner().core.onGameOver.bindDeferred(
+            () -> {
+                opacityOverride = 1f;
+                isGameOver = true;
+            }
+        );
+    }
     
     
     /*  Iterate  */
@@ -23,6 +39,20 @@ public class SpiderSystem extends EWSystemContext<GameplayWorld> implements EWSy
         Mobility mobility = getWorld().getOwner().world.mobilityDatastore.get(entity);
         Spider spider = getWorld().getOwner().world.spiderDatastore.get(entity);
         
-        if (avatar.position.dst2(spider.destination.cpy()) < 36f) spider.newPath(avatar, mobility);
+        final float dS = Gdx.graphics.getDeltaTime();
+        
+        if (isGameOver && opacityOverride > 0)
+        {
+            opacityOverride = Math.max(
+                opacityOverride - dS / GameplayCore.GAME_OVER_PHASE,
+                0
+            );
+            avatar.opacity = opacityOverride;
+        }
+        
+        if (avatar.position.dst2(spider.destination.cpy()) < 36f)
+        {
+            spider.newPath(avatar, mobility);
+        }
     }
 }

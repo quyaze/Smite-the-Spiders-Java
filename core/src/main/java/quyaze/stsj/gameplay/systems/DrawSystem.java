@@ -14,7 +14,14 @@ public class DrawSystem extends EWSystemContext<GameplayWorld> implements EWSyst
 {
     /*  Create  */
     @Override
-    public void create() {}
+    public void create()
+    {
+        getWorld().getOwner().core.onGameOver.bindDeferred(
+            () -> {
+                
+            }
+        );
+    }
     
     
     /*  Iterate  */

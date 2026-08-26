@@ -10,7 +10,7 @@ public abstract class ScreenContext<T extends Screen> implements PostConstruct
     {
         if (this.inst != null)
             throw new IllegalStateException("cannot reassign the screen owner");
-        this.inst=inst;
+        this.inst = inst;
         create();
     }
     public T getOwner()

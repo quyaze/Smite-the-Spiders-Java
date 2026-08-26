@@ -2,7 +2,6 @@ package quyaze.stsj.gameplay;
 
 import quyaze.stsj.core.Event;
 import quyaze.stsj.core.ScreenContext;
-import quyaze.stsj.core.Signal;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
@@ -14,27 +13,33 @@ import quyaze.stsj.screens.GameplayScreen;
 public class GameplayState extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
-    private boolean paused;
+    private boolean paused = true;
     public int score;
     public int lives;
     
     public Event<Boolean> onPausedStateChanged;
-    public Signal onGameOver;
     
     final static public int POINTS_SPELL_HIT_SPIDER = 50;
     final static public int POINTS_SPIDER_HIT_PLAYER = -5;
     final static public int POINTS_WEB_HIT_PLAYER = -20;
     
     
-    /*  Create  */
-    @Override
-    public void create()
+    /*  Constructor  */
+    public GameplayState()
     {
-        paused = true;
+        onPausedStateChanged = new Event<>();
+        reset();
+    }
+    
+    
+    /*  Create  */
+    @Override public void create() {}
+    
+    
+    public void reset()
+    {
         score = 0;
         lives = 3;
-        onPausedStateChanged = new Event<>();
-        onGameOver = new Signal();
     }
     
     

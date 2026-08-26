@@ -36,6 +36,12 @@ public class PlayerSystem extends EWSystemContext<GameplayWorld> implements EWSy
         if (player.keymap[3]) movementInput.x -= 1f;
         if (player.keymap[4]) player.onCastFireball.fire();
         
+        if (player.respawn)
+        {
+            player.respawn = false;
+            player.spawnPlayer();
+        }
+        
         //  Gamepad controllers coming soon
         final float inputStrength = movementInput.len2();
         float speed = 0f;

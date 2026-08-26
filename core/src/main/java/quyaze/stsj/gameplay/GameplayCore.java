@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import quyaze.stsj.core.EWDatastore;
 import quyaze.stsj.core.ScreenContext;
+import quyaze.stsj.core.Signal;
 import quyaze.stsj.core.Utility;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Collision;
@@ -21,13 +24,24 @@ import quyaze.stsj.screens.GameplayScreen;
  * A subsystem to {@link getOwner}.
  * <p></p>
  * Acts as a database by spawning the player, spiders, projectiles,
- * etc.
+ * etc. Holds all game logic.
 */
 @SuppressWarnings("unchecked")
 public class GameplayCore extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
     private int player;
+    
+    public Signal onGameOver;
+    
+    final static public float GAME_OVER_PHASE = 3f;
+    
+    
+    /*  Constructor  */
+    public GameplayCore()
+    {
+        onGameOver = new Signal();
+    }
     
     
     /*  Create  */
@@ -62,8 +76,8 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                     (getOwner().world.spiderDatastore.contains(arg.otherEntity))
                 );
                 
-                if (webHitPlayer) onWebHitPlayer(arg.thisEntity, arg.otherEntity);
-                if (spiderHitPlayer) onSpiderHitPlayer(arg.thisEntity, arg.otherEntity);
+                if (webHitPlayer) onWebHitPlayer(arg.thisEntity);
+                if (spiderHitPlayer) onSpiderHitPlayer(arg.thisEntity);
                 if (spellHitSpider) onSpellHitSpider(arg.thisEntity, arg.otherEntity);
             }
         );
@@ -103,9 +117,6 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         Collision collision;
         
         GameplayWorld world = getOwner().world;
-        final int width = Gdx.graphics.getWidth();
-        final int height = Gdx.graphics.getHeight();
-        Vector2 center = new Vector2(width * 0.5f, height * 0.5f);
         
         player = new Player();
         
@@ -113,9 +124,8 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             getOwner().getGameInstance().getAtlas().findRegion("wizard"),
             4f
         );
-        center.sub(avatar.getTrueSize().scl(0.5f));
-        avatar.position.set(center);
         player.setAvatar(avatar);
+        player.spawnPlayer();
         player.onCastFireball.bindDeferred(
             () -> {
                 spawnFireball(avatar);
@@ -297,22 +307,34 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Player is hit by a web. */
-    public void onWebHitPlayer(int webEntity, int playerEntity)
+    public void onWebHitPlayer(int webEntity)
     {
         final GameplayState state = getOwner().state;
         
         state.score += GameplayState.POINTS_WEB_HIT_PLAYER;
-        if (state.lives-- < 0) getOwner().state.onGameOver.fire();
+        if (state.lives-- < 0)
+        {
+            gameOver();
+            return;
+        }
+        
+        getOwner().world.playerDatastore.get(player).spawnPlayer();
     }
     
     
-    /** Player is hit by a spider. */
-    public void onSpiderHitPlayer(int spiderEntity, int playerEntity)
+    /** Player runs into a spider. */
+    public void onSpiderHitPlayer(int spiderEntity)
     {
         final GameplayState state = getOwner().state;
         
         state.score += GameplayState.POINTS_SPIDER_HIT_PLAYER;
-        if (state.lives-- < 0) getOwner().state.onGameOver.fire();
+        if (state.lives-- < 0)
+        {
+            gameOver();
+            return;
+        }
+        
+        getOwner().world.playerDatastore.get(player).spawnPlayer();
     }
     
     
@@ -324,5 +346,22 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         state.score += GameplayState.POINTS_SPELL_HIT_SPIDER;
         getOwner().world.removeEntityRequest(spellEntity);
         getOwner().world.removeEntityRequest(spiderEntity);
+    }
+    
+    
+    /** Out of lives. */
+    private void gameOver()
+    {
+        Timer.schedule(
+            new Task() {
+                @Override public void run()
+                {
+                    getOwner().getGameInstance().toMainMenuScreen();
+                }
+            },
+            GAME_OVER_PHASE
+        );
+        getOwner().world.removeEntityRequest(player);
+        onGameOver.fire();
     }
 }
