@@ -4,23 +4,28 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
-import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EWSystem;
+import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
-import quyaze.stsj.screens.GameplayScreen;
 
 /** System that draws and renders {@link Avatar}s to the screen. */
-public class DrawSystem implements EWSystem
+public class DrawSystem extends EWSystemContext<GameplayWorld> implements EWSystem
 {
+    /*  Create  */
+    @Override
+    public void create() {}
+    
+    
     /*  Iterate  */
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = GameplayScreen.world.avatarDatastore.get(entity);
+        Avatar avatar = getWorld().getOwner().world.avatarDatastore.get(entity);
         
-        SpriteBatch batch = SmiteTheSpiders.getBatch();
+        SpriteBatch batch = getWorld().getOwner().getGameInstance().getBatch();
         final float opacity = MathUtils.clamp(
-            GameplayScreen.state.isPaused() ? avatar.opacity * 0.2f : avatar.opacity,
+            getWorld().getOwner().state.isPaused() ? avatar.opacity * 0.2f : avatar.opacity,
             0,
             1f
         );

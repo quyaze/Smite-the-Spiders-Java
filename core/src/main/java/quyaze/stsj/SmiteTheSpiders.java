@@ -7,11 +7,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.GameText;
-import quyaze.stsj.core.Utility;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
 
@@ -19,23 +17,19 @@ import quyaze.stsj.screens.MainMenuScreen;
 final public class SmiteTheSpiders extends Game
 {
     /*  Fields  */
-    static private SmiteTheSpiders instance;
-    static private SpriteBatch batch;
-    static private ScreenViewport viewport;
-    static private TextureAtlas atlas;
-    static private Music music;
-    static private GameText gameText;
-    static private Timer timer;
-    static private Utility utility;
+    private SpriteBatch batch;
+    private ScreenViewport viewport;
+    private TextureAtlas atlas;
+    private Music music;
+    private GameText gameText;
     
-    static private MainMenuScreen mainMenuScreen;
-    static private GameplayScreen gameplayScreen;
-    
-    final static public float ASPECT_RATIO_BG = 4/3f; // bg.png is 800px by 600px
+    private MainMenuScreen mainMenuScreen;
+    private GameplayScreen gameplayScreen;
     
     
     /*  Constructor  */
-    private SmiteTheSpiders() {}
+    /** New game instance. */
+    public SmiteTheSpiders() {}
     
     
     /*  Create  */
@@ -48,16 +42,17 @@ final public class SmiteTheSpiders extends Game
             Gdx.files.internal("packed" + File.separator + "packed.atlas"),
             Gdx.files.internal("packed")
         );
-        music = Gdx.audio.newMusic(Gdx.files.internal("audio" + File.separator + "Lord of the Land.mp3"));
         gameText = new GameText();
-        timer = new Timer();
-        utility = new Utility();
+        music = Gdx.audio.newMusic(Gdx.files.internal("audio" + File.separator + "Lord of the Land.mp3"));
         
         mainMenuScreen = new MainMenuScreen();
         gameplayScreen = new GameplayScreen();
         
+        mainMenuScreen.setGameInstance(this);
+        gameplayScreen.setGameInstance(this);
+        
         music.setLooping(true);
-        goToMainMenuScreen();
+        setScreen(mainMenuScreen);
         music.play();
     }
     
@@ -77,19 +72,9 @@ final public class SmiteTheSpiders extends Game
     
     
     /**
-     * @return Game instance
-     */
-    static public SmiteTheSpiders gameInstance()
-    {
-        if (instance == null) instance = new SmiteTheSpiders();
-        return instance;
-    }
-    
-    
-    /**
      * @return Global {@link SpriteBatch} for drawing
      */
-    static public SpriteBatch getBatch()
+    public SpriteBatch getBatch()
     {
         return batch;
     }
@@ -98,7 +83,7 @@ final public class SmiteTheSpiders extends Game
     /**
      * @return Global viewport ({@link ScreenViewport})
      */
-    static public ScreenViewport getViewport()
+    public ScreenViewport getViewport()
     {
         return viewport;
     }
@@ -107,7 +92,7 @@ final public class SmiteTheSpiders extends Game
     /**
      * @return Global {@link TextureAtlas} for texture lookup
      */
-    static public TextureAtlas getAtlas()
+    public TextureAtlas getAtlas()
     {
         return atlas;
     }
@@ -116,7 +101,7 @@ final public class SmiteTheSpiders extends Game
     /**
      * @return Globally played {@link Music}
      */
-    // static public Music getMusic()
+    // public Music getMusic()
     // {
     //     return music;
     // }
@@ -125,42 +110,21 @@ final public class SmiteTheSpiders extends Game
     /**
      * @return Global {@link GameText} utility
      */
-    static public GameText getGameText()
+    public GameText getGameText()
     {
         return gameText;
     }
     
     
-    /**
-     * @return Global {@link Timer} utility
-     */
-    static public Timer getTimer()
-    {
-        return timer;
-    }
-    
-    /**
-     * Global {@link Utility}
-    */
-    static public Utility getUtility()
-    {
-        return utility;
-    }
-    
-    
-    /**
-     * Switch to the {@link MainMenuScreen}.
-    */
-    public void goToMainMenuScreen()
+    /** Switch to the {@link MainMenuScreen.} */
+    public void toMainMenuScreen()
     {
         setScreen(mainMenuScreen);
     }
     
     
-    /**
-     * Switch to the {@link GameplayScreen}.
-    */
-    public void goToGameplayScreen()
+    /** Switch to the {@link GameplayScreen}. */
+    public void toGameplayScreen()
     {
         setScreen(gameplayScreen);
     }

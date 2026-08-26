@@ -1,8 +1,7 @@
 package quyaze.stsj.core;
 
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-
-import quyaze.stsj.SmiteTheSpiders;
 
 /**
  * Enables event and binding/listener functionality.
@@ -33,7 +32,7 @@ public class Event<T>
     */
     public void bindImmediate(Bind<T> bind)
     {
-        immediate = SmiteTheSpiders.getUtility().append(immediate, bind);
+        immediate = Utility.append(immediate, bind);
     }
     
     
@@ -45,7 +44,7 @@ public class Event<T>
     */
     public void bindDeferred(Bind<T> bind)
     {
-        deferred = SmiteTheSpiders.getUtility().append(deferred, bind);
+        deferred = Utility.append(deferred, bind);
     }
     
     
@@ -54,7 +53,7 @@ public class Event<T>
     {
         if (deferred.length > 0)
         {
-            SmiteTheSpiders.getTimer().postTask(
+            Timer.post(
                 new Task()
                 {
                     Bind<T>[] target = deferred.clone();

@@ -1,13 +1,12 @@
 package quyaze.stsj.core;
 
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-
-import quyaze.stsj.SmiteTheSpiders;
 
 /**
  * Enables signal and binding/listener functionality.
  * <p></p>
- * Unlike {@link Event}, {@code Signal} does not pass argument
+ * Unlike {@link Event}, {@code Signal} does not have argument
  * definitions; it is similar to {@code Event<Void>}.
 */
 public class Signal
@@ -26,46 +25,45 @@ public class Signal
     
     
     /**
-     * Bind to this event.
+     * Bind to this signal.
      * <p></p>
-     * Binding executes immediately on {@link Event#fire(Object)}.
+     * Binding executes immediately on {@link Signal#fire(Object)}.
     */
     public void bindImmediate(Bind bind)
     {
-        immediate = SmiteTheSpiders.getUtility().append(immediate, bind);
+        immediate = Utility.append(immediate, bind);
     }
     
     
     /**
-     * Bind to this event.
+     * Bind to this signal.
      * <p></p>
      * Binding executes on the next frame after
-     * {@link Event#fire(Object)}.
+     * {@link Signal#fire(Object)}.
     */
     public void bindDeferred(Bind bind)
     {
-        deferred = SmiteTheSpiders.getUtility().append(deferred, bind);
+        deferred = Utility.append(deferred, bind);
     }
     
     
-    /** Fire the event. Calls all {@link Bind#onEvent(Object)}s. */
+    /** Fire the signal. Calls all {@link Bind#onSignal(Object)}s. */
     public void fire()
     {
         if (deferred.length > 0)
         {
-            SmiteTheSpiders.getTimer().postTask(
+            Timer.post(
                 new Task()
                 {
                     Bind[] target = deferred.clone();
                     @Override public void run()
                     {
-                        for (int i = 0; i < target.length; i++) target[i].onEvent();
+                        for (int i = 0; i < target.length; i++) target[i].onSignal();
                     }
                 }
             );
         }
-        // if (immediate.length > 0)
-        for (int i = 0; i < immediate.length; i++) immediate[i].onEvent();
+        for (int i = 0; i < immediate.length; i++) immediate[i].onSignal();
     }
     
     
@@ -73,6 +71,6 @@ public class Signal
     @FunctionalInterface
     public static interface Bind
     {
-        public void onEvent();
+        public void onSignal();
     }
 }

@@ -5,7 +5,9 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
 import quyaze.stsj.core.EWSystem;
+import quyaze.stsj.core.EWSystemContext;
 import quyaze.stsj.gameplay.CollisionSolver;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.screens.GameplayScreen;
@@ -13,30 +15,31 @@ import quyaze.stsj.screens.GameplayScreen;
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
  */
-final public class CollisionSystem implements EWSystem
+final public class CollisionSystem extends EWSystemContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */
+    final private int cap;
     private IntArray collidableEntities;
     private IntIntMap collidableEntityToIndex;
     private Rectangle screen;
     
     
     /*  Constructor  */
-    
-    /** Start system with an initial capacity. */
     public CollisionSystem(int initialCapacity)
     {
-        collidableEntities = new IntArray(false, initialCapacity);
-        collidableEntityToIndex = new IntIntMap(initialCapacity);
-        screen = new Rectangle();
+        cap = initialCapacity;
     }
     
     
-    /** Post-construct. */
-    public void postConstruct()
+    /*  Create  */
+    @Override
+    public void create()
     {
-        GameplayScreen.solver.setCollisionEntitiesReference(collidableEntities);
-        GameplayScreen.solver.onSolverCleanup.bindDeferred(
+        collidableEntities = new IntArray(false, cap);
+        collidableEntityToIndex = new IntIntMap(cap);
+        screen = new Rectangle();
+        getWorld().getOwner().solver.setCollisionEntitiesReference(collidableEntities);
+        getWorld().getOwner().solver.onSolverCleanup.bindDeferred(
             () -> {
                 collidableEntityToIndex.clear();
                 collidableEntities.clear();
@@ -49,8 +52,8 @@ final public class CollisionSystem implements EWSystem
     @Override
     public void iterate(int entity)
     {
-        Collision collision = GameplayScreen.world.collisionDatastore.get(entity);
-        Projectile projectile = GameplayScreen.world.projectileDatastore.get(entity);
+        Collision collision = getWorld().getOwner().world.collisionDatastore.get(entity);
+        Projectile projectile = getWorld().getOwner().world.projectileDatastore.get(entity);
         
         collision.updatePosition();
         
@@ -58,7 +61,7 @@ final public class CollisionSystem implements EWSystem
         */
         if (projectile != null && !collision.collisionBox.overlaps(screen))
         {
-            GameplayScreen.world.removeEntityRequest(entity);
+            getWorld().getOwner().world.removeEntityRequest(entity);
             return;
         }
         

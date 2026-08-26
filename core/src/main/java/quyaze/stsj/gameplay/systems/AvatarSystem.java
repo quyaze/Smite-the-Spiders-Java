@@ -4,21 +4,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 import quyaze.stsj.core.EWSystem;
+import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
-import quyaze.stsj.screens.GameplayScreen;
 
 /** System that simulates {@link Avatar} movement. */
-public class AvatarSystem implements EWSystem
+public class AvatarSystem extends EWSystemContext<GameplayWorld> implements EWSystem
 {
+    /*  Create  */
+    @Override public void create() {}
+    
+    
     /*  Iterate  */
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = GameplayScreen.world.avatarDatastore.get(entity);
-        Mobility mobility = GameplayScreen.world.mobilityDatastore.get(entity);
-        Player player = GameplayScreen.world.playerDatastore.get(entity);
+        Avatar avatar = getWorld().getOwner().world.avatarDatastore.get(entity);
+        Mobility mobility = getWorld().getOwner().world.mobilityDatastore.get(entity);
+        Player player = getWorld().getOwner().world.playerDatastore.get(entity);
         
         final float delta = Gdx.graphics.getDeltaTime();
         

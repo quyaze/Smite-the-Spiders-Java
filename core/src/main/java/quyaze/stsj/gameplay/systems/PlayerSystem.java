@@ -3,19 +3,25 @@ package quyaze.stsj.gameplay.systems;
 import com.badlogic.gdx.math.Vector2;
 
 import quyaze.stsj.core.EWSystem;
+import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
-import quyaze.stsj.screens.GameplayScreen;
 
 /** System that enables {@link Player} action. */
-public class PlayerSystem implements EWSystem
+public class PlayerSystem extends EWSystemContext<GameplayWorld> implements EWSystem
 {
+    /*  Create  */
+    @Override
+    public void create() {}
+    
+    
     /*  Iterate  */
     @Override
     public void iterate(int entity)
     {
-        Player player = GameplayScreen.world.playerDatastore.get(entity);
-        Mobility mobility = GameplayScreen.world.mobilityDatastore.get(entity);
+        Player player = getWorld().getOwner().world.playerDatastore.get(entity);
+        Mobility mobility = getWorld().getOwner().world.mobilityDatastore.get(entity);
         
         Vector2 movementInput = player.movementInput;
         

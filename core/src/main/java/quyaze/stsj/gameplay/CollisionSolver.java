@@ -3,6 +3,7 @@ package quyaze.stsj.gameplay;
 import com.badlogic.gdx.utils.IntArray;
 
 import quyaze.stsj.core.Event;
+import quyaze.stsj.core.ScreenContext;
 import quyaze.stsj.core.Signal;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.eventDefs.OnCollided;
@@ -15,7 +16,7 @@ import quyaze.stsj.screens.GameplayScreen;
  * An engine that detects collision. Must access
  * {@link CollisionSystem#collidableEntities}.
 */
-public class CollisionSolver
+public class CollisionSolver extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
     private IntArray targetEntities;
@@ -32,6 +33,10 @@ public class CollisionSolver
         onCollided = new Event<>();
         onSolverCleanup = new Signal();
     }
+    
+    
+    /*  Create  */
+    @Override public void create() {}
     
     
     /** Set the reference to the collidable entities. */
@@ -54,13 +59,13 @@ public class CollisionSolver
         for (int i = 0; i < targetEntities.size; i++)
         {
             entityA = targetEntities.get(i);
-            collisionA = GameplayScreen.world.collisionDatastore.get(entityA);
+            collisionA = getOwner().world.collisionDatastore.get(entityA);
             if (collisionA == null || collisionA.skipSolving) continue;
             
             for (int j = i + 1; j < targetEntities.size; j++)
             {
                 entityB = targetEntities.get(j);
-                collisionB = GameplayScreen.world.collisionDatastore.get(entityB);
+                collisionB = getOwner().world.collisionDatastore.get(entityB);
                 if (collisionB == null || collisionB.skipSolving) continue;
                 
                 /*  Collision detection is calculated here.

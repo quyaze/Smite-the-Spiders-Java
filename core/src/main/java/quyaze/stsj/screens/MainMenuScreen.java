@@ -2,20 +2,22 @@ package quyaze.stsj.screens;
 
 import com.badlogic.gdx.Screen;
 
-import quyaze.stsj.SmiteTheSpiders;
+import quyaze.stsj.core.GameContext;
 import quyaze.stsj.mainMenu.MainMenuWorld;
 
 /** {@link Screen} for the main menu. */
-public class MainMenuScreen implements Screen
+public class MainMenuScreen extends GameContext implements Screen
 {
     /*  Fields  */
     private MainMenuWorld world;
     
     
-    /*  Constructor  */
-    public MainMenuScreen()
+    /*  Create  */
+    @Override
+    public void create()
     {
         world = new MainMenuWorld();
+        world.setOwner(this);
     }
     
     
@@ -48,7 +50,7 @@ public class MainMenuScreen implements Screen
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        SmiteTheSpiders.getViewport().update(width, height, true);
+        getGameInstance().getViewport().update(width, height, true);
         world.resize(width, height);
     }
     
@@ -63,13 +65,4 @@ public class MainMenuScreen implements Screen
     
     /*  Dispose  */
     @Override public void dispose() {}
-    
-    
-    /**
-     * @return {@link World} of the main menu
-     */
-    public MainMenuWorld getWorld()
-    {
-        return world;
-    }
 }

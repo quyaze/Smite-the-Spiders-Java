@@ -2,35 +2,35 @@ package quyaze.stsj.screens;
 
 import com.badlogic.gdx.Screen;
 
-import quyaze.stsj.SmiteTheSpiders;
+import quyaze.stsj.core.GameContext;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayState;
 import quyaze.stsj.gameplay.GameplayWorld;
 
-/**
- * Screen for the gameplay.
- */
-public class GameplayScreen implements Screen
+/** {@link Screen} for the gameplay. */
+public class GameplayScreen extends GameContext implements Screen
 {
     /*  Fields  */
-    static public GameplayWorld world;
-    static public GameplayCore core;
-    static public GameplayState state;
-    static public CollisionSolver solver;
+    public GameplayWorld world;
+    public GameplayCore core;
+    public GameplayState state;
+    public CollisionSolver solver;
     
     
-    /*  Constructor  */
-    public GameplayScreen()
+    /*  Create  */
+    @Override
+    public void create()
     {
-        final boolean postWorld = world == null;
+        world = new GameplayWorld();
+        core = new GameplayCore();
+        state = new GameplayState();
+        solver = new CollisionSolver();
         
-        if (world == null) world = new GameplayWorld();
-        if (core == null) core = new GameplayCore();
-        if (state == null) state = new GameplayState();
-        if (solver == null) solver = new CollisionSolver();
-        
-        if (postWorld) world.postConstruct();
+        world.setOwner(this);
+        core.setOwner(this);
+        state.setOwner(this);
+        solver.setOwner(this);
     }
     
     
@@ -67,7 +67,7 @@ public class GameplayScreen implements Screen
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        SmiteTheSpiders.getViewport().update(width, height, true);
+        getGameInstance().getViewport().update(width, height, true);
         world.resize(width, height);
     }
     

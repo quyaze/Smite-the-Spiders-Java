@@ -9,10 +9,10 @@ import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EWDatastore;
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.EntityWorld;
@@ -35,7 +35,7 @@ import quyaze.stsj.screens.GameplayScreen;
  * {@link EntityWorld} for gameplay and a static subsystem to
  * {@link GameplayScreen}.
 */
-public class GameplayWorld extends EntityWorld
+public class GameplayWorld extends EntityWorld<GameplayScreen>
 {
     /*  Fields  */
     private CharArray entityFlags;
@@ -71,8 +71,9 @@ public class GameplayWorld extends EntityWorld
     public Event<OnEntityReassigned> onEntityReassigned;
     
     
-    /*  Constructor  */
-    public GameplayWorld()
+    /*  Create  */
+    @Override
+    public void create()
     {
         entityFlags = new CharArray(false, CAPACITY);
         entityDatastores = new Array<>(false, CAPACITY);
@@ -92,11 +93,17 @@ public class GameplayWorld extends EntityWorld
         spiderSystem = new SpiderSystem();
         drawSystem = new DrawSystem();
         
+        playerSystem.setWorld(this);
+        avatarSystem.setWorld(this);
+        collisionSystem.setWorld(this);
+        spiderSystem.setWorld(this);
+        drawSystem.setWorld(this);
+        
         collisionSolveTask = new Task()
         {
             @Override public void run()
             {
-                GameplayScreen.solver.solve();
+                getOwner().solver.solve();
             }
         };
         
@@ -108,8 +115,7 @@ public class GameplayWorld extends EntityWorld
     @Override
     public void render(float delta)
     {
-        GameplayCore core = GameplayScreen.core;
-        GameplayState state = GameplayScreen.state;
+        GameplayState state = getOwner().state;
         
         /*  First see if pausing or exiting to the main menu.
             
@@ -132,11 +138,11 @@ public class GameplayWorld extends EntityWorld
         
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
-            SmiteTheSpiders.gameInstance().goToMainMenuScreen();
+            getOwner().getGameInstance().toMainMenuScreen();
             return;
         }
         
-        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) core.spawnSpiders();
+        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) getOwner().core.spawnSpiders();
         
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
@@ -151,13 +157,13 @@ public class GameplayWorld extends EntityWorld
                 case SYSFLAG_DRAW:
                     iteratingSystem = drawSystem;
                     
-                    SpriteBatch batch = SmiteTheSpiders.getBatch();
-                    ScreenViewport viewport = SmiteTheSpiders.getViewport();
+                    SpriteBatch batch = getOwner().getGameInstance().getBatch();
+                    ScreenViewport viewport = getOwner().getGameInstance().getViewport();
                     
                     ScreenUtils.clear(Color.BLACK);
                     viewport.apply(true);
                     batch.setProjectionMatrix(
-                        SmiteTheSpiders.getViewport().getCamera().combined
+                        viewport.getCamera().combined
                     );
                     batch.begin();
                     
@@ -172,8 +178,7 @@ public class GameplayWorld extends EntityWorld
             
             if (flag == SYSFLAG_DRAW)
             {
-                SmiteTheSpiders.getBatch().end();
-                // if (paused) pauseOverlay();
+                getOwner().getGameInstance().getBatch().end();
             }
         }
         iteratingSystem = null;
@@ -200,13 +205,6 @@ public class GameplayWorld extends EntityWorld
         entities -= entityDebris.size;
         entityDebris.clear();
         isEntityDebris.clear();
-    }
-    
-    
-    /** Post-construct. */
-    public void postConstruct()
-    {
-        collisionSystem.postConstruct();
     }
     
     
@@ -241,14 +239,14 @@ public class GameplayWorld extends EntityWorld
     /**
      * On {@code GameplayScreen.show()}
      * <p></p>
-     * Starts the SmiteTheSpiders.
+     * Starts the 
      */
     public void show()
     {
-        GameplayScreen.state.setGamePaused(false);
-        GameplayScreen.core.spawnBackground();
-        GameplayScreen.core.spawnPlayer();
-        GameplayScreen.core.spawnSpiders();
+        getOwner().state.setGamePaused(false);
+        getOwner().core.spawnBackground();
+        getOwner().core.spawnPlayer();
+        getOwner().core.spawnSpiders();
     }
     
     
@@ -266,7 +264,7 @@ public class GameplayWorld extends EntityWorld
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        GameplayScreen.state.setGamePaused(true);
+        getOwner().state.setGamePaused(true);
         setSolverEnabled(false);
     }
     
@@ -292,7 +290,7 @@ public class GameplayWorld extends EntityWorld
         if (enabled == collisionSolveTask.isScheduled()) return;
         if (enabled)
         {
-            SmiteTheSpiders.getTimer().scheduleTask(
+            Timer.schedule(
                 collisionSolveTask,
                 timeToNextSolve,
                 SOLVE_INTERVAL

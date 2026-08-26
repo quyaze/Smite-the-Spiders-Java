@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EWDatastore;
+import quyaze.stsj.core.ScreenContext;
+import quyaze.stsj.core.Utility;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Collision;
 import quyaze.stsj.gameplay.architecture.Mobility;
@@ -17,21 +18,22 @@ import quyaze.stsj.gameplay.architecture.Spider;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
- * A static subsystem to {@link GameplayScreen}.
+ * A static subsystem to {@link getOwner}.
  * <p></p>
  * Acts as a database by spawning the player, spiders, projectiles,
  * etc.
 */
-public class GameplayCore
+public class GameplayCore extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
     private int player;
     
     
-    /*  Constructor  */
-    public GameplayCore()
+    /*  Create  */
+    @Override
+    public void create()
     {
-        GameplayScreen.world.onEntityReassigned.bindDeferred(
+        getOwner().world.onEntityReassigned.bindDeferred(
             arg -> {
                 if (player == arg.oldEntity)
                 player = arg.newEntity;
@@ -45,12 +47,12 @@ public class GameplayCore
     {
         Avatar avatar;
         
-        GameplayWorld world = GameplayScreen.world;
-        AtlasRegion background = SmiteTheSpiders.getAtlas().findRegion("bg");
+        GameplayWorld world = getOwner().world;
+        AtlasRegion background = getOwner().getGameInstance().getAtlas().findRegion("bg");
         
         avatar = new Avatar(
             background,
-            SmiteTheSpiders.getUtility().getAvatarScreenScaled(background)
+            Utility.getAvatarScreenScaled(background)
         );
         avatar.opacity = 1 / 0.2f;
         
@@ -72,7 +74,7 @@ public class GameplayCore
         Mobility mobility;
         Collision collision;
         
-        GameplayWorld world = GameplayScreen.world;
+        GameplayWorld world = getOwner().world;
         final int width = Gdx.graphics.getWidth();
         final int height = Gdx.graphics.getHeight();
         Vector2 center = new Vector2(width * 0.5f, height * 0.5f);
@@ -80,7 +82,7 @@ public class GameplayCore
         player = new Player();
         
         avatar = new Avatar(
-            SmiteTheSpiders.getAtlas().findRegion("wizard"),
+            getOwner().getGameInstance().getAtlas().findRegion("wizard"),
             4f
         );
         center.sub(avatar.getTrueSize().scl(0.5f));
@@ -123,14 +125,14 @@ public class GameplayCore
             Collision collision;
             Spider spider;
             
-            GameplayWorld world = GameplayScreen.world;
+            GameplayWorld world = getOwner().world;
             float posX = Gdx.graphics.getWidth();
             
             avatar = new Avatar(
                 /*  New copy so the spider Avatar can individually flip/orient to
                     horizontal movement
                 */
-                new TextureRegion(SmiteTheSpiders.getAtlas().findRegion("spider")),
+                new TextureRegion(getOwner().getGameInstance().getAtlas().findRegion("spider")),
                 4f
             );
             
@@ -182,8 +184,8 @@ public class GameplayCore
         Collision collision;
         Projectile projectile;
         
-        GameplayWorld world = GameplayScreen.world;
-        TextureRegion spellTexture = new TextureRegion(SmiteTheSpiders.getAtlas().findRegion("spell"));
+        GameplayWorld world = getOwner().world;
+        TextureRegion spellTexture = new TextureRegion(getOwner().getGameInstance().getAtlas().findRegion("spell"));
         spellTexture.flip(false, true);
         
         avatar = new Avatar(
@@ -225,10 +227,10 @@ public class GameplayCore
         Collision collision;
         Projectile projectile;
         
-        GameplayWorld world = GameplayScreen.world;
+        GameplayWorld world = getOwner().world;
         
         avatar = new Avatar(
-            SmiteTheSpiders.getAtlas().findRegion("web"),
+            getOwner().getGameInstance().getAtlas().findRegion("web"),
             2f
         );
         avatar.position.set(
@@ -264,30 +266,30 @@ public class GameplayCore
     /** Player is hit by a web. */
     public void onWebHitPlayer(int webEntity, int playerEntity)
     {
-        final GameplayState state = GameplayScreen.state;
+        final GameplayState state = getOwner().state;
         
         state.score += GameplayState.POINTS_WEB_HIT_PLAYER;
-        if (state.lives-- < 0) GameplayScreen.state.onGameOver.fire();
+        if (state.lives-- < 0) getOwner().state.onGameOver.fire();
     }
     
     
     /** Player is hit by a spider. */
     public void onSpiderHitPlayer(int spiderEntity, int playerEntity)
     {
-        final GameplayState state = GameplayScreen.state;
+        final GameplayState state = getOwner().state;
         
         state.score += GameplayState.POINTS_SPIDER_HIT_PLAYER;
-        if (state.lives-- < 0) GameplayScreen.state.onGameOver.fire();
+        if (state.lives-- < 0) getOwner().state.onGameOver.fire();
     }
     
     
     /** A spider is hit by the player's spell. */
     public void onSpellHitSpider(int spellEntity, int spiderEntity)
     {
-        final GameplayState state = GameplayScreen.state;
+        final GameplayState state = getOwner().state;
         
         state.score += GameplayState.POINTS_SPELL_HIT_SPIDER;
-        GameplayScreen.world.removeEntityRequest(spellEntity);
-        GameplayScreen.world.removeEntityRequest(spiderEntity);
+        getOwner().world.removeEntityRequest(spellEntity);
+        getOwner().world.removeEntityRequest(spiderEntity);
     }
 }

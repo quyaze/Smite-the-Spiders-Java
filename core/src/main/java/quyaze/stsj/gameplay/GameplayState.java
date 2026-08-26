@@ -1,6 +1,7 @@
 package quyaze.stsj.gameplay;
 
 import quyaze.stsj.core.Event;
+import quyaze.stsj.core.ScreenContext;
 import quyaze.stsj.core.Signal;
 import quyaze.stsj.screens.GameplayScreen;
 
@@ -10,7 +11,7 @@ import quyaze.stsj.screens.GameplayScreen;
  * Tracks any data or states, acting as a kind of game state
  * object.
 */
-public class GameplayState
+public class GameplayState extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
     private boolean paused;
@@ -25,8 +26,9 @@ public class GameplayState
     final static public int POINTS_WEB_HIT_PLAYER = -20;
     
     
-    /*  Constructor  */
-    public GameplayState()
+    /*  Create  */
+    @Override
+    public void create()
     {
         paused = true;
         score = 0;
