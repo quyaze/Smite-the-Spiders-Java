@@ -16,11 +16,11 @@ public class DrawSystem extends EWSystemContext<GameplayWorld> implements EWSyst
     @Override
     public void create()
     {
-        getWorld().getOwner().core.onGameOver.bindDeferred(
-            () -> {
+        // getWorld().getScreen().core.onGameOver.bindDeferred(
+        //     () -> {
                 
-            }
-        );
+        //     }
+        // );
     }
     
     
@@ -28,11 +28,11 @@ public class DrawSystem extends EWSystemContext<GameplayWorld> implements EWSyst
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = getWorld().getOwner().world.avatarDatastore.get(entity);
+        Avatar avatar = getWorld().getScreen().world.avatarDatastore.get(entity);
         
-        SpriteBatch batch = getWorld().getOwner().getGameInstance().getBatch();
+        SpriteBatch batch = getWorld().getScreen().getGameInstance().getBatch();
         final float opacity = MathUtils.clamp(
-            getWorld().getOwner().state.isPaused() ? avatar.opacity * 0.2f : avatar.opacity,
+            getWorld().getScreen().state.isPaused() ? avatar.opacity * 0.2f : avatar.opacity,
             0,
             1f
         );

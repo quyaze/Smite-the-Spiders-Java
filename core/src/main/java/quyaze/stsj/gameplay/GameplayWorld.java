@@ -61,6 +61,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     final static public char SYSFLAG_DRAW = 16;         //  10000 = 1 << 4
     
     final static private int CAPACITY = 64;
+    final static private int DEBRIS = 3;
     
     public Event<OnEntityReassigned> onEntityReassigned;
     
@@ -71,8 +72,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     {
         entityFlags = new CharArray(false, CAPACITY);
         entityDatastores = new Array<>(false, CAPACITY);
-        entityDebris = new IntArray(false, 2);
-        isEntityDebris = new IntSet(2);
+        entityDebris = new IntArray(false, DEBRIS);
+        isEntityDebris = new IntSet(DEBRIS);
         
         playerDatastore = new EWDatastore<>(CAPACITY, Player.class);
         avatarDatastore = new EWDatastore<>(CAPACITY, Avatar.class);
@@ -101,7 +102,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     @Override
     public void render(float delta)
     {
-        GameplayState state = getOwner().state;
+        GameplayState state = getScreen().state;
         
         /*  First see if pausing or exiting to the main menu.
             
@@ -124,11 +125,26 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
-            getOwner().getGameInstance().toMainMenuScreen();
+            getScreen().getGameInstance().toMainMenuScreen();
             return;
         }
         
-        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) getOwner().core.spawnSpiders();
+        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) getScreen().core.spawnSpiders();
+        
+        // if (Gdx.input.isKeyJustPressed(Input.Keys.G))
+        // {
+        //     getScreen().getGameInstance().getViewport().setUnitsPerPixel(4f);
+        //     getScreen().getGameInstance().resize(
+        //         Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
+        //     );
+        // }
+        // else if (Gdx.input.isKeyJustPressed(Input.Keys.H))
+        // {
+        //     getScreen().getGameInstance().getViewport().setUnitsPerPixel(1f);
+        //     getScreen().getGameInstance().resize(
+        //         Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
+        //     );
+        // }
         
         EWSystem iterating;
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
@@ -144,8 +160,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 case SYSFLAG_DRAW:
                     iterating = drawSystem;
                     
-                    SpriteBatch batch = getOwner().getGameInstance().getBatch();
-                    ScreenViewport viewport = getOwner().getGameInstance().getViewport();
+                    SpriteBatch batch = getScreen().getGameInstance().getBatch();
+                    ScreenViewport viewport = getScreen().getGameInstance().getViewport();
                     
                     ScreenUtils.clear(Color.BLACK);
                     viewport.apply(true);
@@ -164,7 +180,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
             }
             
-            if (flag == SYSFLAG_DRAW) getOwner().getGameInstance().getBatch().end();
+            if (flag == SYSFLAG_DRAW) getScreen().getGameInstance().getBatch().end();
         }
         iterating = null;
         
@@ -205,10 +221,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         if (datastores.length != data.length)
             throw new IllegalArgumentException("improper data to datastore assignment");
         
-        for (int i = 0; i < datastores.length; i++)
-        {
-            datastores[i].put(entities, data[i]);
-        }
+        for (int i = 0; i < datastores.length; i++) datastores[i].put(entities, data[i]);
         entityDatastores.add(datastores);
         entityFlags.add(systems);
         return entities++;
@@ -222,17 +235,14 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     }
     
     
-    /**
-     * On {@code GameplayScreen.show()}
-     * <p></p>
-     * Starts the 
-     */
+    /** On {@link GameplayScreen#show()}. */
     public void show()
     {
-        getOwner().state.setGamePaused(false);
-        getOwner().core.spawnBackground();
-        getOwner().core.spawnPlayer();
-        getOwner().core.spawnSpiders();
+        // ScreenViewport viewport = getScreen().getGameInstance().getViewport();
+        
+        // viewport.setUnitsPerPixel(1f);
+        // getScreen().getGameInstance().resize();
+        
     }
     
     
@@ -241,16 +251,15 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     {
         entities = 0;
         entityFlags.clear();
+        entityDatastores.clear();
         entityDebris.clear();
         isEntityDebris.clear();
-        entityDatastores.clear();
         playerDatastore.clear();
         avatarDatastore.clear();
         mobilityDatastore.clear();
         collisionDatastore.clear();
         spiderDatastore.clear();
         projectileDatastore.clear();
-        getOwner().state.setGamePaused(true);
     }
     
     

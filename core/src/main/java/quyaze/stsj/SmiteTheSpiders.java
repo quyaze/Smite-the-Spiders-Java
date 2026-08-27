@@ -101,10 +101,10 @@ final public class SmiteTheSpiders extends Game
     /**
      * @return Globally played {@link Music}
      */
-    // public Music getMusic()
-    // {
-    //     return music;
-    // }
+    public Music getMusic()
+    {
+        return music;
+    }
     
     
     /**

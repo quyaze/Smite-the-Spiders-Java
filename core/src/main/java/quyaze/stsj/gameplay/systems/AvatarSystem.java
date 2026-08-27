@@ -21,9 +21,9 @@ public class AvatarSystem extends EWSystemContext<GameplayWorld> implements EWSy
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = getWorld().getOwner().world.avatarDatastore.get(entity);
-        Mobility mobility = getWorld().getOwner().world.mobilityDatastore.get(entity);
-        Player player = getWorld().getOwner().world.playerDatastore.get(entity);
+        Avatar avatar = getWorld().avatarDatastore.get(entity);
+        Mobility mobility = getWorld().mobilityDatastore.get(entity);
+        Player player = getWorld().playerDatastore.get(entity);
         
         final float delta = Gdx.graphics.getDeltaTime();
         

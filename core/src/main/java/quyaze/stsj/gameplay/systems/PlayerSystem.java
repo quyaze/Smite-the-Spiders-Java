@@ -1,6 +1,7 @@
 package quyaze.stsj.gameplay.systems;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.EWSystemContext;
@@ -20,9 +21,10 @@ public class PlayerSystem extends EWSystemContext<GameplayWorld> implements EWSy
     @Override
     public void iterate(int entity)
     {
-        Player player = getWorld().getOwner().world.playerDatastore.get(entity);
-        Mobility mobility = getWorld().getOwner().world.mobilityDatastore.get(entity);
+        Player player = getWorld().getScreen().world.playerDatastore.get(entity);
+        Mobility mobility = getWorld().getScreen().world.mobilityDatastore.get(entity);
         
+        ScreenViewport viewport = getWorld().getScreen().getGameInstance().getViewport();
         Vector2 movementInput = player.movementInput;
         
         /*  Input  */
@@ -39,7 +41,10 @@ public class PlayerSystem extends EWSystemContext<GameplayWorld> implements EWSy
         if (player.respawn)
         {
             player.respawn = false;
-            player.spawnPlayer();
+            player.spawnPlayer(
+                viewport.getWorldWidth(),
+                viewport.getWorldHeight()
+            );
         }
         
         //  Gamepad controllers coming soon

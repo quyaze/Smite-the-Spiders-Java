@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.GameText;
 import quyaze.stsj.core.Utility;
 import quyaze.stsj.core.World;
@@ -38,8 +39,8 @@ public class MainMenuWorld extends World<MainMenuScreen>
     @Override
     public void create()
     {
-        TextureAtlas atlas = getOwner().getGameInstance().getAtlas();
-        GameText gameText = getOwner().getGameInstance().getGameText();
+        TextureAtlas atlas = getScreen().getGameInstance().getAtlas();
+        GameText gameText = getScreen().getGameInstance().getGameText();
         
         background = atlas.findRegion("bg");
         title = atlas.findRegion("title");
@@ -76,6 +77,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
             },
             1f
         );
+        // getScreen().getGameInstance().getViewport().setUnitsPerPixel(1f);
         titleAvatar.opacity = 0f;
     }
     
@@ -94,13 +96,19 @@ public class MainMenuWorld extends World<MainMenuScreen>
     /** On {@code MainMenuScreen.resize()}. */
     public void resize(int width, int height)
     {
+        ScreenViewport viewport = getScreen().getGameInstance().getViewport();
+        
+        width *= viewport.getUnitsPerPixel();
+        height *= viewport.getUnitsPerPixel();
+        
         backgroundAvatar.setScale(
-            Utility.getAvatarScreenScaled(background)
+            Utility.getAvatarScreenScaled(viewport, background)
         );
         titleAvatar.position.set(
             (width - titleAvatar.getTrueWidth()) * 0.5f,
             (height - titleAvatar.getTrueHeight()) * 0.5f
         );
+        titleAvatar.setScale(2f);
         subtitlePosition.set(
             (width - subtitle.width) * 0.5f,
             height * 0.35f - subtitle.height * 0.5f
@@ -118,7 +126,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
         }
         if (enableInput && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
         {
-            getOwner().getGameInstance().toGameplayScreen();
+            getScreen().getGameInstance().toGameplayScreen();
             return;
         }
     }
@@ -139,9 +147,12 @@ public class MainMenuWorld extends World<MainMenuScreen>
     /*  Draw  */
     private void draw()
     {
-        ScreenViewport viewport = getOwner().getGameInstance().getViewport();
-        SpriteBatch batch = getOwner().getGameInstance().getBatch();
-        BitmapFont regularFont = getOwner().getGameInstance().getGameText().regular;
+        SmiteTheSpiders game = getScreen().getGameInstance();
+        GameText gameText = game.getGameText();
+        
+        ScreenViewport viewport = game.getViewport();
+        SpriteBatch batch = game.getBatch();
+        BitmapFont regularFont = gameText.regular;
         
         ScreenUtils.clear(Color.BLACK);
         viewport.apply(true);

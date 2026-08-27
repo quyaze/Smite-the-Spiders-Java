@@ -29,38 +29,33 @@ public class Player
     public Player()
     {
         movementInput = Vector2.Zero.cpy();
-        upperScreenBounds = new Vector2(
-            Gdx.graphics.getWidth(),
-            Gdx.graphics.getHeight()
-        );
+        upperScreenBounds = Vector2.Zero.cpy();
         onCastFireball = new Signal();
     }
     
     /** Create a player with reference to the character. */
-    public Player(Avatar avatar)
+    public Player(Avatar avatar, float worldWidth, float worldHeight)
     {
         this();
-        setAvatar(avatar);
+        setAvatar(avatar, worldWidth, worldHeight);
     }
     
     
     /** Set player character. */
-    public void setAvatar(Avatar avatar)
+    public void setAvatar(Avatar avatar, float worldWidth, float worldHeight)
     {
         upperScreenBounds.set(
-            Gdx.graphics.getWidth() - avatar.getTrueWidth(),
-            Gdx.graphics.getHeight() - avatar.getTrueHeight()
+            worldWidth - avatar.getTrueWidth(),
+            worldHeight - avatar.getTrueHeight()
         );
         wizard = avatar;
     }
     
     
     /** Spawn the player, referencing its {@link Avatar}. */
-    public void spawnPlayer()
+    public void spawnPlayer(float worldWidth, float worldHeight)
     {
-        final int width = Gdx.graphics.getWidth();
-        final int height = Gdx.graphics.getHeight();
-        Vector2 location = new Vector2(width * 0.5f, height * 0.5f);
+        Vector2 location = new Vector2(worldWidth * 0.5f, worldHeight * 0.5f);
         
         location.sub(wizard.getTrueSize().scl(0.5f));
         

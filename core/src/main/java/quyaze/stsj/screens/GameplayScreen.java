@@ -27,10 +27,10 @@ public class GameplayScreen extends GameContext implements Screen
         state = new GameplayState();
         solver = new CollisionSolver();
         
-        world.setOwner(this);
-        core.setOwner(this);
-        state.setOwner(this);
-        solver.setOwner(this);
+        world.setScreen(this);
+        core.setScreen(this);
+        state.setScreen(this);
+        solver.setScreen(this);
     }
     
     
@@ -38,7 +38,9 @@ public class GameplayScreen extends GameContext implements Screen
     @Override
     public void show()
     {
+        state.setGamePaused(false);
         world.show();
+        core.show();
     }
     
     
@@ -46,6 +48,7 @@ public class GameplayScreen extends GameContext implements Screen
     @Override
     public void hide()
     {
+        state.setGamePaused(false);
         world.hide();
     }
     
@@ -74,9 +77,9 @@ public class GameplayScreen extends GameContext implements Screen
     
     /*  Render  */
     @Override
-    public void render(float delta)
+    public void render(final float dS)
     {
-        world.render(delta);
+        world.render(dS);
     }
     
     

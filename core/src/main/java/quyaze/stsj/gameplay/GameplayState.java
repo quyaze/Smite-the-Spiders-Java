@@ -36,7 +36,14 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     
     
     /*  Create  */
-    @Override public void create() {}
+    @Override public void create()
+    {
+        getScreen().core.onGameOver.bindDeferred(
+            () -> {
+                reset();
+            }
+        );
+    }
     
     
     /**

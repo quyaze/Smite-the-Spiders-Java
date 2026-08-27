@@ -17,14 +17,16 @@ final public class GameText implements Disposable
     
     
     /*  Constructor  */
+    /** Reference the viewport for font scale initialization. */
     public GameText()
     {
-        regularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/regular.otf"));
+        regularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/PirataOne-Regular.ttf"));
         regularParams = new FreeTypeFontParameter();
         
         regularParams.size = 36;
-        
+        regularParams.spaceX = 4;
         regular = regularGenerator.generateFont(regularParams);
+        regular.setUseIntegerPositions(false);
     }
     
     

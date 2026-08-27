@@ -1,13 +1,14 @@
 package quyaze.stsj.gameplay;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EWDatastore;
 import quyaze.stsj.core.ScreenContext;
 import quyaze.stsj.core.Signal;
@@ -48,15 +49,15 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     @Override
     public void create()
     {
-        getOwner().world.onEntityReassigned.bindDeferred(
+        getScreen().world.onEntityReassigned.bindDeferred(
             arg -> {
                 if (player == arg.oldEntity) player = arg.newEntity;
             }
         );
         
-        getOwner().solver.onCollided.bindDeferred(
+        getScreen().solver.onCollided.bindDeferred(
             arg -> {
-                Projectile projectileA = getOwner().world.projectileDatastore.get(arg.thisEntity);
+                Projectile projectileA = getScreen().world.projectileDatastore.get(arg.thisEntity);
                 
                 final boolean webHitPlayer = (
                     (projectileA != null && "web".equals(projectileA.name))
@@ -65,7 +66,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                 );
                 
                 final boolean spiderHitPlayer = (
-                    getOwner().world.spiderDatastore.contains(arg.thisEntity)
+                    getScreen().world.spiderDatastore.contains(arg.thisEntity)
                     &&
                     (player == arg.otherEntity)
                 );
@@ -73,7 +74,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                 final boolean spellHitSpider = (
                     (projectileA != null && "spell".equals(projectileA.name))
                     &&
-                    (getOwner().world.spiderDatastore.contains(arg.otherEntity))
+                    (getScreen().world.spiderDatastore.contains(arg.otherEntity))
                 );
                 
                 if (webHitPlayer) onWebHitPlayer(arg.thisEntity);
@@ -84,17 +85,27 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     }
     
     
+    /** On {@link GameplayScreen#show()}. */
+    public void show()
+    {
+        spawnBackground();
+        spawnPlayer();
+        spawnSpiders();
+    }
+    
+    
     /** Create the background. */
     public void spawnBackground()
     {
         Avatar avatar;
         
-        GameplayWorld world = getOwner().world;
-        AtlasRegion background = getOwner().getGameInstance().getAtlas().findRegion("bg");
+        GameplayWorld world = getScreen().world;
+        AtlasRegion background = getScreen().getGameInstance().getAtlas().findRegion("bg");
+        ScreenViewport viewport = getScreen().getGameInstance().getViewport();
         
         avatar = new Avatar(
             background,
-            Utility.getAvatarScreenScaled(background)
+            Utility.getAvatarScreenScaled(viewport, background)
         );
         avatar.opacity = 1 / 0.2f;
         
@@ -116,16 +127,18 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         Mobility mobility;
         Collision collision;
         
-        GameplayWorld world = getOwner().world;
+        GameplayWorld world = getScreen().world;
+        SmiteTheSpiders game = getScreen().getGameInstance();
+        ScreenViewport viewport = game.getViewport();
         
         player = new Player();
         
         avatar = new Avatar(
-            getOwner().getGameInstance().getAtlas().findRegion("wizard"),
+            game.getAtlas().findRegion("wizard"),
             4f
         );
-        player.setAvatar(avatar);
-        player.spawnPlayer();
+        player.setAvatar(avatar, viewport.getWorldWidth(), viewport.getWorldHeight());
+        player.spawnPlayer(viewport.getWorldWidth(), viewport.getWorldHeight());
         player.onCastFireball.bindDeferred(
             () -> {
                 spawnFireball(avatar);
@@ -168,14 +181,16 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             Collision collision;
             Spider spider;
             
-            GameplayWorld world = getOwner().world;
-            float posX = Gdx.graphics.getWidth();
+            GameplayWorld world = getScreen().world;
+            SmiteTheSpiders game = getScreen().getGameInstance();
+            var viewport = getScreen().getGameInstance().getViewport();
+            float posX = viewport.getWorldWidth();
             
             avatar = new Avatar(
                 /*  New copy so the spider Avatar can individually flip/orient to
                     horizontal movement
                 */
-                new TextureRegion(getOwner().getGameInstance().getAtlas().findRegion("spider")),
+                new TextureRegion(game.getAtlas().findRegion("spider")),
                 4f
             );
             
@@ -191,14 +206,18 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                 
                 /*  Spider should not spawn-clip off the screen
                 */
-                Gdx.graphics.getHeight() * 0.8f
+                viewport.getWorldHeight() * 0.8f
             );
             
             mobility = new Mobility();
             
             collision = new Collision(avatar);
             
-            spider = new Spider(avatar, mobility);
+            spider = new Spider(
+                viewport,
+                avatar,
+                mobility
+            );
             
             world.addEntity(
                 (char) (
@@ -227,8 +246,9 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         Collision collision;
         Projectile projectile;
         
-        GameplayWorld world = getOwner().world;
-        TextureRegion spellTexture = new TextureRegion(getOwner().getGameInstance().getAtlas().findRegion("spell"));
+        GameplayWorld world = getScreen().world;
+        SmiteTheSpiders game = getScreen().getGameInstance();
+        TextureRegion spellTexture = new TextureRegion(game.getAtlas().findRegion("spell"));
         spellTexture.flip(false, true);
         
         avatar = new Avatar(
@@ -239,7 +259,10 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             playerCharacter.position.cpy().add(playerCharacter.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
         );
         
-        mobility = new Mobility(1000f, Vector2.Y.cpy());
+        mobility = new Mobility(
+            1000f,
+            Vector2.Y.cpy()
+        );
         
         collision = new Collision(avatar);
         
@@ -270,10 +293,10 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         Collision collision;
         Projectile projectile;
         
-        GameplayWorld world = getOwner().world;
+        GameplayWorld world = getScreen().world;
         
         avatar = new Avatar(
-            getOwner().getGameInstance().getAtlas().findRegion("web"),
+            getScreen().getGameInstance().getAtlas().findRegion("web"),
             2f
         );
         avatar.position.set(
@@ -309,7 +332,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /** Player is hit by a web. */
     public void onWebHitPlayer(int webEntity)
     {
-        final GameplayState state = getOwner().state;
+        final GameplayState state = getScreen().state;
         
         state.score += GameplayState.POINTS_WEB_HIT_PLAYER;
         if (state.lives-- < 0)
@@ -318,14 +341,19 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             return;
         }
         
-        getOwner().world.playerDatastore.get(player).spawnPlayer();
+        ScreenViewport viewport = getScreen().getGameInstance().getViewport();
+        
+        getScreen().world.playerDatastore.get(player).spawnPlayer(
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight()
+        );
     }
     
     
     /** Player runs into a spider. */
     public void onSpiderHitPlayer(int spiderEntity)
     {
-        final GameplayState state = getOwner().state;
+        GameplayState state = getScreen().state;
         
         state.score += GameplayState.POINTS_SPIDER_HIT_PLAYER;
         if (state.lives-- < 0)
@@ -334,18 +362,23 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             return;
         }
         
-        getOwner().world.playerDatastore.get(player).spawnPlayer();
+        ScreenViewport viewport = getScreen().getGameInstance().getViewport();
+        
+        getScreen().world.playerDatastore.get(player).spawnPlayer(
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight()
+        );
     }
     
     
     /** A spider is hit by the player's spell. */
     public void onSpellHitSpider(int spellEntity, int spiderEntity)
     {
-        final GameplayState state = getOwner().state;
+        GameplayState state = getScreen().state;
         
         state.score += GameplayState.POINTS_SPELL_HIT_SPIDER;
-        getOwner().world.removeEntityRequest(spellEntity);
-        getOwner().world.removeEntityRequest(spiderEntity);
+        getScreen().world.removeEntityRequest(spellEntity);
+        getScreen().world.removeEntityRequest(spiderEntity);
     }
     
     
@@ -356,12 +389,12 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             new Task() {
                 @Override public void run()
                 {
-                    getOwner().getGameInstance().toMainMenuScreen();
+                    getScreen().getGameInstance().toMainMenuScreen();
                 }
             },
             GAME_OVER_PHASE
         );
-        getOwner().world.removeEntityRequest(player);
+        getScreen().world.removeEntityRequest(player);
         onGameOver.fire();
     }
 }

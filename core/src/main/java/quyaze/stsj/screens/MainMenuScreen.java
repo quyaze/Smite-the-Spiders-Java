@@ -17,7 +17,7 @@ public class MainMenuScreen extends GameContext implements Screen
     public void create()
     {
         world = new MainMenuWorld();
-        world.setOwner(this);
+        world.setScreen(this);
     }
     
     

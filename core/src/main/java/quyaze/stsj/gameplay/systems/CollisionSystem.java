@@ -3,6 +3,7 @@ package quyaze.stsj.gameplay.systems;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.EWSystemContext;
@@ -18,7 +19,6 @@ import quyaze.stsj.screens.GameplayScreen;
 final public class CollisionSystem extends EWSystemContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */
-    final private int cap;
     private IntArray collidableEntities;
     private IntIntMap collidableEntityToIndex;
     private Rectangle screen;
@@ -27,7 +27,9 @@ final public class CollisionSystem extends EWSystemContext<GameplayWorld> implem
     /*  Constructor  */
     public CollisionSystem(int initialCapacity)
     {
-        cap = initialCapacity;
+        collidableEntities = new IntArray(false, initialCapacity);
+        collidableEntityToIndex = new IntIntMap(initialCapacity);
+        screen = new Rectangle();
     }
     
     
@@ -35,11 +37,8 @@ final public class CollisionSystem extends EWSystemContext<GameplayWorld> implem
     @Override
     public void create()
     {
-        collidableEntities = new IntArray(false, cap);
-        collidableEntityToIndex = new IntIntMap(cap);
-        screen = new Rectangle();
-        getWorld().getOwner().solver.setCollisionEntitiesReference(collidableEntities);
-        getWorld().getOwner().solver.onSolverCleanup.bindDeferred(
+        getWorld().getScreen().solver.targetEntities = collidableEntities;
+        getWorld().getScreen().solver.onSolverCleanup.bindDeferred(
             () -> {
                 collidableEntityToIndex.clear();
                 collidableEntities.clear();
@@ -52,8 +51,8 @@ final public class CollisionSystem extends EWSystemContext<GameplayWorld> implem
     @Override
     public void iterate(int entity)
     {
-        Collision collision = getWorld().getOwner().world.collisionDatastore.get(entity);
-        Projectile projectile = getWorld().getOwner().world.projectileDatastore.get(entity);
+        Collision collision = getWorld().getScreen().world.collisionDatastore.get(entity);
+        Projectile projectile = getWorld().getScreen().world.projectileDatastore.get(entity);
         
         collision.updatePosition();
         
@@ -61,7 +60,7 @@ final public class CollisionSystem extends EWSystemContext<GameplayWorld> implem
         */
         if (projectile != null && !collision.collisionBox.overlaps(screen))
         {
-            getWorld().getOwner().world.removeEntityRequest(entity);
+            getWorld().getScreen().world.removeEntityRequest(entity);
             return;
         }
         
@@ -77,6 +76,11 @@ final public class CollisionSystem extends EWSystemContext<GameplayWorld> implem
     */
     public void resize(int width, int height)
     {
+        ScreenViewport viewport = getWorld().getScreen().getGameInstance().getViewport();
+        
+        width *= viewport.getUnitsPerPixel();
+        height *= viewport.getUnitsPerPixel();
+        
         screen.setSize(width, height);
     }
 }

@@ -6,14 +6,14 @@ import com.badlogic.gdx.Screen;
 public abstract class ScreenContext<T extends Screen> implements PostConstruct
 {
     private T inst;
-    public void setOwner(T inst)
+    public void setScreen(T inst)
     {
         if (this.inst != null)
             throw new IllegalStateException("cannot reassign the screen owner");
         this.inst = inst;
         create();
     }
-    public T getOwner()
+    public T getScreen()
     {
         if (inst == null)
             throw new IllegalStateException("no assigned owner");

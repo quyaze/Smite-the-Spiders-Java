@@ -20,7 +20,7 @@ import quyaze.stsj.screens.GameplayScreen;
 public class CollisionSolver extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
-    private IntArray targetEntities;
+    public IntArray targetEntities;
     private Collision collisionA, collisionB;
     private int entityA, entityB;
     
@@ -51,18 +51,11 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     @Override
     public void create()
     {
-        getOwner().state.onPausedStateChanged.bindDeferred(
+        getScreen().state.onPausedStateChanged.bindDeferred(
             arg -> {
                 setSolverEnabled(!arg);
             }
         );
-    }
-    
-    
-    /** Set the reference to the collidable entities. */
-    public void setCollisionEntitiesReference(IntArray reference)
-    {
-        targetEntities = reference;
     }
     
     
@@ -110,13 +103,13 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
         for (int i = 0; i < targetEntities.size; i++)
         {
             entityA = targetEntities.get(i);
-            collisionA = getOwner().world.collisionDatastore.get(entityA);
+            collisionA = getScreen().world.collisionDatastore.get(entityA);
             if (collisionA == null || collisionA.skipSolving) continue;
             
             for (int j = i + 1; j < targetEntities.size; j++)
             {
                 entityB = targetEntities.get(j);
-                collisionB = getOwner().world.collisionDatastore.get(entityB);
+                collisionB = getScreen().world.collisionDatastore.get(entityB);
                 if (collisionB == null || collisionB.skipSolving) continue;
                 
                 /*  Collision detection is calculated here.

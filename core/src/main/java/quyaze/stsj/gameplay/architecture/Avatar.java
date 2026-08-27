@@ -93,7 +93,7 @@ public class Avatar
     
     
     /**
-     * @return Original texture width with its scale applied; the actual pixel length that the end user sees
+     * @return Original texture width with its scale applied; the actual world length that the end user sees
      */
     public float getTrueWidth()
     {
@@ -102,7 +102,7 @@ public class Avatar
     
     
     /**
-     * @return Original texture height with its scale applied; the actual pixel length that the end user sees
+     * @return Original texture height with its scale applied; the actual world length that the end user sees
      */
     public float getTrueHeight()
     {
