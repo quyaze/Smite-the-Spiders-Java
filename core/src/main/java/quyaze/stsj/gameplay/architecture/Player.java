@@ -25,7 +25,7 @@ public class Player
     /**
      * Create a player pending the character.
      * <p></p>
-     * Must call {@link #setAvatar(Avatar)}.
+     * Unsafe; must call {@link #setAvatar(Avatar)}.
     */
     public Player()
     {
@@ -55,8 +55,12 @@ public class Player
     /** Spawn the player, referencing its {@link Avatar}. */
     public void spawnPlayer(float unitsPerPixel)
     {
+        if (wizard == null)
+            throw new IllegalStateException("player has no set avatar");
+        
         Vector2 location = new Vector2(
-            Utility.getScreenWorldSize(unitsPerPixel).scl(0.5f)
+            Utility.getScreenWorldWidth(unitsPerPixel) * 0.5f,
+            Utility.getScreenWorldHeight(unitsPerPixel) / 3f
         );
         
         location.sub(wizard.getTrueSize().scl(0.5f));

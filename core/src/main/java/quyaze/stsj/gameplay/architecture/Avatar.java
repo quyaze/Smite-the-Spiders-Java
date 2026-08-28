@@ -14,7 +14,7 @@ public class Avatar
     
     
     /*  Constructors  */
-    /** Blank, unsafe avatar. */
+    /** Blank avatar, unsafe for use. */
     public Avatar()
     {
         position = Vector2.Zero.cpy();

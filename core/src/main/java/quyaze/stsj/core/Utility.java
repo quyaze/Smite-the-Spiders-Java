@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-/** Some utilities for the game. */
+/** General utilities. */
 final public class Utility
 {
     static public <T> T[] append(T[] array, T item)

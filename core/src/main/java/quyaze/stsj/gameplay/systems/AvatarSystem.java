@@ -25,9 +25,9 @@ public class AvatarSystem extends WorldContext<GameplayWorld> implements EWSyste
         Mobility mobility = getWorld().mobilityDatastore.get(entity);
         Player player = getWorld().playerDatastore.get(entity);
         
-        final float delta = Gdx.graphics.getDeltaTime();
+        final float dS = Gdx.graphics.getDeltaTime();
         
-        avatar.position.add(mobility.getVelocity().scl(delta));
+        avatar.position.add(mobility.getVelocity().scl(dS));
         
         if (player == null) return;
         

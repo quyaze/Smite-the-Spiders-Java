@@ -12,11 +12,17 @@ public class MainMenuScreen extends GameContext implements Screen
     private MainMenuWorld world;
     
     
+    /*  Constructor  */
+    public MainMenuScreen()
+    {
+        world = new MainMenuWorld();
+    }
+    
+    
     /*  Create  */
     @Override
     public void create()
     {
-        world = new MainMenuWorld();
         world.setScreen(this);
     }
     

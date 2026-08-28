@@ -3,9 +3,9 @@ package quyaze.stsj.gameplay.systems;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.EWSystem;
+import quyaze.stsj.core.Utility;
 import quyaze.stsj.core.WorldContext;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayWorld;
@@ -76,13 +76,11 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     */
     public void resize(int width, int height)
     {
-        ScreenViewport viewport = getGameInstance().getViewport();
-        
-        width *= viewport.getUnitsPerPixel();
-        height *= viewport.getUnitsPerPixel();
-        
-        screen.setSize(width, height);
-        /*  Or Utility.getScreenWorldSize()
+        screen.setSize(
+            Utility.getScreenWorldWidth(GameplayWorld.UNITS_PER_PIXEL),
+            Utility.getScreenWorldHeight(GameplayWorld.UNITS_PER_PIXEL)
+        );
+        /*  Or multiply width and height by unitsPerPixel
         */
     }
 }

@@ -59,7 +59,7 @@ final public class SmiteTheSpiders extends Game
         gameplayScreen.setGameInstance(this);
         
         music.setLooping(true);
-        setScreen(mainMenuScreen);
+        toMainMenuScreen();
         music.play();
     }
     
@@ -126,6 +126,7 @@ final public class SmiteTheSpiders extends Game
     /** Switch to the {@link MainMenuScreen.} */
     public void toMainMenuScreen()
     {
+        if (screen == mainMenuScreen) return;
         setScreen(mainMenuScreen);
     }
     
@@ -133,6 +134,7 @@ final public class SmiteTheSpiders extends Game
     /** Switch to the {@link GameplayScreen}. */
     public void toGameplayScreen()
     {
+        if (screen == gameplayScreen) return;
         setScreen(gameplayScreen);
     }
 }

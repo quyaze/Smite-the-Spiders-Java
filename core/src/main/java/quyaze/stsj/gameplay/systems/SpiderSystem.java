@@ -1,6 +1,7 @@
 package quyaze.stsj.gameplay.systems;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.WorldContext;
@@ -24,8 +25,20 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
     {
         getWorld().getScreen().core.onGameOver.bindDeferred(
             () -> {
-                opacityOverride = 1f;
+                Timer.schedule(
+                    new Task()
+                    {
+                        @Override public void run()
+                        {
+                            isGameOver = false;
+                            opacityOverride = 1f;
+                        }
+                    },
+                    GameplayCore.GAME_OVER_PHASE
+                );
+                
                 isGameOver = true;
+                opacityOverride = 1f;
             }
         );
     }
@@ -39,16 +52,7 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
         Mobility mobility = getWorld().mobilityDatastore.get(entity);
         Spider spider = getWorld().spiderDatastore.get(entity);
         
-        final float dS = Gdx.graphics.getDeltaTime();
-        
-        if (isGameOver && opacityOverride > 0)
-        {
-            opacityOverride = Math.max(
-                opacityOverride - dS / GameplayCore.GAME_OVER_PHASE,
-                0
-            );
-            avatar.opacity = opacityOverride;
-        }
+        if (isGameOver) avatar.opacity = opacityOverride;
         
         if (avatar.position.dst2(spider.destination.cpy()) < 36f)
         {
@@ -56,6 +60,19 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
                 avatar,
                 mobility,
                 GameplayWorld.UNITS_PER_PIXEL
+            );
+        }
+    }
+    
+    
+    /** On {@link GameplayWorld#render(float)}. */
+    public void render(float dS)
+    {
+        if (isGameOver && opacityOverride > 0)
+        {
+            opacityOverride = Math.max(
+                opacityOverride - dS / GameplayCore.GAME_OVER_PHASE,
+                0
             );
         }
     }

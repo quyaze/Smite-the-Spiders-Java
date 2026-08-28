@@ -2,7 +2,7 @@ package quyaze.stsj.core;
 
 import quyaze.stsj.SmiteTheSpiders;
 
-/** Context for a general {@link SmiteTheSpiders} object. */
+/** Context for a general {@link SmiteTheSpiders}-'owned' object. */
 public abstract class GameContext implements PostConstruct
 {
     private SmiteTheSpiders inst;

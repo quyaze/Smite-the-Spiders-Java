@@ -8,8 +8,8 @@ public class Mobility
 {
     /*  Fields  */
     private Vector2 velocity;
-    private float angle;
-    private float speed;
+    private float angle = 0;
+    private float speed = 0;
     
     /*  Velocity and speed are in pixels per sceond
         Angle is in radians
@@ -31,7 +31,7 @@ public class Mobility
     
     
     /*  Constructors  */
-    /** Set a speed of 100 going right. */
+    /** Set a speed of 100, going right. */
     public Mobility()
     {
         velocity = Vector2.Zero.cpy();
@@ -40,7 +40,7 @@ public class Mobility
     }
     
     
-    /** Set the speed and going right. */
+    /** Set the speed, going right. */
     public Mobility(float speed)
     {
         velocity = Vector2.Zero.cpy();
@@ -116,7 +116,7 @@ public class Mobility
     /** Set speed. */
     public void setSpeed(float speed)
     {
-        if (this.speed <= 0f) this.speed = 1f;
+        if (this.speed == 0f) this.speed = 1f;
         velocity.scl(speed / this.speed);
         this.speed = speed;
     }

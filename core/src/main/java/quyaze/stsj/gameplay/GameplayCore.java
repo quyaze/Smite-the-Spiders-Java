@@ -34,7 +34,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     public Signal onGameOver;
     
-    final static public float GAME_OVER_PHASE = 3f;
+    final static public float GAME_OVER_PHASE = 1.8f;
     
     
     /*  Constructor  */

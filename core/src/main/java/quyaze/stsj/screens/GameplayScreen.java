@@ -20,15 +20,20 @@ public class GameplayScreen extends GameContext implements Screen
     private boolean resizedOnShow = true;
     
     
-    /*  Create  */
-    @Override
-    public void create()
+    /*  Constructor  */
+    public GameplayScreen()
     {
         world = new GameplayWorld();
         core = new GameplayCore();
         state = new GameplayState();
         solver = new CollisionSolver();
-        
+    }
+    
+    
+    /*  Create  */
+    @Override
+    public void create()
+    {
         world.setScreen(this);
         core.setScreen(this);
         state.setScreen(this);
@@ -52,6 +57,8 @@ public class GameplayScreen extends GameContext implements Screen
     {
         state.setGamePaused(false);
         world.hide();
+        state.hide();
+        resizedOnShow = true;
     }
     
     

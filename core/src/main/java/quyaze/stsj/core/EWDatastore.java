@@ -3,7 +3,7 @@ package quyaze.stsj.core;
 import com.badlogic.gdx.utils.IntMap;
 
 /**
- * Base class for {@link EntityWorld}. Contains data for associated
+ * Plug-in for {@link EntityWorld}. Contains data for associated
  * entities.
  */
 public class EWDatastore<T>
@@ -38,7 +38,7 @@ public class EWDatastore<T>
      */
     public T remove(int entity)
     {
-        return this.data.remove(entity);
+        return data.remove(entity);
     }
     
     
@@ -48,7 +48,7 @@ public class EWDatastore<T>
      */
     public T get(int entity)
     {
-        return this.data.get(entity);
+        return data.get(entity);
     }
     
     
@@ -57,7 +57,7 @@ public class EWDatastore<T>
      */
     public boolean contains(int entity)
     {
-        return this.data.containsKey(entity);
+        return data.containsKey(entity);
     }
     
     

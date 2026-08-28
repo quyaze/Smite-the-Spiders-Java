@@ -30,6 +30,7 @@ public class Spider
     {
         final float width = Utility.getScreenWorldWidth(unitsPerPixel);
         final float height = Utility.getScreenWorldHeight(unitsPerPixel);
+        
         destination.set(
             MathUtils.random(
                 0,

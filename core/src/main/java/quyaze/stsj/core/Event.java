@@ -50,7 +50,7 @@ public class Event<T>
     }
     
     
-    /** Fire the event. Calls all {@link Bind#onEvent(Object)}s. */
+    /** Fire the event. Calls all {@link Bind#fire(Object)}s. */
     public void fire(T argDefinition)
     {
         if (deferred.length > 0)
@@ -61,13 +61,13 @@ public class Event<T>
                     Bind<T>[] target = deferred.clone();
                     @Override public void run()
                     {
-                        for (int i = 0; i < target.length; i++) target[i].onEvent(argDefinition);
+                        for (int i = 0; i < target.length; i++) target[i].fire(argDefinition);
                     }
                 }
             );
         }
         // if (immediate.length > 0)
-        for (int i = 0; i < immediate.length; i++) immediate[i].onEvent(argDefinition);
+        for (int i = 0; i < immediate.length; i++) immediate[i].fire(argDefinition);
     }
     
     
@@ -75,6 +75,6 @@ public class Event<T>
     @FunctionalInterface
     public static interface Bind<T>
     {
-        public void onEvent(T argDefinition);
+        public void fire(T argDefinition);
     }
 }

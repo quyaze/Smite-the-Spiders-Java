@@ -68,9 +68,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     final static public float UNITS_PER_PIXEL = 1f;
     
     
-    /*  Create  */
-    @Override
-    public void create()
+    /*  Constrctor  */
+    public GameplayWorld()
     {
         entityFlags = new CharArray(false, CAPACITY);
         entityDatastores = new Array<>(false, CAPACITY);
@@ -90,22 +89,26 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         spiderSystem = new SpiderSystem();
         drawSystem = new DrawSystem();
         
+        onEntityReassigned = new Event<>();
+    }
+    
+    
+    /*  Create  */
+    @Override
+    public void create()
+    {
         playerSystem.setWorld(this);
         avatarSystem.setWorld(this);
         collisionSystem.setWorld(this);
         spiderSystem.setWorld(this);
         drawSystem.setWorld(this);
-        
-        onEntityReassigned = new Event<>();
     }
     
     
     /*  Render  */
     @Override
-    public void render(float delta)
+    public void render(float dS)
     {
-        GameplayState state = getScreen().state;
-        
         /*  First see if pausing or exiting to the main menu.
             
             Every call to this function, EWSystems each perform a pass in
@@ -120,18 +123,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             "debris" and are then removed at the very end of render().
         */
         
-        final boolean paused = (
-            Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?
-            state.toggleGamePaused() : state.isPaused()
-        );
-        
-        if (paused && Gdx.input.isButtonJustPressed(0))
-        {
-            getGameInstance().toMainMenuScreen();
-            return;
-        }
-        
-        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) getScreen().core.spawnSpiders();
+        if (!custInput()) return; 
+        spiderSystem.render(dS);
         
         // if (Gdx.input.isKeyJustPressed(Input.Keys.G))
         // {
@@ -151,7 +144,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         EWSystem iterating;
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
-            if (paused && flag != SYSFLAG_DRAW) continue;
+            if (getScreen().state.isPaused() && flag != SYSFLAG_DRAW) continue;
             
             switch (flag)
             {
@@ -233,6 +226,31 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     public void removeEntityRequest(int entity)
     {
         if (isEntityDebris.add(entity)) entityDebris.add(entity);
+    }
+    
+    
+    /**
+     * Input pre-entity-loop iteration.
+     * @return Input logic requires aborting the entity-system iteration
+    */
+    private boolean custInput()
+    {
+        var state = getScreen().state;
+        
+        final boolean paused = (
+            Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?
+            state.toggleGamePaused() : state.isPaused()
+        );
+        
+        if (paused && Gdx.input.isButtonJustPressed(0))
+        {
+            getGameInstance().toMainMenuScreen();
+            return false;
+        }
+        
+        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) getScreen().core.spawnSpiders();
+        
+        return true;
     }
     
     

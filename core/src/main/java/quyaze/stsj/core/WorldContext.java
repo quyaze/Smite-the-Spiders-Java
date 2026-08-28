@@ -2,7 +2,7 @@ package quyaze.stsj.core;
 
 import quyaze.stsj.SmiteTheSpiders;
 
-/** Context for a {@link EWSystem} under a {@link EntityWorld}. */
+/** Context for a {@link World}-'owned' object. */
 public abstract class WorldContext<T extends ScreenContext<?>> implements PostConstruct
 {
     private T world;

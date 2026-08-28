@@ -49,7 +49,7 @@ public class Signal
     }
     
     
-    /** Fire the signal. Calls all {@link Bind#onSignal()}s. */
+    /** Fire the signal. Calls all {@link Bind#fire()}s. */
     public void fire()
     {
         if (deferred.length > 0)
@@ -60,12 +60,12 @@ public class Signal
                     Bind[] target = deferred.clone();
                     @Override public void run()
                     {
-                        for (int i = 0; i < target.length; i++) target[i].onSignal();
+                        for (int i = 0; i < target.length; i++) target[i].fire();
                     }
                 }
             );
         }
-        for (int i = 0; i < immediate.length; i++) immediate[i].onSignal();
+        for (int i = 0; i < immediate.length; i++) immediate[i].fire();
     }
     
     
@@ -73,6 +73,6 @@ public class Signal
     @FunctionalInterface
     public static interface Bind
     {
-        public void onSignal();
+        public void fire();
     }
 }

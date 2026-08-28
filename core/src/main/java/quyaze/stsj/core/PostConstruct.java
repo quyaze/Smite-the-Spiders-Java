@@ -1,10 +1,10 @@
 package quyaze.stsj.core;
 
 /**
- * General purpose interface. Use cases are mainly coupled classes
- * with initialization issues, allowing code to run after
- * constructing and before implemented create(), etc. Overall
- * allows initialization control.
+ * If a class constructor has unsafe initialization or behavior,
+ * but requires some initializing behavior, {@link #create()} can
+ * be implemented and called. To be specific, first allow the class
+ * to instantiate. Then, call {@code create()}.
 */
 public interface PostConstruct
 {

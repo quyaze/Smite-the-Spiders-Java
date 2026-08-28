@@ -37,6 +37,13 @@ public class MainMenuWorld extends World<MainMenuScreen>
     final static public float UNITS_PER_PIXEL = 1f;
     
     
+    /*  Constructor  */
+    public MainMenuWorld()
+    {
+        subtitlePosition = Vector2.Zero.cpy();
+    }
+    
+    
     /*  Create  */
     @Override
     public void create()
@@ -50,7 +57,6 @@ public class MainMenuWorld extends World<MainMenuScreen>
         
         backgroundAvatar = new Avatar(background);
         titleAvatar = new Avatar(title, 2f);
-        subtitlePosition = Vector2.Zero.cpy();
     }
     
     
