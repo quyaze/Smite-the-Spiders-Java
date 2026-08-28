@@ -29,9 +29,10 @@ public class Signal
      * <p></p>
      * Binding executes immediately on {@link Signal#fire(Object)}.
     */
-    public void bindImmediate(Bind bind)
+    public Bind bindImmediate(Bind bind)
     {
         immediate = Utility.append(immediate, bind);
+        return bind;
     }
     
     
@@ -41,9 +42,10 @@ public class Signal
      * Binding executes on the next frame after
      * {@link Signal#fire(Object)}.
     */
-    public void bindDeferred(Bind bind)
+    public Bind bindDeferred(Bind bind)
     {
         deferred = Utility.append(deferred, bind);
+        return bind;
     }
     
     

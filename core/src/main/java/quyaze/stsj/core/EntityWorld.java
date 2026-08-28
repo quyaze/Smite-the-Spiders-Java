@@ -1,12 +1,10 @@
 package quyaze.stsj.core;
 
-import com.badlogic.gdx.Screen;
-
 /**
  * A {@link World} with entities (integer), allowing data-oriented
  * design with {@link EWDatastore} and {@link EWSystem}.
  */
-public abstract class EntityWorld<T extends Screen> extends World<T>
+public abstract class EntityWorld<T extends GameContext> extends World<T>
 {
     /*  Fields  */
     protected int entities;

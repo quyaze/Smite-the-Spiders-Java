@@ -34,13 +34,15 @@ public class MainMenuWorld extends World<MainMenuScreen>
     private Avatar titleAvatar;
     private Vector2 subtitlePosition;
     
+    final static public float UNITS_PER_PIXEL = 1f;
+    
     
     /*  Create  */
     @Override
     public void create()
     {
-        TextureAtlas atlas = getScreen().getGameInstance().getAtlas();
-        GameText gameText = getScreen().getGameInstance().getGameText();
+        TextureAtlas atlas = getGameInstance().getAtlas();
+        GameText gameText = getGameInstance().getGameText();
         
         background = atlas.findRegion("bg");
         title = atlas.findRegion("title");
@@ -77,7 +79,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
             },
             1f
         );
-        // getScreen().getGameInstance().getViewport().setUnitsPerPixel(1f);
+        // getGameInstance().getViewport().setUnitsPerPixel(1f);
         titleAvatar.opacity = 0f;
     }
     
@@ -96,13 +98,11 @@ public class MainMenuWorld extends World<MainMenuScreen>
     /** On {@code MainMenuScreen.resize()}. */
     public void resize(int width, int height)
     {
-        ScreenViewport viewport = getScreen().getGameInstance().getViewport();
-        
-        width *= viewport.getUnitsPerPixel();
-        height *= viewport.getUnitsPerPixel();
+        width *= UNITS_PER_PIXEL;
+        height *= UNITS_PER_PIXEL;
         
         backgroundAvatar.setScale(
-            Utility.getAvatarScreenScaled(viewport, background)
+            Utility.getAvatarScreenScaled(background, UNITS_PER_PIXEL)
         );
         titleAvatar.position.set(
             (width - titleAvatar.getTrueWidth()) * 0.5f,
@@ -126,7 +126,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
         }
         if (enableInput && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
         {
-            getScreen().getGameInstance().toGameplayScreen();
+            getGameInstance().toGameplayScreen();
             return;
         }
     }
@@ -147,7 +147,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
     /*  Draw  */
     private void draw()
     {
-        SmiteTheSpiders game = getScreen().getGameInstance();
+        SmiteTheSpiders game = getGameInstance();
         GameText gameText = game.getGameText();
         
         ScreenViewport viewport = game.getViewport();

@@ -4,14 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.core.WorldContext;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Player;
 
 /** System that simulates {@link Avatar} movement. */
-public class AvatarSystem extends EWSystemContext<GameplayWorld> implements EWSystem
+public class AvatarSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Create  */
     @Override public void create() {}

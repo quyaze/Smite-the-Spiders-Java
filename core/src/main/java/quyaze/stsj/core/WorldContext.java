@@ -1,5 +1,7 @@
 package quyaze.stsj.core;
 
+import quyaze.stsj.SmiteTheSpiders;
+
 /** Context for a {@link EWSystem} under a {@link EntityWorld}. */
 public abstract class WorldContext<T extends ScreenContext<?>> implements PostConstruct
 {
@@ -16,5 +18,9 @@ public abstract class WorldContext<T extends ScreenContext<?>> implements PostCo
         if (world == null)
             throw new IllegalStateException("no assigned entity world");
         return world;
+    }
+    public SmiteTheSpiders getGameInstance()
+    {
+        return world.getGameInstance();
     }
 }

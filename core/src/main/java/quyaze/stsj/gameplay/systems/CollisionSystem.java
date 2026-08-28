@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.core.WorldContext;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Collision;
@@ -16,7 +16,7 @@ import quyaze.stsj.screens.GameplayScreen;
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
  */
-final public class CollisionSystem extends EWSystemContext<GameplayWorld> implements EWSystem
+final public class CollisionSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */
     private IntArray collidableEntities;
@@ -76,11 +76,13 @@ final public class CollisionSystem extends EWSystemContext<GameplayWorld> implem
     */
     public void resize(int width, int height)
     {
-        ScreenViewport viewport = getWorld().getScreen().getGameInstance().getViewport();
+        ScreenViewport viewport = getGameInstance().getViewport();
         
         width *= viewport.getUnitsPerPixel();
         height *= viewport.getUnitsPerPixel();
         
         screen.setSize(width, height);
+        /*  Or Utility.getScreenWorldSize()
+        */
     }
 }

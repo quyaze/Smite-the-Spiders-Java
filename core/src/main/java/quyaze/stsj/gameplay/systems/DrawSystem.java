@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
 import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.core.WorldContext;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
 
 /** System that draws and renders {@link Avatar}s to the screen. */
-public class DrawSystem extends EWSystemContext<GameplayWorld> implements EWSystem
+public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Create  */
     @Override
@@ -30,7 +30,7 @@ public class DrawSystem extends EWSystemContext<GameplayWorld> implements EWSyst
     {
         Avatar avatar = getWorld().getScreen().world.avatarDatastore.get(entity);
         
-        SpriteBatch batch = getWorld().getScreen().getGameInstance().getBatch();
+        SpriteBatch batch = getGameInstance().getBatch();
         final float opacity = MathUtils.clamp(
             getWorld().getScreen().state.isPaused() ? avatar.opacity * 0.2f : avatar.opacity,
             0,

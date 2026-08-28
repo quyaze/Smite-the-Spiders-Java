@@ -65,6 +65,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     
     public Event<OnEntityReassigned> onEntityReassigned;
     
+    final static public float UNITS_PER_PIXEL = 1f;
+    
     
     /*  Create  */
     @Override
@@ -125,7 +127,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
-            getScreen().getGameInstance().toMainMenuScreen();
+            getGameInstance().toMainMenuScreen();
             return;
         }
         
@@ -133,15 +135,15 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         
         // if (Gdx.input.isKeyJustPressed(Input.Keys.G))
         // {
-        //     getScreen().getGameInstance().getViewport().setUnitsPerPixel(4f);
-        //     getScreen().getGameInstance().resize(
+        //     getGameInstance().getViewport().setUnitsPerPixel(4f);
+        //     getGameInstance().resize(
         //         Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
         //     );
         // }
         // else if (Gdx.input.isKeyJustPressed(Input.Keys.H))
         // {
-        //     getScreen().getGameInstance().getViewport().setUnitsPerPixel(1f);
-        //     getScreen().getGameInstance().resize(
+        //     getGameInstance().getViewport().setUnitsPerPixel(1f);
+        //     getGameInstance().resize(
         //         Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
         //     );
         // }
@@ -160,8 +162,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 case SYSFLAG_DRAW:
                     iterating = drawSystem;
                     
-                    SpriteBatch batch = getScreen().getGameInstance().getBatch();
-                    ScreenViewport viewport = getScreen().getGameInstance().getViewport();
+                    SpriteBatch batch = getGameInstance().getBatch();
+                    ScreenViewport viewport = getGameInstance().getViewport();
                     
                     ScreenUtils.clear(Color.BLACK);
                     viewport.apply(true);
@@ -180,7 +182,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
             }
             
-            if (flag == SYSFLAG_DRAW) getScreen().getGameInstance().getBatch().end();
+            if (flag == SYSFLAG_DRAW) getGameInstance().getBatch().end();
         }
         iterating = null;
         
@@ -212,8 +214,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     /**
      * Spawn an entity and subscribe it to the specified systems.
      * <p></p>
-     * Data is being added to the datastores blindly. Ensure
-     * {@code data} corresponds to the {@code datastore} in the
+     * Ensure {@code data} corresponds to the {@code datastore} in the
      * correct order.
      */
     public int addEntity(char systems, EWDatastore<Object>[] datastores, Object... data)
@@ -238,10 +239,10 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     /** On {@link GameplayScreen#show()}. */
     public void show()
     {
-        // ScreenViewport viewport = getScreen().getGameInstance().getViewport();
+        // ScreenViewport viewport = getGameInstance().getViewport();
         
         // viewport.setUnitsPerPixel(1f);
-        // getScreen().getGameInstance().resize();
+        // getGameInstance().resize();
         
     }
     

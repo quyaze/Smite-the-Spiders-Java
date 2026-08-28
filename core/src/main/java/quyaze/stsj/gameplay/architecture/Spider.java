@@ -2,7 +2,8 @@ package quyaze.stsj.gameplay.architecture;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import quyaze.stsj.core.Utility;
 
 /** Represents a spider. */
 public class Spider
@@ -13,10 +14,10 @@ public class Spider
     
     /*  Constructor  */
     /** Create a spider and immediately move to its destination. */
-    public Spider(ScreenViewport viewport, Avatar avatar, Mobility mobility)
+    public Spider(Avatar avatar, Mobility mobility, float unitsPerPixel)
     {
         destination = Vector2.Zero.cpy();
-        newPath(viewport, avatar, mobility);
+        newPath(avatar, mobility, unitsPerPixel);
     }
     
     
@@ -25,18 +26,18 @@ public class Spider
      * <p></p>
      * References its {@link Avatar} and {@link Mobility}.
      */
-    public void newPath(ScreenViewport viewport, Avatar avatar, Mobility mobility)
+    public void newPath(Avatar avatar, Mobility mobility, float unitsPerPixel)
     {
-        final float worldWidth = viewport.getWorldWidth();
-        final float worldHeight = viewport.getWorldHeight();
+        final float width = Utility.getScreenWorldWidth(unitsPerPixel);
+        final float height = Utility.getScreenWorldHeight(unitsPerPixel);
         destination.set(
             MathUtils.random(
                 0,
-                worldWidth - avatar.getTrueWidth()
+                width - avatar.getTrueWidth()
             ),
             MathUtils.random(
-                worldHeight * 0.5f,
-                worldHeight - avatar.getTrueHeight()
+                height * 0.5f,
+                height - avatar.getTrueHeight()
             )
         );
         mobility.setDirection(destination.cpy().sub(avatar.position));

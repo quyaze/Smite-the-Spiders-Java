@@ -30,9 +30,10 @@ public class Event<T>
      * <p></p>
      * Binding executes immediately on {@link Event#fire(Object)}.
     */
-    public void bindImmediate(Bind<T> bind)
+    public Bind<T> bindImmediate(Bind<T> bind)
     {
         immediate = Utility.append(immediate, bind);
+        return bind;
     }
     
     
@@ -42,9 +43,10 @@ public class Event<T>
      * Binding executes on the next frame after
      * {@link Event#fire(Object)}.
     */
-    public void bindDeferred(Bind<T> bind)
+    public Bind<T> bindDeferred(Bind<T> bind)
     {
         deferred = Utility.append(deferred, bind);
+        return bind;
     }
     
     

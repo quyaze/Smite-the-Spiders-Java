@@ -17,6 +17,8 @@ public class GameplayScreen extends GameContext implements Screen
     public GameplayState state;
     public CollisionSolver solver;
     
+    private boolean resizedOnShow = true;
+    
     
     /*  Create  */
     @Override
@@ -72,6 +74,8 @@ public class GameplayScreen extends GameContext implements Screen
         if (width <= 0 || height <= 0) return;
         getGameInstance().getViewport().update(width, height, true);
         world.resize(width, height);
+        if (!resizedOnShow) state.setGamePaused(true);
+        else resizedOnShow = false;
     }
     
     

@@ -75,15 +75,6 @@ public class Avatar
     
     
     /**
-     * @return A copy of the position
-     */
-    public Vector2 readPosition()
-    {
-        return position.cpy();
-    }
-    
-    
-    /**
      * @return A copy of the true size
      */
     public Vector2 getTrueSize()

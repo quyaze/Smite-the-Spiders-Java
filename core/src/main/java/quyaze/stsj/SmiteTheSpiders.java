@@ -17,6 +17,8 @@ import quyaze.stsj.screens.MainMenuScreen;
 final public class SmiteTheSpiders extends Game
 {
     /*  Fields  */
+    static private boolean lock;
+    
     private SpriteBatch batch;
     private ScreenViewport viewport;
     private TextureAtlas atlas;
@@ -29,7 +31,12 @@ final public class SmiteTheSpiders extends Game
     
     /*  Constructor  */
     /** New game instance. */
-    public SmiteTheSpiders() {}
+    public SmiteTheSpiders()
+    {
+        if (lock)
+            throw new IllegalStateException("attempt to create another game instance");
+        lock = true;
+    }
     
     
     /*  Create  */

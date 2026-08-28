@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import quyaze.stsj.core.Signal;
+import quyaze.stsj.core.Utility;
 
 /** Represents the player. */
 public class Player
@@ -34,28 +35,29 @@ public class Player
     }
     
     /** Create a player with reference to the character. */
-    public Player(Avatar avatar, float worldWidth, float worldHeight)
+    public Player(Avatar avatar, float unitsPerPixel)
     {
         this();
-        setAvatar(avatar, worldWidth, worldHeight);
+        setAvatar(avatar, unitsPerPixel);
     }
     
     
     /** Set player character. */
-    public void setAvatar(Avatar avatar, float worldWidth, float worldHeight)
+    public void setAvatar(Avatar avatar, float unitsPerPixel)
     {
-        upperScreenBounds.set(
-            worldWidth - avatar.getTrueWidth(),
-            worldHeight - avatar.getTrueHeight()
-        );
+        Vector2 world = Utility.getScreenWorldSize(unitsPerPixel);
+        
+        upperScreenBounds.set(world.sub(avatar.getTrueSize()));
         wizard = avatar;
     }
     
     
     /** Spawn the player, referencing its {@link Avatar}. */
-    public void spawnPlayer(float worldWidth, float worldHeight)
+    public void spawnPlayer(float unitsPerPixel)
     {
-        Vector2 location = new Vector2(worldWidth * 0.5f, worldHeight * 0.5f);
+        Vector2 location = new Vector2(
+            Utility.getScreenWorldSize(unitsPerPixel).scl(0.5f)
+        );
         
         location.sub(wizard.getTrueSize().scl(0.5f));
         

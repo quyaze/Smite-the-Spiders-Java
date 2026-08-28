@@ -9,7 +9,7 @@ import com.badlogic.gdx.Screen;
  * <p></p>
  * The {@code owner} should call {@link #render(float)}.
 */
-public abstract class World<T extends Screen> extends ScreenContext<T>
+public abstract class World<T extends GameContext> extends ScreenContext<T>
 {
     /** World's render pass. */
     public abstract void render(float delta);

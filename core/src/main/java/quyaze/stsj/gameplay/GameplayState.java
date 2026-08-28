@@ -36,14 +36,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     
     
     /*  Create  */
-    @Override public void create()
-    {
-        getScreen().core.onGameOver.bindDeferred(
-            () -> {
-                reset();
-            }
-        );
-    }
+    @Override public void create() {}
     
     
     /**
@@ -111,6 +104,13 @@ public class GameplayState extends ScreenContext<GameplayScreen>
         state = State.INTERMISSION;
         score = 0;
         lives = 3;
+    }
+    
+    
+    /** On {@link GameplayScreen#hide()}. */
+    public void hide()
+    {
+        reset();
     }
     
     

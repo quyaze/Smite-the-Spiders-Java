@@ -1,10 +1,9 @@
 package quyaze.stsj.gameplay.systems;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.EWSystemContext;
+import quyaze.stsj.core.WorldContext;
 import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.architecture.Avatar;
@@ -12,7 +11,7 @@ import quyaze.stsj.gameplay.architecture.Mobility;
 import quyaze.stsj.gameplay.architecture.Spider;
 
 /** System that enables {@link Spider} action. */
-public class SpiderSystem extends EWSystemContext<GameplayWorld> implements EWSystem
+public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */
     private boolean isGameOver;
@@ -40,7 +39,6 @@ public class SpiderSystem extends EWSystemContext<GameplayWorld> implements EWSy
         Mobility mobility = getWorld().mobilityDatastore.get(entity);
         Spider spider = getWorld().spiderDatastore.get(entity);
         
-        ScreenViewport viewport = getWorld().getScreen().getGameInstance().getViewport();
         final float dS = Gdx.graphics.getDeltaTime();
         
         if (isGameOver && opacityOverride > 0)
@@ -55,9 +53,9 @@ public class SpiderSystem extends EWSystemContext<GameplayWorld> implements EWSy
         if (avatar.position.dst2(spider.destination.cpy()) < 36f)
         {
             spider.newPath(
-                viewport,
                 avatar,
-                mobility
+                mobility,
+                GameplayWorld.UNITS_PER_PIXEL
             );
         }
     }

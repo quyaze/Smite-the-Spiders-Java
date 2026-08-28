@@ -2,8 +2,9 @@ package quyaze.stsj.core;
 
 import java.util.Arrays;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.math.Vector2;
 
 /** Some utilities for the game. */
 final public class Utility
@@ -17,11 +18,32 @@ final public class Utility
     }
     
     
-    static public float getAvatarScreenScaled(ScreenViewport viewport, TextureRegion texture)
+    static public float getAvatarScreenScaled(TextureRegion texture, float unitsPerPixels)
     {
         return Math.max(
-            viewport.getWorldWidth() / (float) texture.getRegionWidth(),
-            viewport.getWorldHeight() / (float) texture.getRegionHeight()
+            getScreenWorldWidth(unitsPerPixels) / (float) texture.getRegionWidth(),
+            getScreenWorldHeight(unitsPerPixels) / (float) texture.getRegionHeight()
+        );
+    }
+    
+    
+    static public float getScreenWorldWidth(float unitsPerPixel)
+    {
+        return Gdx.graphics.getWidth() * unitsPerPixel;
+    }
+    
+    
+    static public float getScreenWorldHeight(float unitsPerPixel)
+    {
+        return Gdx.graphics.getHeight() * unitsPerPixel;
+    }
+    
+    
+    static public Vector2 getScreenWorldSize(float unitsPerPixel)
+    {
+        return new Vector2(
+            getScreenWorldWidth(unitsPerPixel),
+            getScreenWorldHeight(unitsPerPixel)
         );
     }
     
