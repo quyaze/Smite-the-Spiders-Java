@@ -21,10 +21,6 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     public Event<Boolean> onPausedStateChanged;
     public Event<State> onGameStateChanged;
     
-    final static public int POINTS_SPELL_HIT_SPIDER = 50;
-    final static public int POINTS_SPIDER_HIT_PLAYER = -5;
-    final static public int POINTS_WEB_HIT_PLAYER = -20;
-    
     
     /*  Constructor  */
     public GameplayState()

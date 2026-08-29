@@ -18,7 +18,7 @@ public class Player
     public boolean respawn = true;
     private Avatar wizard;
     
-    public Signal onCastFireball;
+    public Signal onCastFireball; // Remove
     
     
     /*  Constructors  */

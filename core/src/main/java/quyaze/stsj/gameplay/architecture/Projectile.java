@@ -8,7 +8,7 @@ public class Projectile
     
     
     /*  Constructor  */
-    /** Give the projectile a unique name. */
+    /** Give the projectile an id. */
     public Projectile(String name)
     {
         this.name = name;

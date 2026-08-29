@@ -14,15 +14,15 @@ import quyaze.stsj.gameplay.architecture.Avatar;
 /** System that draws and renders {@link Avatar}s to the screen. */
 public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
+    /*  Fields  */
+    private GameplayWorld world;
+    
+    
     /*  Create  */
     @Override
     public void create()
     {
-        // getWorld().getScreen().core.onGameOver.bindDeferred(
-        //     () -> {
-                
-        //     }
-        // );
+        world = getWorld();
     }
     
     
@@ -30,10 +30,10 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = getWorld().getScreen().world.avatarDatastore.get(entity);
+        Avatar avatar = world.getScreen().world.avatarDatastore.get(entity);
         
         SpriteBatch batch = getGameInstance().getBatch();
-        GameplayState state = getWorld().getScreen().state;
+        GameplayState state = world.getScreen().state;
         final boolean gameOver = state.getState() == State.GAME_OVER;
         
         final float opacity = MathUtils.clamp(

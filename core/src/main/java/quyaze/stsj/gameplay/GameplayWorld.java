@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.EWDatastore;
 import quyaze.stsj.core.EWSystem;
 import quyaze.stsj.core.EntityWorld;
@@ -36,6 +37,9 @@ import quyaze.stsj.screens.GameplayScreen;
 public class GameplayWorld extends EntityWorld<GameplayScreen>
 {
     /*  Fields  */
+    private SmiteTheSpiders game;
+    private GameplayScreen screen;
+    
     private CharArray entityFlags;
     private Array<EWDatastore<?>[]> entityDatastores;
     private IntArray entityDebris;
@@ -97,6 +101,9 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     @Override
     public void create()
     {
+        game = getGameInstance();
+        screen = getScreen();
+        
         playerSystem.setWorld(this);
         avatarSystem.setWorld(this);
         collisionSystem.setWorld(this);
@@ -123,28 +130,14 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             "debris" and are then removed at the very end of render().
         */
         
-        if (!custInput()) return; 
+        if (!custInput()) return;
+        playerSystem.render(dS); 
         spiderSystem.render(dS);
-        
-        // if (Gdx.input.isKeyJustPressed(Input.Keys.G))
-        // {
-        //     getGameInstance().getViewport().setUnitsPerPixel(4f);
-        //     getGameInstance().resize(
-        //         Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
-        //     );
-        // }
-        // else if (Gdx.input.isKeyJustPressed(Input.Keys.H))
-        // {
-        //     getGameInstance().getViewport().setUnitsPerPixel(1f);
-        //     getGameInstance().resize(
-        //         Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
-        //     );
-        // }
-        
         EWSystem iterating;
+        
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
-            if (getScreen().state.isPaused() && flag != SYSFLAG_DRAW) continue;
+            if (screen.state.isPaused() && flag != SYSFLAG_DRAW) continue;
             
             switch (flag)
             {
@@ -155,8 +148,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 case SYSFLAG_DRAW:
                     iterating = drawSystem;
                     
-                    SpriteBatch batch = getGameInstance().getBatch();
-                    ScreenViewport viewport = getGameInstance().getViewport();
+                    SpriteBatch batch = game.getBatch();
+                    ScreenViewport viewport = game.getViewport();
                     
                     ScreenUtils.clear(Color.BLACK);
                     viewport.apply(true);
@@ -166,7 +159,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                     batch.begin();
                     
                     break;
-                default: throw new IllegalStateException("missing system flag");
+                default: throw new IllegalStateException("missing system");
             }
             
             for (int entity = 0; entity < entities; entity++)
@@ -175,7 +168,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
             }
             
-            if (flag == SYSFLAG_DRAW) getGameInstance().getBatch().end();
+            if (flag == SYSFLAG_DRAW) game.getBatch().end();
         }
         iterating = null;
         
@@ -235,7 +228,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     */
     private boolean custInput()
     {
-        var state = getScreen().state;
+        var state = screen.state;
         
         final boolean paused = (
             Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?
@@ -244,24 +237,13 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         
         if (paused && Gdx.input.isButtonJustPressed(0))
         {
-            getGameInstance().toMainMenuScreen();
+            game.toMainMenuScreen();
             return false;
         }
         
-        if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) getScreen().core.spawnSpiders();
+        // if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) screen.core.spawnSpiders();
         
         return true;
-    }
-    
-    
-    /** On {@link GameplayScreen#show()}. */
-    public void show()
-    {
-        // ScreenViewport viewport = getGameInstance().getViewport();
-        
-        // viewport.setUnitsPerPixel(1f);
-        // getGameInstance().resize();
-        
     }
     
     

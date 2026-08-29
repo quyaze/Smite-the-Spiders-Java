@@ -15,6 +15,8 @@ import quyaze.stsj.gameplay.architecture.Spider;
 public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */
+    private GameplayWorld world;
+    
     private boolean isGameOver;
     private float opacityOverride;
     
@@ -23,7 +25,8 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
     @Override
     public void create()
     {
-        getWorld().getScreen().core.onGameOver.bindDeferred(
+        world = getWorld();
+        world.getScreen().core.onGameOver.bindDeferred(
             () -> {
                 Timer.schedule(
                     new Task()
@@ -48,9 +51,9 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = getWorld().avatarDatastore.get(entity);
-        Mobility mobility = getWorld().mobilityDatastore.get(entity);
-        Spider spider = getWorld().spiderDatastore.get(entity);
+        Avatar avatar = world.avatarDatastore.get(entity);
+        Mobility mobility = world.mobilityDatastore.get(entity);
+        Spider spider = world.spiderDatastore.get(entity);
         
         if (isGameOver) avatar.opacity = opacityOverride;
         

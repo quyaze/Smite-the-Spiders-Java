@@ -20,6 +20,8 @@ import quyaze.stsj.screens.GameplayScreen;
 public class CollisionSolver extends ScreenContext<GameplayScreen>
 {
     /*  Fields  */
+    private GameplayScreen screen;
+    
     public IntArray targetEntities;
     private Collision collisionA, collisionB;
     private int entityA, entityB;
@@ -37,13 +39,6 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     {
         onCollided = new Event<>();
         onSolverCleanup = new Signal();
-        collisionSolveTask = new Task() {
-            @Override
-            public void run()
-            {
-                solve();
-            }
-        };
     }
     
     
@@ -51,7 +46,16 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     @Override
     public void create()
     {
-        getScreen().state.onPausedStateChanged.bindDeferred(
+        screen = getScreen();
+        collisionSolveTask = new Task()
+        {
+            @Override
+            public void run()
+            {
+                solve();
+            }
+        };
+        screen.state.onPausedStateChanged.bindDeferred(
             arg -> {
                 setSolverEnabled(!arg);
             }
@@ -103,13 +107,13 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
         for (int i = 0; i < targetEntities.size; i++)
         {
             entityA = targetEntities.get(i);
-            collisionA = getScreen().world.collisionDatastore.get(entityA);
+            collisionA = screen.world.collisionDatastore.get(entityA);
             if (collisionA == null || collisionA.skipSolving) continue;
             
             for (int j = i + 1; j < targetEntities.size; j++)
             {
                 entityB = targetEntities.get(j);
-                collisionB = getScreen().world.collisionDatastore.get(entityB);
+                collisionB = screen.world.collisionDatastore.get(entityB);
                 if (collisionB == null || collisionB.skipSolving) continue;
                 
                 /*  Collision detection is calculated here.

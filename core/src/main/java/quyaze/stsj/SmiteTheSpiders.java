@@ -36,6 +36,9 @@ final public class SmiteTheSpiders extends Game
         if (lock)
             throw new IllegalStateException("attempt to create another game instance");
         lock = true;
+        
+        mainMenuScreen = new MainMenuScreen();
+        gameplayScreen = new GameplayScreen();
     }
     
     
@@ -51,9 +54,6 @@ final public class SmiteTheSpiders extends Game
         );
         gameText = new GameText();
         music = Gdx.audio.newMusic(Gdx.files.internal("audio" + File.separator + "Lord of the Land.mp3"));
-        
-        mainMenuScreen = new MainMenuScreen();
-        gameplayScreen = new GameplayScreen();
         
         mainMenuScreen.setGameInstance(this);
         gameplayScreen.setGameInstance(this);

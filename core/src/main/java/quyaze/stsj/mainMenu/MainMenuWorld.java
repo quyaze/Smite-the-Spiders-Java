@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
@@ -25,6 +24,8 @@ import quyaze.stsj.screens.MainMenuScreen;
 public class MainMenuWorld extends World<MainMenuScreen>
 {
     /*  Fields  */
+    private SmiteTheSpiders game;
+    
     private TextureRegion background;
     private TextureRegion title;
     private GlyphLayout subtitle;
@@ -48,8 +49,9 @@ public class MainMenuWorld extends World<MainMenuScreen>
     @Override
     public void create()
     {
-        TextureAtlas atlas = getGameInstance().getAtlas();
-        GameText gameText = getGameInstance().getGameText();
+        game = getGameInstance();
+        TextureAtlas atlas = game.getAtlas();
+        GameText gameText = game.getGameText();
         
         background = atlas.findRegion("bg");
         title = atlas.findRegion("title");
@@ -62,9 +64,11 @@ public class MainMenuWorld extends World<MainMenuScreen>
     
     /*  Render  */
     @Override
-    public void render(final float delta)
+    public void render(final float dS)
     {
-        input(); logic(delta); draw();
+        if (!input()) return;
+        logic(dS);
+        draw();
     }
     
     
@@ -85,7 +89,6 @@ public class MainMenuWorld extends World<MainMenuScreen>
             },
             1f
         );
-        // getGameInstance().getViewport().setUnitsPerPixel(1f);
         titleAvatar.opacity = 0f;
     }
     
@@ -123,42 +126,42 @@ public class MainMenuWorld extends World<MainMenuScreen>
     
     
     /*  Input  */
-    private void input()
+    private boolean input()
     {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
         {
             Gdx.app.exit();
-            return;
+            return false;
         }
         if (enableInput && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
         {
-            getGameInstance().toGameplayScreen();
-            return;
+            game.toGameplayScreen();
+            return false;
         }
+        return true;
     }
     
     
     /*  Logic  */
-    private void logic(final float deltaSeconds)
+    private void logic(final float dS)
     {
+        /*  "Smite the Spiders" fade-in
+        */
         if (titleAvatar.opacity < 1f)
         {
-            titleAvatar.opacity = MathUtils.clamp(
-                titleAvatar.opacity + deltaSeconds * 1.25f, 0f, 1f
+            titleAvatar.opacity = Math.min(
+                titleAvatar.opacity + dS * 1.25f, 1f
             );
-        }
+        }   
     }
     
     
     /*  Draw  */
     private void draw()
     {
-        SmiteTheSpiders game = getGameInstance();
-        GameText gameText = game.getGameText();
-        
         ScreenViewport viewport = game.getViewport();
         SpriteBatch batch = game.getBatch();
-        BitmapFont regularFont = gameText.regular;
+        BitmapFont regularFont = game.getGameText().regular;
         
         ScreenUtils.clear(Color.BLACK);
         viewport.apply(true);

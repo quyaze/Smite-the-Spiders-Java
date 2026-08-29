@@ -46,7 +46,6 @@ public class GameplayScreen extends GameContext implements Screen
     public void show()
     {
         state.setGamePaused(false);
-        world.show();
         core.show();
     }
     
@@ -79,10 +78,13 @@ public class GameplayScreen extends GameContext implements Screen
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        getGameInstance().getViewport().update(width, height, true);
+        
+        var viewport = getGameInstance().getViewport();
+        
+        viewport.update(width, height, true);
         world.resize(width, height);
-        if (!resizedOnShow) state.setGamePaused(true);
-        else resizedOnShow = false;
+        if (resizedOnShow) resizedOnShow = false;
+        else state.setGamePaused(true);
     }
     
     
@@ -91,6 +93,7 @@ public class GameplayScreen extends GameContext implements Screen
     public void render(final float dS)
     {
         world.render(dS);
+        core.render(dS);
     }
     
     

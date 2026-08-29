@@ -13,17 +13,24 @@ import quyaze.stsj.gameplay.architecture.Player;
 /** System that simulates {@link Avatar} movement. */
 public class AvatarSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
+    /*  Fields  */
+    private GameplayWorld world;
+    
+    
     /*  Create  */
-    @Override public void create() {}
+    @Override public void create()
+    {
+        world = getWorld();
+    }
     
     
     /*  Iterate  */
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = getWorld().avatarDatastore.get(entity);
-        Mobility mobility = getWorld().mobilityDatastore.get(entity);
-        Player player = getWorld().playerDatastore.get(entity);
+        Avatar avatar = world.avatarDatastore.get(entity);
+        Mobility mobility = world.mobilityDatastore.get(entity);
+        Player player = world.playerDatastore.get(entity);
         
         final float dS = Gdx.graphics.getDeltaTime();
         

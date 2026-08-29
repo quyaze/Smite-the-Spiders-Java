@@ -62,6 +62,15 @@ public class EWDatastore<T>
     
     
     /**
+     * @return The size of the datastore
+    */
+    public int size()
+    {
+        return data.size;
+    }
+    
+    
+    /**
      * Reallocate data from the {@code oldEntity} to the
      * {@code newEntity}. This is needed in entity
      * swap-removal.

@@ -3,8 +3,8 @@ package quyaze.stsj.gameplay.architecture;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
- * Represents basic collision. The collision box is determined by
- * the assigned avatar's position and size.
+ * Represents basic collision. Reflects the assigned
+ * {@link Avatar}'s position and size.
  */
 public class Collision
 {

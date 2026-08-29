@@ -19,6 +19,8 @@ import quyaze.stsj.screens.GameplayScreen;
 final public class CollisionSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */
+    private GameplayWorld world;
+    
     private IntArray collidableEntities;
     private IntIntMap collidableEntityToIndex;
     private Rectangle screen;
@@ -37,8 +39,9 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     @Override
     public void create()
     {
-        getWorld().getScreen().solver.targetEntities = collidableEntities;
-        getWorld().getScreen().solver.onSolverCleanup.bindDeferred(
+        world = getWorld();
+        world.getScreen().solver.targetEntities = collidableEntities;
+        world.getScreen().solver.onSolverCleanup.bindDeferred(
             () -> {
                 collidableEntityToIndex.clear();
                 collidableEntities.clear();
@@ -51,8 +54,8 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     @Override
     public void iterate(int entity)
     {
-        Collision collision = getWorld().getScreen().world.collisionDatastore.get(entity);
-        Projectile projectile = getWorld().getScreen().world.projectileDatastore.get(entity);
+        Collision collision = world.getScreen().world.collisionDatastore.get(entity);
+        Projectile projectile = world.getScreen().world.projectileDatastore.get(entity);
         
         collision.updatePosition();
         
@@ -60,7 +63,7 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
         */
         if (projectile != null && !collision.collisionBox.overlaps(screen))
         {
-            getWorld().getScreen().world.removeEntityRequest(entity);
+            world.getScreen().world.removeEntityRequest(entity);
             return;
         }
         

@@ -56,7 +56,10 @@ public class MainMenuScreen extends GameContext implements Screen
     public void resize(int width, int height)
     {
         if (width <= 0 || height <= 0) return;
-        getGameInstance().getViewport().update(width, height, true);
+        
+        var viewport = getGameInstance().getViewport();
+        
+        viewport.update(width, height, true);
         world.resize(width, height);
     }
     
