@@ -6,10 +6,7 @@ buildscript {
     google()
     maven { url = 'https://central.sonatype.com/repository/maven-snapshots/' }
   }
-  dependencies {
-
-
-  }
+  dependencies {}
 }
 
 allprojects {
@@ -58,6 +55,7 @@ configure(subprojects) {
 subprojects {
   version = "$projectVersion"
   ext.appName = 'Smite-the-Spiders-Java'
+  ext.simpleName = 'Smite the Spiders'
   repositories {
     mavenCentral()
     // You may want to remove the following line if you have errors downloading dependencies.

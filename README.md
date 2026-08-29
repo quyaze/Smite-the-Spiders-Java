@@ -1,4 +1,12 @@
-# Smite-the-Spiders-Java
+# Smite the Spiders (Java)
+
+A remake of "Shoot the Spiders" in CSC 132 (Louisiana Tech University). Originally written in Python using Pygame, it is now developed in Java using LibGDX.
+
+You may generate a standlone application by running `./gradlew clean build jpackage`. This creates an application image in `lwjgl/build/jpackage` that you can run (e.g. "Smite the Spiders.exe"). Consult the [Gradle tasks](#gradle) down below for guidance.
+
+Built with [JDK 26.0](https://www.oracle.com/java/technologies/downloads/#java26)
+
+## About Project
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
