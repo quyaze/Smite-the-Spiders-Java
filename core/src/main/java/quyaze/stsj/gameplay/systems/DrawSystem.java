@@ -30,7 +30,7 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     @Override
     public void iterate(int entity)
     {
-        Avatar avatar = world.getScreen().world.avatarDatastore.get(entity);
+        Avatar avatar = world.avatarDatastore.get(entity);
         
         SpriteBatch batch = getGameInstance().getBatch();
         GameplayState state = world.getScreen().state;

@@ -135,7 +135,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Create the background. */
-    public void spawnBackground()
+    private void spawnBackground()
     {
         Avatar avatar;
         
@@ -159,7 +159,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Create the player. */
-    public void spawnPlayer()
+    private void spawnPlayer()
     {
         Player player;
         Avatar avatar;
@@ -205,7 +205,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Create the spiders. */
-    public void spawnSpiders()
+    private void spawnSpiders()
     {
         for (
             int i = 0, n = MathUtils.random(1, 3);
@@ -283,7 +283,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Cast a fireball spell. */
-    public void spawnFireball(Avatar playerCharacter)
+    private void spawnFireball(Avatar playerCharacter)
     {
         Avatar avatar;
         Mobility mobility;
@@ -329,7 +329,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Throw a web at the player. */
-    public void spawnWeb(Avatar spiderAvatar, Avatar playerCharacter)
+    private void spawnWeb(Avatar spiderAvatar, Avatar playerCharacter)
     {
         if (player == -1) return;
         
@@ -375,7 +375,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Player is hit by a web. */
-    public void onWebHitPlayer(int webEntity)
+    private void onWebHitPlayer(int webEntity)
     {
         GameplayState state = screen.state;
         
@@ -386,7 +386,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Player runs into a spider. */
-    public void onSpiderHitPlayer(int spiderEntity)
+    private void onSpiderHitPlayer(int spiderEntity)
     {
         GameplayState state = screen.state;
         
@@ -396,7 +396,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** A spider is hit by the player's spell. */
-    public void onSpellHitSpider(int spellEntity, int spiderEntity)
+    private void onSpellHitSpider(int spellEntity, int spiderEntity)
     {
         GameplayWorld world = screen.world;
         GameplayState state = screen.state;

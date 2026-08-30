@@ -134,7 +134,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     
     
     /** Solver cleanup. */
-    public void clean()
+    private void clean()
     {
         entityA = 0; entityB = 0;
         collisionA = null; collisionB = null;

@@ -35,8 +35,6 @@ public class MainMenuWorld extends World<MainMenuScreen>
     private Avatar titleAvatar;
     private Vector2 subtitlePosition;
     
-    final static public float UNITS_PER_PIXEL = 1f;
-    
     
     /*  Constructor  */
     public MainMenuWorld()
@@ -107,11 +105,8 @@ public class MainMenuWorld extends World<MainMenuScreen>
     /** On {@code MainMenuScreen.resize()}. */
     public void resize(int width, int height)
     {
-        width *= UNITS_PER_PIXEL;
-        height *= UNITS_PER_PIXEL;
-        
         backgroundAvatar.setScale(
-            Utility.getAvatarScreenScaled(background, UNITS_PER_PIXEL)
+            Utility.getAvatarScreenScaled(background, 1f)
         );
         titleAvatar.position.set(
             (width - titleAvatar.getTrueWidth()) * 0.5f,

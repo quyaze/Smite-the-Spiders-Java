@@ -54,8 +54,8 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     @Override
     public void iterate(int entity)
     {
-        Collision collision = world.getScreen().world.collisionDatastore.get(entity);
-        Projectile projectile = world.getScreen().world.projectileDatastore.get(entity);
+        Collision collision = world.collisionDatastore.get(entity);
+        Projectile projectile = world.projectileDatastore.get(entity);
         
         collision.updatePosition();
         
@@ -63,7 +63,7 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
         */
         if (projectile != null && !collision.collisionBox.overlaps(screen))
         {
-            world.getScreen().world.removeEntityRequest(entity);
+            world.removeEntityRequest(entity);
             return;
         }
         

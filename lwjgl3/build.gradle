@@ -132,15 +132,18 @@ tasks.register('dist') {
 runtime {
   options = ['--strip-debug', '--compress=zip-6', '--no-header-files', '--no-man-pages']
   modules = ['java.base', 'java.management', 'java.desktop', 'jdk.unsupported']
+  
+  /*  Ensure JAVA_HOME is JDK 26.0
+  */
   javaHome = System.getenv('JAVA_HOME')
   
   jpackage {
     def icon = 'icons/logo.'
     
     switch (os) {
-      case ~/.*windows.*/:  icon += 'ico';  break
-      case ~/.*mac.*/:      icon += 'icns'; break
-      default:              icon += 'png';  break // Linux
+      case ~/.*windows.*/:  icon += 'ico';    break
+      case ~/.*mac.*/:      icon += 'icns';   break
+      default:              icon += 'png';    break // Linux
     }
     
     imageName = simpleName
