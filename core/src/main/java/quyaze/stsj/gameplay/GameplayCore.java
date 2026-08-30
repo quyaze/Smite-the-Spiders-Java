@@ -8,16 +8,16 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.EWDatastore;
-import quyaze.stsj.core.ScreenContext;
-import quyaze.stsj.core.Signal;
-import quyaze.stsj.core.Utility;
-import quyaze.stsj.gameplay.architecture.Avatar;
-import quyaze.stsj.gameplay.architecture.Collision;
-import quyaze.stsj.gameplay.architecture.Mobility;
-import quyaze.stsj.gameplay.architecture.Player;
-import quyaze.stsj.gameplay.architecture.Projectile;
-import quyaze.stsj.gameplay.architecture.Spider;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.architecture.Collision;
+import quyaze.stsj.core.architecture.Mobility;
+import quyaze.stsj.core.architecture.Player;
+import quyaze.stsj.core.architecture.Projectile;
+import quyaze.stsj.core.architecture.Spider;
+import quyaze.stsj.core.template.EWDatastore;
+import quyaze.stsj.core.template.ScreenContext;
+import quyaze.stsj.core.utility.Signal;
+import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**

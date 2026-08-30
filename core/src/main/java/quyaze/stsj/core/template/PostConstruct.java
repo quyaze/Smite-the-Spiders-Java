@@ -1,4 +1,4 @@
-package quyaze.stsj.core;
+package quyaze.stsj.core.template;
 
 /**
  * If a class constructor has unsafe initialization or behavior,

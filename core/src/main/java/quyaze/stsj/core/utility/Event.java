@@ -1,4 +1,4 @@
-package quyaze.stsj.core;
+package quyaze.stsj.core.utility;
 
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;

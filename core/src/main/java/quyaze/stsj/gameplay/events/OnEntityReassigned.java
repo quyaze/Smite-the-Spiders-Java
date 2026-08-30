@@ -1,4 +1,4 @@
-package quyaze.stsj.gameplay.eventDefs;
+package quyaze.stsj.gameplay.events;
 
 /** Event definition for when an entity is changed. */
 final public class OnEntityReassigned

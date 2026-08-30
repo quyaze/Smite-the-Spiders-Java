@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
-import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.WorldContext;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.template.EWSystem;
+import quyaze.stsj.core.template.WorldContext;
 import quyaze.stsj.gameplay.GameplayState;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.GameplayState.State;
-import quyaze.stsj.gameplay.architecture.Avatar;
 
 /** System that draws and renders {@link Avatar}s to the screen. */
 public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem

@@ -4,11 +4,11 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-import quyaze.stsj.core.Event;
-import quyaze.stsj.core.ScreenContext;
-import quyaze.stsj.core.Signal;
-import quyaze.stsj.gameplay.architecture.Collision;
-import quyaze.stsj.gameplay.eventDefs.OnCollided;
+import quyaze.stsj.core.architecture.Collision;
+import quyaze.stsj.core.template.ScreenContext;
+import quyaze.stsj.core.utility.Event;
+import quyaze.stsj.core.utility.Signal;
+import quyaze.stsj.gameplay.events.OnCollided;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**

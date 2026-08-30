@@ -1,7 +1,7 @@
 package quyaze.stsj.gameplay;
 
-import quyaze.stsj.core.Event;
-import quyaze.stsj.core.ScreenContext;
+import quyaze.stsj.core.template.ScreenContext;
+import quyaze.stsj.core.utility.Event;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**

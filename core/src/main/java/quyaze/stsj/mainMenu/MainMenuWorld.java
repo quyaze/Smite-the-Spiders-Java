@@ -14,10 +14,10 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.GameText;
-import quyaze.stsj.core.Utility;
-import quyaze.stsj.core.World;
-import quyaze.stsj.gameplay.architecture.Avatar;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.template.World;
+import quyaze.stsj.core.utility.GameText;
+import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.screens.MainMenuScreen;
 
 /** World for the main menu. */

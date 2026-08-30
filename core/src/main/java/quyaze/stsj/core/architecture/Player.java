@@ -1,11 +1,11 @@
-package quyaze.stsj.gameplay.architecture;
+package quyaze.stsj.core.architecture;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-import quyaze.stsj.core.Signal;
-import quyaze.stsj.core.Utility;
+import quyaze.stsj.core.utility.Signal;
+import quyaze.stsj.core.utility.Utility;
 
 /** Represents the player. */
 public class Player

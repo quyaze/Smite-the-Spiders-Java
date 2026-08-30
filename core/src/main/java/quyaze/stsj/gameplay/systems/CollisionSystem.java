@@ -4,13 +4,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
-import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.Utility;
-import quyaze.stsj.core.WorldContext;
+import quyaze.stsj.core.architecture.Collision;
+import quyaze.stsj.core.architecture.Projectile;
+import quyaze.stsj.core.template.EWSystem;
+import quyaze.stsj.core.template.WorldContext;
+import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayWorld;
-import quyaze.stsj.gameplay.architecture.Collision;
-import quyaze.stsj.gameplay.architecture.Projectile;
 import quyaze.stsj.screens.GameplayScreen;
 /**
  * Responsible for tracking all collidable entities.

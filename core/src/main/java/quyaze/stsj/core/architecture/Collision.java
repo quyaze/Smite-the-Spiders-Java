@@ -1,4 +1,4 @@
-package quyaze.stsj.gameplay.architecture;
+package quyaze.stsj.core.architecture;
 
 import com.badlogic.gdx.math.Rectangle;
 

@@ -2,7 +2,7 @@ package quyaze.stsj.screens;
 
 import com.badlogic.gdx.Screen;
 
-import quyaze.stsj.core.GameContext;
+import quyaze.stsj.core.template.GameContext;
 import quyaze.stsj.mainMenu.MainMenuWorld;
 
 /** {@link Screen} for the main menu. */
