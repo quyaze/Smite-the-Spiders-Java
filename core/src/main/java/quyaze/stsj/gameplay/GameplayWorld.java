@@ -93,7 +93,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         spiderSystem = new SpiderSystem();
         drawSystem = new DrawSystem();
         
-        onEntityReassigned = new Event<>();
+        onEntityReassigned = new Event<>(1, OnEntityReassigned.class);
     }
     
     
@@ -130,9 +130,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             "debris" and are then removed at the very end of render().
         */
         
-        if (!custInput()) return;
-        playerSystem.render(dS); 
-        spiderSystem.render(dS);
+        if (!input()) return;
         EWSystem iterating;
         
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
@@ -141,10 +139,24 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             
             switch (flag)
             {
-                case SYSFLAG_PLAYER:    iterating = playerSystem;       break;
-                case SYSFLAG_AVATAR:    iterating = avatarSystem;       break;
-                case SYSFLAG_COLLISION: iterating = collisionSystem;    break;
-                case SYSFLAG_SPIDER:    iterating = spiderSystem;       break;
+                case SYSFLAG_PLAYER:
+                    iterating = playerSystem;
+                    playerSystem.render(dS);
+                break;
+                
+                case SYSFLAG_AVATAR:
+                    iterating = avatarSystem;
+                break;
+                
+                case SYSFLAG_COLLISION:
+                    iterating = collisionSystem;
+                break;
+                
+                case SYSFLAG_SPIDER:
+                    iterating = spiderSystem;
+                    spiderSystem.render(dS);
+                break;
+                
                 case SYSFLAG_DRAW:
                     iterating = drawSystem;
                     
@@ -157,15 +169,15 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                         viewport.getCamera().combined
                     );
                     batch.begin();
-                    
-                    break;
+                break;
+                
                 default: throw new IllegalStateException("missing system");
             }
             
             for (int entity = 0; entity < entities; entity++)
             {
                 if (isEntityDebris.contains(entity)) continue;
-                if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
+                if ((entityFlags.get(entity) & flag) > 0) iterating.iterate(entity);
             }
             
             if (flag == SYSFLAG_DRAW) game.getBatch().end();
@@ -226,7 +238,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
      * Input pre-entity-loop iteration.
      * @return Input logic requires aborting the entity-system iteration
     */
-    private boolean custInput()
+    private boolean input()
     {
         var state = screen.state;
         

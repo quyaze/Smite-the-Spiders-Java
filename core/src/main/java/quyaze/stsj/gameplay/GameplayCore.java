@@ -55,8 +55,8 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public GameplayCore()
     {
-        onPlayerHit = new Signal();
-        onGameOver = new Signal();
+        onPlayerHit = new Signal(1);
+        onGameOver = new Signal(1);
     }
     
     
@@ -67,13 +67,13 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         game = getGameInstance();
         screen = getScreen();
         
-        screen.world.onEntityReassigned.bindDeferred(
+        screen.world.onEntityReassigned.addBinding(
             arg -> {
                 if (player == arg.oldEntity) player = arg.newEntity;
             }
         );
         
-        screen.solver.onCollided.bindDeferred(
+        screen.solver.onCollided.addBinding(
             arg -> {
                 Projectile projectileA = screen.world.projectileDatastore.get(arg.thisEntity);
                 
@@ -144,7 +144,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         
         avatar = new Avatar(
             background,
-            Utility.getAvatarScreenScaled(background, GameplayWorld.UNITS_PER_PIXEL)
+            Utility.getAvatarScreenScaled(world, background)
         );
         avatar.opacity = 1 / 0.2f;
         
@@ -174,9 +174,9 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             game.getAtlas().findRegion("wizard"),
             4f
         );
-        player.setAvatar(avatar, GameplayWorld.UNITS_PER_PIXEL);
-        player.spawnPlayer(GameplayWorld.UNITS_PER_PIXEL);
-        player.onCastFireball.bindDeferred(
+        player.setAvatar(world, avatar);
+        player.spawnPlayer(world);
+        player.onCastFireball.addBinding(
             () -> {
                 spawnFireball(avatar);
             }
@@ -250,11 +250,11 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             collision = new Collision(avatar);
             
             spider = new Spider(
+                world,
                 avatar,
-                mobility,
-                GameplayWorld.UNITS_PER_PIXEL
+                mobility
             );
-            spider.onThrowWeb.bindDeferred(
+            spider.onThrowWeb.addBinding(
                 () -> {
                     spawnWeb(
                         avatar,
@@ -430,7 +430,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             PLAYER_HIT_FX_PHASE
         );
         
-        world.playerDatastore.get(player).spawnPlayer(GameplayWorld.UNITS_PER_PIXEL);
+        world.playerDatastore.get(player).spawnPlayer(world);
         playerCollision.skipSolving = true;
         onPlayerHit.fire();
     }

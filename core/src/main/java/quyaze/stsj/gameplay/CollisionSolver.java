@@ -37,8 +37,8 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public CollisionSolver()
     {
-        onCollided = new Event<>();
-        onSolverCleanup = new Signal();
+        onCollided = new Event<>(1, OnCollided.class);
+        onSolverCleanup = new Signal(1);
     }
     
     
@@ -55,7 +55,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
                 solve();
             }
         };
-        screen.state.onPausedStateChanged.bindDeferred(
+        screen.state.onPausedStateChanged.addBinding(
             arg -> {
                 setSolverEnabled(!arg);
             }

@@ -106,7 +106,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
     public void resize(int width, int height)
     {
         backgroundAvatar.setScale(
-            Utility.getAvatarScreenScaled(background, 1f)
+            Utility.getAvatarScreenScaled(this, background)
         );
         titleAvatar.position.set(
             (width - titleAvatar.getTrueWidth()) * 0.5f,

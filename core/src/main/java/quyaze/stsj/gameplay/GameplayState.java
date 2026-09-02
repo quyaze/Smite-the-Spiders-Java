@@ -25,8 +25,8 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public GameplayState()
     {
-        onPausedStateChanged = new Event<>();
-        onGameStateChanged = new Event<>();
+        onPausedStateChanged = new Event<>(3, Boolean.class);
+        onGameStateChanged = new Event<>(1, State.class);
         reset();
     }
     

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
+import quyaze.stsj.core.template.World;
 import quyaze.stsj.core.utility.Signal;
 import quyaze.stsj.core.utility.Utility;
 
@@ -31,36 +32,36 @@ public class Player
     {
         movementInput = Vector2.Zero.cpy();
         upperScreenBounds = Vector2.Zero.cpy();
-        onCastFireball = new Signal();
+        onCastFireball = new Signal(1);
     }
     
     /** Create a player with reference to the character. */
-    public Player(Avatar avatar, float unitsPerPixel)
+    public Player(World<?> world, Avatar avatar)
     {
         this();
-        setAvatar(avatar, unitsPerPixel);
+        setAvatar(world, avatar);
     }
     
     
     /** Set player character. */
-    public void setAvatar(Avatar avatar, float unitsPerPixel)
+    public void setAvatar(World<?> world, Avatar avatar)
     {
-        Vector2 world = Utility.getScreenWorldSize(unitsPerPixel);
+        Vector2 worldSize = Utility.getScreenWorldSize(world);
         
-        upperScreenBounds.set(world.sub(avatar.getTrueSize()));
+        upperScreenBounds.set(worldSize.sub(avatar.getTrueSize()));
         wizard = avatar;
     }
     
     
     /** Spawn the player, referencing its {@link Avatar}. */
-    public void spawnPlayer(float unitsPerPixel)
+    public void spawnPlayer(World<?> world)
     {
         if (wizard == null)
             throw new IllegalStateException("player has no set avatar");
         
         Vector2 location = new Vector2(
-            Utility.getScreenWorldWidth(unitsPerPixel) * 0.5f,
-            Utility.getScreenWorldHeight(unitsPerPixel) / 3f
+            Utility.getScreenWorldWidth(world) * 0.5f,
+            Utility.getScreenWorldHeight(world) / 3f
         );
         
         location.sub(wizard.getTrueSize().scl(0.5f));

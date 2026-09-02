@@ -11,12 +11,10 @@ buildscript {
 }
 plugins {
   id "application"
-  id "org.beryx.runtime" version "2.0.1"
+  id "org.panteleyev.jpackageplugin" version "2.1.0"
 }
 
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
-application.mainClass = 'quyaze.stsj.lwjgl3.Lwjgl3Launcher'
-application.applicationName = simpleName
 eclipse.project.name = appName + '-lwjgl3'
 java.sourceCompatibility = 26
 java.targetCompatibility = 26
@@ -36,7 +34,7 @@ dependencies {
     implementation "io.github.berstanio:gdx-svmhelper-backend-lwjgl3:$graalHelperVersion"
     implementation "io.github.berstanio:gdx-svmhelper-extension-freetype:$graalHelperVersion"
   }
-  // Forces LWJGL3 to use at least $lwjgl3Version, currently 3.4.1, to avoid warnings on Java 25 and up.
+  // Forces LWJGL3 to use at least $lwjgl3Version to avoid warnings on Java 25 and up.
   constraints{
     implementation("org.lwjgl:lwjgl:$lwjgl3Version")
     implementation("org.lwjgl:lwjgl-glfw:$lwjgl3Version")
@@ -56,6 +54,57 @@ run {
   args += "--texture-packer"
   jvmArgs += "--enable-native-access=ALL-UNNAMED"
   if (os.contains('mac')) jvmArgs += "-XstartOnFirstThread"
+}
+
+application {
+  applicationName = simpleName
+  mainClass = 'quyaze.stsj.lwjgl3.Lwjgl3Launcher'
+}
+
+jpackage {
+  dependsOn 'build', 'jar'
+
+  getAppName().set(simpleName)
+  getAppDescription().set("${appDescription}")
+  getAppVersion().set("${projectVersion}")
+  getCopyright().set("${appCopyright}")
+  getMainJar().set(jar.archiveFileName)
+  getInput().set(layout.buildDirectory.dir('libs'))
+  getDestination().set(layout.buildDirectory.dir('jpackage'))
+
+  getJLinkOptions().addAll(
+    '--strip-debug',
+    '--compress=zip-6',
+    '--no-header-files',
+    '--no-man-pages'
+  )
+  
+  getAddModules().addAll(
+    'java.base',
+    'java.management',
+    'java.desktop',
+    'jdk.unsupported'
+  )
+  
+  getWinMenu().set(true)
+  getWinShortcutPrompt().set(true)
+  getLinuxShortcut().set(true)
+  getWinMenuGroup().set(appGroup)
+  getMacAppCategory().set(appGroup)
+  getLinuxAppCategory().set(appGroup)
+  getMacPackageIdentifier().set('quyaze.stsj')
+  
+  windows {
+    getIcon().set(file(logoIco).absolutePath)
+  }
+  
+  mac {
+    getIcon().set(file(logoIcns).absolutePath)
+  }
+  
+  linux {
+    getIcon().set(file(logoPng).absolutePath)
+  }
 }
 
 jar {
@@ -127,31 +176,6 @@ tasks.register("jarWin") {
 // Equivalent to the jar task; here for compatibility with gdx-setup.
 tasks.register('dist') {
   dependsOn 'jar'
-}
-
-runtime {
-  options = ['--strip-debug', '--compress=zip-6', '--no-header-files', '--no-man-pages']
-  modules = ['java.base', 'java.management', 'java.desktop', 'jdk.unsupported']
-  
-  /*  Ensure JAVA_HOME is JDK 26.0
-  */
-  javaHome = System.getenv('JAVA_HOME')
-  
-  jpackage {
-    def icon = 'icons/logo.'
-    
-    switch (os) {
-      case ~/.*windows.*/:  icon += 'ico';    break
-      case ~/.*mac.*/:      icon += 'icns';   break
-      default:              icon += 'png';    break // Linux
-    }
-    
-    imageName = simpleName
-    appVersion = projectVersion
-    jpackageHome = javaHome
-    imageOptions = ['--icon', file(icon).absolutePath]
-    skipInstaller = true
-  }
 }
 
 distributions {

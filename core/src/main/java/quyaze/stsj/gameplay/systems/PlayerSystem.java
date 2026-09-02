@@ -29,7 +29,7 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     public void create()
     {
         world = getWorld();
-        world.getScreen().core.onPlayerHit.bindDeferred(
+        world.getScreen().core.onPlayerHit.addBinding(
             () -> {
                 enablePlayerHitEffect = true;
                 Timer.schedule(
@@ -72,7 +72,7 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
         if (player.respawn)
         {
             player.respawn = false;
-            player.spawnPlayer(GameplayWorld.UNITS_PER_PIXEL);
+            player.spawnPlayer(world);
         }
         
         if (enablePlayerHitEffect) avatar.opacity = opacityOverride;

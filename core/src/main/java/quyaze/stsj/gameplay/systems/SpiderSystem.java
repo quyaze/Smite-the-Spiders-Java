@@ -26,7 +26,7 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
     public void create()
     {
         world = getWorld();
-        world.getScreen().core.onGameOver.bindDeferred(
+        world.getScreen().core.onGameOver.addBinding(
             () -> {
                 Timer.schedule(
                     new Task()
@@ -60,9 +60,9 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
         if (avatar.position.dst2(spider.destination.cpy()) < 36f)
         {
             spider.newPath(
+                world,
                 avatar,
-                mobility,
-                GameplayWorld.UNITS_PER_PIXEL
+                mobility
             );
         }
     }

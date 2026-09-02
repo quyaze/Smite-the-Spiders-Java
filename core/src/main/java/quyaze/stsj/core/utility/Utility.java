@@ -1,49 +1,40 @@
 package quyaze.stsj.core.utility;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import quyaze.stsj.core.template.World;
+
 /** General utilities. */
 final public class Utility
 {
-    static public <T> T[] append(T[] array, T item)
-    {
-        final int last = array.length;
-        T[] copy = Arrays.copyOf(array, last + 1);
-        copy[last] = item;
-        return copy;
-    }
-    
-    
-    static public float getAvatarScreenScaled(TextureRegion texture, float unitsPerPixels)
+    static public float getAvatarScreenScaled(World<?> world, TextureRegion texture)
     {
         return Math.max(
-            getScreenWorldWidth(unitsPerPixels) / (float) texture.getRegionWidth(),
-            getScreenWorldHeight(unitsPerPixels) / (float) texture.getRegionHeight()
+            getScreenWorldWidth(world) / (float) texture.getRegionWidth(),
+            getScreenWorldHeight(world) / (float) texture.getRegionHeight()
         );
     }
     
     
-    static public float getScreenWorldWidth(float unitsPerPixel)
+    static public float getScreenWorldWidth(World<?> world)
     {
-        return Gdx.graphics.getWidth() * unitsPerPixel;
+        return Gdx.graphics.getWidth() * world.getUnitsPerPixel();
     }
     
     
-    static public float getScreenWorldHeight(float unitsPerPixel)
+    static public float getScreenWorldHeight(World<?> world)
     {
-        return Gdx.graphics.getHeight() * unitsPerPixel;
+        return Gdx.graphics.getHeight() * world.getUnitsPerPixel();
     }
     
     
-    static public Vector2 getScreenWorldSize(float unitsPerPixel)
+    static public Vector2 getScreenWorldSize(World<?> world)
     {
         return new Vector2(
-            getScreenWorldWidth(unitsPerPixel),
-            getScreenWorldHeight(unitsPerPixel)
+            getScreenWorldWidth(world),
+            getScreenWorldHeight(world)
         );
     }
     

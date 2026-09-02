@@ -41,7 +41,7 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     {
         world = getWorld();
         world.getScreen().solver.targetEntities = collidableEntities;
-        world.getScreen().solver.onSolverCleanup.bindDeferred(
+        world.getScreen().solver.onSolverCleanup.addBinding(
             () -> {
                 collidableEntityToIndex.clear();
                 collidableEntities.clear();
@@ -80,10 +80,8 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     public void resize(int width, int height)
     {
         screen.setSize(
-            Utility.getScreenWorldWidth(GameplayWorld.UNITS_PER_PIXEL),
-            Utility.getScreenWorldHeight(GameplayWorld.UNITS_PER_PIXEL)
+            Utility.getScreenWorldWidth(world),
+            Utility.getScreenWorldHeight(world)
         );
-        /*  Or multiply width and height by unitsPerPixel
-        */
     }
 }
