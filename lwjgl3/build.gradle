@@ -49,6 +49,8 @@ def os = System.properties['os.name'].toLowerCase(Locale.ROOT)
 def jpackageOS = [
   win: [
     img: [
+      "--copyright", copyright,
+      "--description", description,
       "--icon", file(logoIco).absolutePath
     ],
     instl: [
@@ -59,6 +61,8 @@ def jpackageOS = [
   ],
   mac: [
     img: [
+      "--copyright", copyright,
+      "--description", description,
       "--icon", file(logoIcns).absolutePath,
       "--mac-app-category", group
     ],
@@ -66,6 +70,8 @@ def jpackageOS = [
   ],
   linux: [
     img: [
+      "--copyright", copyright,
+      "--description", description,
       "--icon", file(logoPng).absolutePath,
       "--linux-app-category", group
     ],
@@ -91,8 +97,8 @@ runtime {
   options = ['--strip-debug','--compress=zip-6','--no-header-files','--no-man-pages']
   modules = ['java.base','java.management','java.desktop','jdk.unsupported']
   jpackage {
-    imageName = appName
-    installerName = "${appName} Installer"
+    imageName = simpleName
+    installerName = pkgName
     skipInstaller = os.contains('windows')
     args = [""]
     
