@@ -11,7 +11,7 @@ buildscript {
 }
 plugins {
   id "application"
-  id "org.panteleyev.jpackageplugin" version "2.1.0"
+  id "org.beryx.runtime" version "2.0.1"
 }
 
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
@@ -46,12 +46,38 @@ dependencies {
 }
 
 def os = System.properties['os.name'].toLowerCase(Locale.ROOT)
+def jpackageOS = [
+  win: [
+    img: [
+      "--icon", file(logoIco).absolutePath
+    ],
+    instl: [
+      "--win-menu",
+      "--win-menu-group", group,
+      "--win-shortcut-prompt"
+    ]
+  ],
+  mac: [
+    img: [
+      "--icon", file(logoIcns).absolutePath,
+      "--mac-app-category", group
+    ],
+    instl: ["--mac-package-identifier", macPkgId]
+  ],
+  linux: [
+    img: [
+      "--icon", file(logoPng).absolutePath,
+      "--linux-app-category", group
+    ],
+    instl: ["--linux-shortcut"]
+  ]
+]
 
 run {
   workingDir = rootProject.file('assets').path
 // You can uncomment the next line if your IDE claims a build failure even when the app closed properly.
   //setIgnoreExitValue(true)
-  args += "--texture-packer"
+  args = ["--texture-packer"]
   jvmArgs += "--enable-native-access=ALL-UNNAMED"
   if (os.contains('mac')) jvmArgs += "-XstartOnFirstThread"
 }
@@ -61,49 +87,38 @@ application {
   mainClass = 'quyaze.stsj.lwjgl3.Lwjgl3Launcher'
 }
 
-jpackage {
-  dependsOn 'build', 'jar'
-
-  getAppName().set(simpleName)
-  getAppDescription().set("${appDescription}")
-  getAppVersion().set("${projectVersion}")
-  getCopyright().set("${appCopyright}")
-  getMainJar().set(jar.archiveFileName)
-  getInput().set(layout.buildDirectory.dir('libs'))
-  getDestination().set(layout.buildDirectory.dir('jpackage'))
-
-  getJLinkOptions().addAll(
-    '--strip-debug',
-    '--compress=zip-6',
-    '--no-header-files',
-    '--no-man-pages'
-  )
-  
-  getAddModules().addAll(
-    'java.base',
-    'java.management',
-    'java.desktop',
-    'jdk.unsupported'
-  )
-  
-  getWinMenu().set(true)
-  getWinShortcutPrompt().set(true)
-  getLinuxShortcut().set(true)
-  getWinMenuGroup().set(appGroup)
-  getMacAppCategory().set(appGroup)
-  getLinuxAppCategory().set(appGroup)
-  getMacPackageIdentifier().set('quyaze.stsj')
-  
-  windows {
-    getIcon().set(file(logoIco).absolutePath)
+runtime {
+  options = ['--strip-debug','--compress=zip-6','--no-header-files','--no-man-pages']
+  modules = ['java.base','java.management','java.desktop','jdk.unsupported']
+  jpackage {
+    imageName = appName
+    installerName = "${appName} Installer"
+    skipInstaller = os.contains('windows')
+    args = [""]
+    
+    def target
+    switch (os) {
+      case ~/.*windows.*/:  target = 'win';     break
+      case ~/.*mac.*/:      target = 'mac';     break
+      default:              target = 'linux';   break
+    }
+    
+    imageOptions = jpackageOS[target]['img']
+    installerOptions = jpackageOS[target]['instl']
   }
-  
-  mac {
-    getIcon().set(file(logoIcns).absolutePath)
-  }
-  
-  linux {
-    getIcon().set(file(logoPng).absolutePath)
+}
+
+distributions {
+  main {
+    contents {
+      into('libs') {
+        project.configurations.runtimeClasspath.files.findAll { file ->
+          file.getName() != project.tasks.jar.outputs.files.singleFile.name
+        }.each { file ->
+          exclude file.name
+        }
+      }
+    }
   }
 }
 
