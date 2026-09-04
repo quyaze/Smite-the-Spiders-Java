@@ -8,8 +8,9 @@ import quyaze.stsj.core.architecture.Mobility;
 import quyaze.stsj.core.architecture.Spider;
 import quyaze.stsj.core.template.EWSystem;
 import quyaze.stsj.core.template.WorldContext;
-import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayWorld;
+
+import static quyaze.stsj.gameplay.GameplayCore.*;
 
 /** System that enables {@link Spider} action. */
 public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSystem
@@ -37,7 +38,7 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
                             opacityOverride = 1f;
                         }
                     },
-                    GameplayCore.GAME_OVER_PHASE
+                    GAME_OVER_PHASE
                 );
                 
                 isGameOver = true;
@@ -74,7 +75,7 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
         if (isGameOver && opacityOverride > 0)
         {
             opacityOverride = Math.max(
-                opacityOverride - dS / GameplayCore.GAME_OVER_PHASE,
+                opacityOverride - dS / GAME_OVER_PHASE,
                 0
             );
         }

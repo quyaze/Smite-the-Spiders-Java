@@ -12,6 +12,7 @@ import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.screens.GameplayScreen;
+
 /**
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
@@ -80,8 +81,8 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     public void resize(int width, int height)
     {
         screen.setSize(
-            Utility.getScreenWorldWidth(world),
-            Utility.getScreenWorldHeight(world)
+            Utility.getWorldViewWidth(world),
+            Utility.getWorldViewHeight(world)
         );
     }
 }

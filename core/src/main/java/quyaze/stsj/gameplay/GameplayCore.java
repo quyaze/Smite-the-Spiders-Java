@@ -144,7 +144,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         
         avatar = new Avatar(
             background,
-            Utility.getAvatarScreenScaled(world, background)
+            Utility.getAvatarScaleToView(world, background)
         );
         avatar.opacity = 1 / 0.2f;
         

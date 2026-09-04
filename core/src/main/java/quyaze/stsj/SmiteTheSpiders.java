@@ -1,7 +1,5 @@
 package quyaze.stsj;
 
-import java.io.File;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -12,6 +10,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import quyaze.stsj.core.utility.GameText;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
+
+import static java.io.File.separator;
 
 /** The game entry point and definition. */
 final public class SmiteTheSpiders extends Game
@@ -49,11 +49,11 @@ final public class SmiteTheSpiders extends Game
         batch = new SpriteBatch();
         viewport = new ScreenViewport();
         atlas = new TextureAtlas(
-            Gdx.files.internal("packed" + File.separator + "packed.atlas"),
+            Gdx.files.internal("packed" + separator + "packed.atlas"),
             Gdx.files.internal("packed")
         );
         gameText = new GameText();
-        music = Gdx.audio.newMusic(Gdx.files.internal("audio" + File.separator + "Lord of the Land.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("audio" + separator + "Lord of the Land.mp3"));
         
         mainMenuScreen.setGameInstance(this);
         gameplayScreen.setGameInstance(this);

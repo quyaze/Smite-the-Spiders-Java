@@ -69,8 +69,6 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     
     public Event<OnEntityReassigned> onEntityReassigned;
     
-    final static public float UNITS_PER_PIXEL = 1f;
-    
     
     /*  Constrctor  */
     public GameplayWorld()

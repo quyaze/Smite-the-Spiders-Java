@@ -33,8 +33,8 @@ public class Spider
      */
     public void newPath(World<?> world, Avatar avatar, Mobility mobility)
     {
-        final float width = Utility.getScreenWorldWidth(world);
-        final float height = Utility.getScreenWorldHeight(world);
+        final float width = Utility.getWorldViewWidth(world);
+        final float height = Utility.getWorldViewHeight(world);
         
         destination.set(
             MathUtils.random(

@@ -9,35 +9,40 @@ import quyaze.stsj.core.template.World;
 /** General utilities. */
 final public class Utility
 {
-    static public float getAvatarScreenScaled(World<?> world, TextureRegion texture)
+    private Utility()
+    {}
+    
+    
+    /** Scale an avatar to stretch to the screen. */
+    static public float getAvatarScaleToView(World<?> world, TextureRegion texture)
     {
         return Math.max(
-            getScreenWorldWidth(world) / (float) texture.getRegionWidth(),
-            getScreenWorldHeight(world) / (float) texture.getRegionHeight()
+            getWorldViewWidth(world) / (float) texture.getRegionWidth(),
+            getWorldViewHeight(world) / (float) texture.getRegionHeight()
         );
     }
     
     
-    static public float getScreenWorldWidth(World<?> world)
+    /** Worldview horizontal distance. */
+    static public float getWorldViewWidth(World<?> world)
     {
         return Gdx.graphics.getWidth() * world.getUnitsPerPixel();
     }
     
     
-    static public float getScreenWorldHeight(World<?> world)
+    /** Worldview vertical distance. */
+    static public float getWorldViewHeight(World<?> world)
     {
         return Gdx.graphics.getHeight() * world.getUnitsPerPixel();
     }
     
     
-    static public Vector2 getScreenWorldSize(World<?> world)
+    /** Worldview screen distance. */
+    static public Vector2 getWorldViewSize(World<?> world)
     {
         return new Vector2(
-            getScreenWorldWidth(world),
-            getScreenWorldHeight(world)
+            getWorldViewWidth(world),
+            getWorldViewHeight(world)
         );
     }
-    
-    
-    private Utility() {}
 }

@@ -10,8 +10,9 @@ import quyaze.stsj.core.architecture.Mobility;
 import quyaze.stsj.core.architecture.Player;
 import quyaze.stsj.core.template.EWSystem;
 import quyaze.stsj.core.template.WorldContext;
-import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayWorld;
+
+import static quyaze.stsj.gameplay.GameplayCore.*;
 
 /** System that enables {@link Player} action. */
 public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSystem
@@ -41,7 +42,7 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
                             enablePlayerHitEffect = false;
                         }
                     },
-                    GameplayCore.PLAYER_HIT_FX_PHASE
+                    PLAYER_HIT_FX_PHASE
                 );
             }
         );
@@ -96,14 +97,14 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     {
         if (!enablePlayerHitEffect) return;
         
-        if (opacityOverride <= GameplayCore.PLAYER_HIT_FX_FADE) playerHitEffectDirection = 1f;
+        if (opacityOverride <= PLAYER_HIT_FX_FADE) playerHitEffectDirection = 1f;
         else if (opacityOverride >= 1f) playerHitEffectDirection = -1f;
         
         /*  I definitely did NOT ask AI for the opacity math
         */
         opacityOverride = MathUtils.clamp(
-            opacityOverride + dS * GameplayCore.PLAYER_HIT_FX_STEP * playerHitEffectDirection,
-            GameplayCore.PLAYER_HIT_FX_FADE,
+            opacityOverride + dS * PLAYER_HIT_FX_STEP * playerHitEffectDirection,
+            PLAYER_HIT_FX_FADE,
             1f
         );
     }

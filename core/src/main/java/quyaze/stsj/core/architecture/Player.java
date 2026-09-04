@@ -46,7 +46,7 @@ public class Player
     /** Set player character. */
     public void setAvatar(World<?> world, Avatar avatar)
     {
-        Vector2 worldSize = Utility.getScreenWorldSize(world);
+        Vector2 worldSize = Utility.getWorldViewSize(world);
         
         upperScreenBounds.set(worldSize.sub(avatar.getTrueSize()));
         wizard = avatar;
@@ -60,8 +60,8 @@ public class Player
             throw new IllegalStateException("player has no set avatar");
         
         Vector2 location = new Vector2(
-            Utility.getScreenWorldWidth(world) * 0.5f,
-            Utility.getScreenWorldHeight(world) / 3f
+            Utility.getWorldViewWidth(world) * 0.5f,
+            Utility.getWorldViewHeight(world) / 3f
         );
         
         location.sub(wizard.getTrueSize().scl(0.5f));
