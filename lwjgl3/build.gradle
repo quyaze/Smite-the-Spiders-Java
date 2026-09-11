@@ -1,4 +1,3 @@
-
 buildscript {
   repositories {
     gradlePluginPortal()
@@ -99,8 +98,11 @@ runtime {
   jpackage {
     imageName = simpleName
     installerName = pkgName
-    skipInstaller = os.contains('windows')
     args = [""]
+    skipInstaller = os.contains('windows')
+    /*  You can omit the above line if you are not on Windows or have
+    /   the WiX toolset
+    */  
     
     def target
     switch (os) {
