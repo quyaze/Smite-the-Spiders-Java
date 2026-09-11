@@ -1,4 +1,4 @@
-package quyaze.stsj.core;
+package quyaze.stsj.core.template;
 
 import quyaze.stsj.SmiteTheSpiders;
 

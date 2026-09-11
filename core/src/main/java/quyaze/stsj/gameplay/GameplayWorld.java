@@ -12,17 +12,17 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.EWDatastore;
-import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.EntityWorld;
-import quyaze.stsj.core.Event;
-import quyaze.stsj.gameplay.architecture.Avatar;
-import quyaze.stsj.gameplay.architecture.Collision;
-import quyaze.stsj.gameplay.architecture.Mobility;
-import quyaze.stsj.gameplay.architecture.Player;
-import quyaze.stsj.gameplay.architecture.Projectile;
-import quyaze.stsj.gameplay.architecture.Spider;
-import quyaze.stsj.gameplay.eventDefs.OnEntityReassigned;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.architecture.Collision;
+import quyaze.stsj.core.architecture.Mobility;
+import quyaze.stsj.core.architecture.Player;
+import quyaze.stsj.core.architecture.Projectile;
+import quyaze.stsj.core.architecture.Spider;
+import quyaze.stsj.core.template.EWDatastore;
+import quyaze.stsj.core.template.EWSystem;
+import quyaze.stsj.core.template.EntityWorld;
+import quyaze.stsj.core.utility.Event;
+import quyaze.stsj.gameplay.events.OnEntityReassigned;
 import quyaze.stsj.gameplay.systems.AvatarSystem;
 import quyaze.stsj.gameplay.systems.CollisionSystem;
 import quyaze.stsj.gameplay.systems.DrawSystem;
@@ -69,8 +69,6 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     
     public Event<OnEntityReassigned> onEntityReassigned;
     
-    final static public float UNITS_PER_PIXEL = 1f;
-    
     
     /*  Constrctor  */
     public GameplayWorld()
@@ -93,7 +91,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         spiderSystem = new SpiderSystem();
         drawSystem = new DrawSystem();
         
-        onEntityReassigned = new Event<>();
+        onEntityReassigned = new Event<>(OnEntityReassigned.class);
     }
     
     
@@ -130,9 +128,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             "debris" and are then removed at the very end of render().
         */
         
-        if (!custInput()) return;
-        playerSystem.render(dS); 
-        spiderSystem.render(dS);
+        if (!input()) return;
         EWSystem iterating;
         
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
@@ -141,10 +137,24 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             
             switch (flag)
             {
-                case SYSFLAG_PLAYER:    iterating = playerSystem;       break;
-                case SYSFLAG_AVATAR:    iterating = avatarSystem;       break;
-                case SYSFLAG_COLLISION: iterating = collisionSystem;    break;
-                case SYSFLAG_SPIDER:    iterating = spiderSystem;       break;
+                case SYSFLAG_PLAYER:
+                    iterating = playerSystem;
+                    playerSystem.render(dS);
+                    break;
+                
+                case SYSFLAG_AVATAR:
+                    iterating = avatarSystem;
+                    break;
+                
+                case SYSFLAG_COLLISION:
+                    iterating = collisionSystem;
+                    break;
+                
+                case SYSFLAG_SPIDER:
+                    iterating = spiderSystem;
+                    spiderSystem.render(dS);
+                    break;
+                
                 case SYSFLAG_DRAW:
                     iterating = drawSystem;
                     
@@ -157,15 +167,15 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                         viewport.getCamera().combined
                     );
                     batch.begin();
-                    
                     break;
+                
                 default: throw new IllegalStateException("missing system");
             }
             
             for (int entity = 0; entity < entities; entity++)
             {
                 if (isEntityDebris.contains(entity)) continue;
-                if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
+                if ((entityFlags.get(entity) & flag) > 0) iterating.iterate(entity);
             }
             
             if (flag == SYSFLAG_DRAW) game.getBatch().end();
@@ -180,14 +190,15 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         {
             final int debris = entityDebris.get(i);
             final int last = entities - entityDebris.size + i;
+            final boolean popper = debris == last;
             EWDatastore<?>[] dsDebris = entityDatastores.get(debris);
             EWDatastore<?>[] dsLast = entityDatastores.get(last);
             
             for (int j = 0; j < dsDebris.length; j++) dsDebris[j].remove(debris);
-            if (debris != last) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
+            if (!popper) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
             entityFlags.removeIndex(debris);
             entityDatastores.removeIndex(debris);
-            onEntityReassigned.fire(
+            if (!popper) onEntityReassigned.fire(
                 new OnEntityReassigned(last, debris)
             );
         }
@@ -226,7 +237,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
      * Input pre-entity-loop iteration.
      * @return Input logic requires aborting the entity-system iteration
     */
-    private boolean custInput()
+    private boolean input()
     {
         var state = screen.state;
         
@@ -240,8 +251,6 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             game.toMainMenuScreen();
             return false;
         }
-        
-        // if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) screen.core.spawnSpiders();
         
         return true;
     }

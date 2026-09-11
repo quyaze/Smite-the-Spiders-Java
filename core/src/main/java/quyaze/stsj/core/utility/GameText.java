@@ -1,4 +1,4 @@
-package quyaze.stsj.core;
+package quyaze.stsj.core.utility;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

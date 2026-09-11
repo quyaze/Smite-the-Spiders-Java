@@ -1,7 +1,7 @@
 package quyaze.stsj.gameplay;
 
-import quyaze.stsj.core.Event;
-import quyaze.stsj.core.ScreenContext;
+import quyaze.stsj.core.template.ScreenContext;
+import quyaze.stsj.core.utility.Event;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
@@ -25,8 +25,8 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public GameplayState()
     {
-        onPausedStateChanged = new Event<>();
-        onGameStateChanged = new Event<>();
+        onPausedStateChanged = new Event<>(Boolean.class);
+        onGameStateChanged = new Event<>(State.class);
         reset();
     }
     

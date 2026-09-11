@@ -2,7 +2,7 @@ package quyaze.stsj.screens;
 
 import com.badlogic.gdx.Screen;
 
-import quyaze.stsj.core.GameContext;
+import quyaze.stsj.core.template.GameContext;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayState;

@@ -1,4 +1,4 @@
-package quyaze.stsj.core;
+package quyaze.stsj.core.template;
 
 import com.badlogic.gdx.utils.IntMap;
 

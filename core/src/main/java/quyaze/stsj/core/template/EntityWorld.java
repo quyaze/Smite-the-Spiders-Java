@@ -1,4 +1,4 @@
-package quyaze.stsj.core;
+package quyaze.stsj.core.template;
 
 /**
  * A {@link World} with entities (integer), allowing data-oriented

@@ -14,10 +14,10 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.GameText;
-import quyaze.stsj.core.Utility;
-import quyaze.stsj.core.World;
-import quyaze.stsj.gameplay.architecture.Avatar;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.template.World;
+import quyaze.stsj.core.utility.GameText;
+import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.screens.MainMenuScreen;
 
 /** World for the main menu. */
@@ -34,8 +34,6 @@ public class MainMenuWorld extends World<MainMenuScreen>
     private Avatar backgroundAvatar;
     private Avatar titleAvatar;
     private Vector2 subtitlePosition;
-    
-    final static public float UNITS_PER_PIXEL = 1f;
     
     
     /*  Constructor  */
@@ -107,11 +105,8 @@ public class MainMenuWorld extends World<MainMenuScreen>
     /** On {@code MainMenuScreen.resize()}. */
     public void resize(int width, int height)
     {
-        width *= UNITS_PER_PIXEL;
-        height *= UNITS_PER_PIXEL;
-        
         backgroundAvatar.setScale(
-            Utility.getAvatarScreenScaled(background, UNITS_PER_PIXEL)
+            Utility.getAvatarScaleToView(this, background)
         );
         titleAvatar.position.set(
             (width - titleAvatar.getTrueWidth()) * 0.5f,

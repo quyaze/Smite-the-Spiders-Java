@@ -1,6 +1,6 @@
-package quyaze.stsj.gameplay.eventDefs;
+package quyaze.stsj.gameplay.events;
 
-import quyaze.stsj.gameplay.architecture.Collision;
+import quyaze.stsj.core.architecture.Collision;
 
 /** Event definition for the colliding of two Collision objects. */
 final public class OnCollided

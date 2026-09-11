@@ -5,13 +5,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.WorldContext;
-import quyaze.stsj.gameplay.GameplayCore;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.architecture.Mobility;
+import quyaze.stsj.core.architecture.Player;
+import quyaze.stsj.core.template.EWSystem;
+import quyaze.stsj.core.template.WorldContext;
 import quyaze.stsj.gameplay.GameplayWorld;
-import quyaze.stsj.gameplay.architecture.Avatar;
-import quyaze.stsj.gameplay.architecture.Mobility;
-import quyaze.stsj.gameplay.architecture.Player;
+
+import static quyaze.stsj.gameplay.GameplayCore.*;
 
 /** System that enables {@link Player} action. */
 public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSystem
@@ -29,7 +30,7 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     public void create()
     {
         world = getWorld();
-        world.getScreen().core.onPlayerHit.bindDeferred(
+        world.getScreen().core.onPlayerHit.addBinding(
             () -> {
                 enablePlayerHitEffect = true;
                 Timer.schedule(
@@ -41,7 +42,7 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
                             enablePlayerHitEffect = false;
                         }
                     },
-                    GameplayCore.PLAYER_HIT_FX_PHASE
+                    PLAYER_HIT_FX_PHASE
                 );
             }
         );
@@ -72,7 +73,7 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
         if (player.respawn)
         {
             player.respawn = false;
-            player.spawnPlayer(GameplayWorld.UNITS_PER_PIXEL);
+            player.spawnPlayer(world);
         }
         
         if (enablePlayerHitEffect) avatar.opacity = opacityOverride;
@@ -96,14 +97,12 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     {
         if (!enablePlayerHitEffect) return;
         
-        if (opacityOverride <= GameplayCore.PLAYER_HIT_FX_FADE) playerHitEffectDirection = 1f;
+        if (opacityOverride <= PLAYER_HIT_FX_FADE) playerHitEffectDirection = 1f;
         else if (opacityOverride >= 1f) playerHitEffectDirection = -1f;
         
-        /*  I definitely did NOT ask AI for the opacity math
-        */
         opacityOverride = MathUtils.clamp(
-            opacityOverride + dS * GameplayCore.PLAYER_HIT_FX_STEP * playerHitEffectDirection,
-            GameplayCore.PLAYER_HIT_FX_FADE,
+            opacityOverride + dS * PLAYER_HIT_FX_STEP * playerHitEffectDirection,
+            PLAYER_HIT_FX_FADE,
             1f
         );
     }

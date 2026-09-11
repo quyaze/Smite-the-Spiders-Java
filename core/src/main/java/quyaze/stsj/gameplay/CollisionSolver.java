@@ -4,11 +4,11 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-import quyaze.stsj.core.Event;
-import quyaze.stsj.core.ScreenContext;
-import quyaze.stsj.core.Signal;
-import quyaze.stsj.gameplay.architecture.Collision;
-import quyaze.stsj.gameplay.eventDefs.OnCollided;
+import quyaze.stsj.core.architecture.Collision;
+import quyaze.stsj.core.template.ScreenContext;
+import quyaze.stsj.core.utility.Event;
+import quyaze.stsj.core.utility.Signal;
+import quyaze.stsj.gameplay.events.OnCollided;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
@@ -37,8 +37,8 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public CollisionSolver()
     {
-        onCollided = new Event<>();
-        onSolverCleanup = new Signal();
+        onCollided = new Event<>(OnCollided.class);
+        onSolverCleanup = new Signal(1);
     }
     
     
@@ -55,7 +55,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
                 solve();
             }
         };
-        screen.state.onPausedStateChanged.bindDeferred(
+        screen.state.onPausedStateChanged.addBinding(
             arg -> {
                 setSolverEnabled(!arg);
             }
@@ -134,7 +134,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     
     
     /** Solver cleanup. */
-    public void clean()
+    private void clean()
     {
         entityA = 0; entityB = 0;
         collisionA = null; collisionB = null;

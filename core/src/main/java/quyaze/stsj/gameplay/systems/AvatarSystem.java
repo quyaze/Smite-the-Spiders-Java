@@ -3,12 +3,12 @@ package quyaze.stsj.gameplay.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
-import quyaze.stsj.core.EWSystem;
-import quyaze.stsj.core.WorldContext;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.architecture.Mobility;
+import quyaze.stsj.core.architecture.Player;
+import quyaze.stsj.core.template.EWSystem;
+import quyaze.stsj.core.template.WorldContext;
 import quyaze.stsj.gameplay.GameplayWorld;
-import quyaze.stsj.gameplay.architecture.Avatar;
-import quyaze.stsj.gameplay.architecture.Mobility;
-import quyaze.stsj.gameplay.architecture.Player;
 
 /** System that simulates {@link Avatar} movement. */
 public class AvatarSystem extends WorldContext<GameplayWorld> implements EWSystem

@@ -1,10 +1,11 @@
-package quyaze.stsj.gameplay.architecture;
+package quyaze.stsj.core.architecture;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import quyaze.stsj.core.Signal;
-import quyaze.stsj.core.Utility;
+import quyaze.stsj.core.template.World;
+import quyaze.stsj.core.utility.Signal;
+import quyaze.stsj.core.utility.Utility;
 
 /** Represents a spider. */
 public class Spider
@@ -17,11 +18,11 @@ public class Spider
     
     /*  Constructor  */
     /** Create a spider and immediately move to its destination. */
-    public Spider(Avatar avatar, Mobility mobility, float unitsPerPixel)
+    public Spider(World<?> world, Avatar avatar, Mobility mobility)
     {
         destination = Vector2.Zero.cpy();
-        onThrowWeb = new Signal();
-        newPath(avatar, mobility, unitsPerPixel);
+        onThrowWeb = new Signal(4);
+        newPath(world, avatar, mobility);
     }
     
     
@@ -30,10 +31,10 @@ public class Spider
      * <p></p>
      * References its {@link Avatar} and {@link Mobility}.
      */
-    public void newPath(Avatar avatar, Mobility mobility, float unitsPerPixel)
+    public void newPath(World<?> world, Avatar avatar, Mobility mobility)
     {
-        final float width = Utility.getScreenWorldWidth(unitsPerPixel);
-        final float height = Utility.getScreenWorldHeight(unitsPerPixel);
+        final float width = Utility.getWorldViewWidth(world);
+        final float height = Utility.getWorldViewHeight(world);
         
         destination.set(
             MathUtils.random(

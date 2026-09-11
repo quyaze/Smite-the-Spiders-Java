@@ -8,16 +8,16 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import quyaze.stsj.SmiteTheSpiders;
-import quyaze.stsj.core.EWDatastore;
-import quyaze.stsj.core.ScreenContext;
-import quyaze.stsj.core.Signal;
-import quyaze.stsj.core.Utility;
-import quyaze.stsj.gameplay.architecture.Avatar;
-import quyaze.stsj.gameplay.architecture.Collision;
-import quyaze.stsj.gameplay.architecture.Mobility;
-import quyaze.stsj.gameplay.architecture.Player;
-import quyaze.stsj.gameplay.architecture.Projectile;
-import quyaze.stsj.gameplay.architecture.Spider;
+import quyaze.stsj.core.architecture.Avatar;
+import quyaze.stsj.core.architecture.Collision;
+import quyaze.stsj.core.architecture.Mobility;
+import quyaze.stsj.core.architecture.Player;
+import quyaze.stsj.core.architecture.Projectile;
+import quyaze.stsj.core.architecture.Spider;
+import quyaze.stsj.core.template.EWDatastore;
+import quyaze.stsj.core.template.ScreenContext;
+import quyaze.stsj.core.utility.Signal;
+import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
@@ -55,8 +55,8 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public GameplayCore()
     {
-        onPlayerHit = new Signal();
-        onGameOver = new Signal();
+        onPlayerHit = new Signal(1);
+        onGameOver = new Signal(1);
     }
     
     
@@ -67,13 +67,13 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         game = getGameInstance();
         screen = getScreen();
         
-        screen.world.onEntityReassigned.bindDeferred(
+        screen.world.onEntityReassigned.addBinding(
             arg -> {
                 if (player == arg.oldEntity) player = arg.newEntity;
             }
         );
         
-        screen.solver.onCollided.bindDeferred(
+        screen.solver.onCollided.addBinding(
             arg -> {
                 Projectile projectileA = screen.world.projectileDatastore.get(arg.thisEntity);
                 
@@ -135,7 +135,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Create the background. */
-    public void spawnBackground()
+    private void spawnBackground()
     {
         Avatar avatar;
         
@@ -144,7 +144,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         
         avatar = new Avatar(
             background,
-            Utility.getAvatarScreenScaled(background, GameplayWorld.UNITS_PER_PIXEL)
+            Utility.getAvatarScaleToView(world, background)
         );
         avatar.opacity = 1 / 0.2f;
         
@@ -159,7 +159,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Create the player. */
-    public void spawnPlayer()
+    private void spawnPlayer()
     {
         Player player;
         Avatar avatar;
@@ -174,9 +174,9 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             game.getAtlas().findRegion("wizard"),
             4f
         );
-        player.setAvatar(avatar, GameplayWorld.UNITS_PER_PIXEL);
-        player.spawnPlayer(GameplayWorld.UNITS_PER_PIXEL);
-        player.onCastFireball.bindDeferred(
+        player.setAvatar(world, avatar);
+        player.spawnPlayer(world);
+        player.onCastFireball.addBinding(
             () -> {
                 spawnFireball(avatar);
             }
@@ -205,7 +205,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Create the spiders. */
-    public void spawnSpiders()
+    private void spawnSpiders()
     {
         for (
             int i = 0, n = MathUtils.random(1, 3);
@@ -250,11 +250,11 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             collision = new Collision(avatar);
             
             spider = new Spider(
+                world,
                 avatar,
-                mobility,
-                GameplayWorld.UNITS_PER_PIXEL
+                mobility
             );
-            spider.onThrowWeb.bindDeferred(
+            spider.onThrowWeb.addBinding(
                 () -> {
                     spawnWeb(
                         avatar,
@@ -283,7 +283,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Cast a fireball spell. */
-    public void spawnFireball(Avatar playerCharacter)
+    private void spawnFireball(Avatar playerCharacter)
     {
         Avatar avatar;
         Mobility mobility;
@@ -329,7 +329,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Throw a web at the player. */
-    public void spawnWeb(Avatar spiderAvatar, Avatar playerCharacter)
+    private void spawnWeb(Avatar spiderAvatar, Avatar playerCharacter)
     {
         if (player == -1) return;
         
@@ -375,7 +375,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Player is hit by a web. */
-    public void onWebHitPlayer(int webEntity)
+    private void onWebHitPlayer(int webEntity)
     {
         GameplayState state = screen.state;
         
@@ -386,7 +386,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Player runs into a spider. */
-    public void onSpiderHitPlayer(int spiderEntity)
+    private void onSpiderHitPlayer(int spiderEntity)
     {
         GameplayState state = screen.state;
         
@@ -396,7 +396,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** A spider is hit by the player's spell. */
-    public void onSpellHitSpider(int spellEntity, int spiderEntity)
+    private void onSpellHitSpider(int spellEntity, int spiderEntity)
     {
         GameplayWorld world = screen.world;
         GameplayState state = screen.state;
@@ -430,7 +430,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             PLAYER_HIT_FX_PHASE
         );
         
-        world.playerDatastore.get(player).spawnPlayer(GameplayWorld.UNITS_PER_PIXEL);
+        world.playerDatastore.get(player).spawnPlayer(world);
         playerCollision.skipSolving = true;
         onPlayerHit.fire();
     }
