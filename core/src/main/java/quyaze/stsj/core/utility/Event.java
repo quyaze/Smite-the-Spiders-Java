@@ -22,9 +22,9 @@ final public class Event<T>
     
     /*  Constructor  */
     /** Set an initial capacity for {@link Bind}s. */
-    public Event(int capacity, Class<T> definition)
+    public Event(Class<T> definition)
     {
-        bindings = new Array<>(false, capacity);
+        bindings = new Array<>(false, 6);
         this.definition = definition;
     }
     

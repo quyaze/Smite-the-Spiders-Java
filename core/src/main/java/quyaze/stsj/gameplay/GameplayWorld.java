@@ -91,7 +91,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         spiderSystem = new SpiderSystem();
         drawSystem = new DrawSystem();
         
-        onEntityReassigned = new Event<>(1, OnEntityReassigned.class);
+        onEntityReassigned = new Event<>(OnEntityReassigned.class);
     }
     
     
@@ -140,20 +140,20 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 case SYSFLAG_PLAYER:
                     iterating = playerSystem;
                     playerSystem.render(dS);
-                break;
+                    break;
                 
                 case SYSFLAG_AVATAR:
                     iterating = avatarSystem;
-                break;
+                    break;
                 
                 case SYSFLAG_COLLISION:
                     iterating = collisionSystem;
-                break;
+                    break;
                 
                 case SYSFLAG_SPIDER:
                     iterating = spiderSystem;
                     spiderSystem.render(dS);
-                break;
+                    break;
                 
                 case SYSFLAG_DRAW:
                     iterating = drawSystem;
@@ -167,7 +167,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                         viewport.getCamera().combined
                     );
                     batch.begin();
-                break;
+                    break;
                 
                 default: throw new IllegalStateException("missing system");
             }
@@ -190,14 +190,15 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         {
             final int debris = entityDebris.get(i);
             final int last = entities - entityDebris.size + i;
+            final boolean popper = debris == last;
             EWDatastore<?>[] dsDebris = entityDatastores.get(debris);
             EWDatastore<?>[] dsLast = entityDatastores.get(last);
             
             for (int j = 0; j < dsDebris.length; j++) dsDebris[j].remove(debris);
-            if (debris != last) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
+            if (!popper) for (int j = 0; j < dsLast.length; j++) dsLast[j].transfer(last, debris);
             entityFlags.removeIndex(debris);
             entityDatastores.removeIndex(debris);
-            onEntityReassigned.fire(
+            if (!popper) onEntityReassigned.fire(
                 new OnEntityReassigned(last, debris)
             );
         }
@@ -250,8 +251,6 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             game.toMainMenuScreen();
             return false;
         }
-        
-        // if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.E)) screen.core.spawnSpiders();
         
         return true;
     }

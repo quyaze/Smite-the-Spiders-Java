@@ -100,8 +100,6 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
         if (opacityOverride <= PLAYER_HIT_FX_FADE) playerHitEffectDirection = 1f;
         else if (opacityOverride >= 1f) playerHitEffectDirection = -1f;
         
-        /*  I definitely did NOT ask AI for the opacity math
-        */
         opacityOverride = MathUtils.clamp(
             opacityOverride + dS * PLAYER_HIT_FX_STEP * playerHitEffectDirection,
             PLAYER_HIT_FX_FADE,

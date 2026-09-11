@@ -37,7 +37,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public CollisionSolver()
     {
-        onCollided = new Event<>(1, OnCollided.class);
+        onCollided = new Event<>(OnCollided.class);
         onSolverCleanup = new Signal(1);
     }
     
