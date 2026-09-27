@@ -8,6 +8,7 @@ buildscript {
     }
   }
 }
+
 plugins {
   id "application"
   id "org.beryx.runtime" version "2.0.1"
@@ -15,8 +16,6 @@ plugins {
 
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
 eclipse.project.name = appName + '-lwjgl3'
-java.sourceCompatibility = 26
-java.targetCompatibility = 26
 if (JavaVersion.current().isJava9Compatible()) {
   compileJava.options.release.set(26)
 }
@@ -28,7 +27,7 @@ dependencies {
   implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   implementation project(':core')
   implementation("com.badlogicgames.gdx:gdx-tools:$gdxVersion"){exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'}
-
+  
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-backend-lwjgl3:$graalHelperVersion"
     implementation "io.github.berstanio:gdx-svmhelper-extension-freetype:$graalHelperVersion"
@@ -71,16 +70,23 @@ def jpackageOS = [
     img: [
       "--copyright", copyright,
       "--description", description,
-      "--icon", file(logoPng).absolutePath,
-      "--linux-app-category", group
+      "--icon", file(logoPng).absolutePath
     ],
-    instl: ["--linux-shortcut"]
+    instl: [
+      "--linux-shortcut",
+      "--linux-app-category", group
+    ]
   ]
 ]
 
+java {
+  sourceCompatibility = 26
+  targetCompatibility = 26
+}
+
 run {
   workingDir = rootProject.file('assets').path
-// You can uncomment the next line if your IDE claims a build failure even when the app closed properly.
+  // You can uncomment the next line if your IDE claims a build failure even when the app closed properly.
   //setIgnoreExitValue(true)
   args = ["--texture-packer"]
   jvmArgs += "--enable-native-access=ALL-UNNAMED"
@@ -98,11 +104,11 @@ runtime {
   jpackage {
     imageName = simpleName
     installerName = pkgName
-    args = [""]
+    args = ["--nargs"]
     skipInstaller = os.contains('windows')
     /*  You can omit the above line if you are not on Windows or have
-    /   the WiX toolset
-    */  
+     *  the WiX toolset
+    */
     
     def target
     switch (os) {
