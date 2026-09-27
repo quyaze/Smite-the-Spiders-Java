@@ -76,7 +76,7 @@ public class Avatar
     
     /**
      * @return A copy of the true size
-     */
+    */
     public Vector2 getTrueSize()
     {
         return trueSize.cpy();
@@ -85,7 +85,7 @@ public class Avatar
     
     /**
      * @return Original texture width with its scale applied; the actual world length that the end user sees
-     */
+    */
     public float getTrueWidth()
     {
         return trueSize.x;
@@ -94,7 +94,7 @@ public class Avatar
     
     /**
      * @return Original texture height with its scale applied; the actual world length that the end user sees
-     */
+    */
     public float getTrueHeight()
     {
         return trueSize.y;
@@ -104,7 +104,7 @@ public class Avatar
     /**
      * Set the scale of the texture with a scalar. Uniform and
      * preserves aspect ratio.
-     */
+    */
     public void setScale(float scale)
     {
         trueSize.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(scale);
@@ -117,7 +117,7 @@ public class Avatar
      * width * scale2.x
      * <br>
      * height * scale2.y
-     */
+    */
     public void setScale(Vector2 scale2)
     {
         trueSize.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(scale2);
@@ -130,7 +130,7 @@ public class Avatar
      * width * scaleX
      * <br>
      * height * scaleY
-     */
+    */
     public void setScale(float scaleX, float scaleY)
     {
         trueSize.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(scaleX, scaleY);

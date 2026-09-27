@@ -12,7 +12,7 @@ buildscript {
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
-
+  
   // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
   idea {
     module {
@@ -26,7 +26,7 @@ configure(subprojects) {
   apply plugin: 'java-library'
   java.sourceCompatibility = 26
   java.targetCompatibility = 26
-
+  
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
   tasks.register('generateAssetList') {
@@ -37,7 +37,7 @@ configure(subprojects) {
     File assetsFile = new File(assetsFolder, "assets.txt")
     // delete that file in case we've already created it
     assetsFile.delete()
-
+    
     // iterate through all files inside that folder
     // convert it to a relative path
     // and append it to the file assets.txt
@@ -46,7 +46,7 @@ configure(subprojects) {
     }
   }
   processResources.dependsOn 'generateAssetList'
-
+  
   compileJava {
     options.incremental = true
   }

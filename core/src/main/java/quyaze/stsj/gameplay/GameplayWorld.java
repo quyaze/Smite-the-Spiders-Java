@@ -213,7 +213,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
      * <p></p>
      * Ensure {@code data} corresponds to the {@code datastore} in the
      * correct order.
-     */
+    */
     public int addEntity(char systems, EWDatastore<Object>[] datastores, Object... data)
     {
         if (datastores.length != data.length)

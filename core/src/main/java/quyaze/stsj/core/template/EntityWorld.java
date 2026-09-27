@@ -3,7 +3,7 @@ package quyaze.stsj.core.template;
 /**
  * A {@link World} with entities (integer), allowing data-oriented
  * design with {@link EWDatastore} and {@link EWSystem}.
- */
+*/
 public abstract class EntityWorld<T extends GameContext> extends World<T>
 {
     /*  Fields  */
@@ -12,7 +12,7 @@ public abstract class EntityWorld<T extends GameContext> extends World<T>
     
     /**
      * @return The number of entites that exist
-     */
+    */
     public int getEntities()
     {
         return entities;

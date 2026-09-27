@@ -6,7 +6,7 @@ package quyaze.stsj.core.template;
  * Allows implementing classes to define its interaction with
  * entities and associated data from the world and
  * {@link EWDatastore}.
- */
+*/
 public interface EWSystem
 {
     /*  Iterate  */

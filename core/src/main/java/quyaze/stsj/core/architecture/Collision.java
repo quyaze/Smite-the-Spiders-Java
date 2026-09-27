@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 /**
  * Represents basic collision. Reflects the assigned
  * {@link Avatar}'s position and size.
- */
+*/
 public class Collision
 {
     /*  Fields  */

@@ -30,7 +30,7 @@ public class Spider
      * Set the spider's new path to follow.
      * <p></p>
      * References its {@link Avatar} and {@link Mobility}.
-     */
+    */
     public void newPath(World<?> world, Avatar avatar, Mobility mobility)
     {
         final float width = Utility.getWorldViewWidth(world);

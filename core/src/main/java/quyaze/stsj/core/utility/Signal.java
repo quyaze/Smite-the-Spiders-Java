@@ -50,7 +50,7 @@ final public class Signal
      * <p></p>
      * The binding will be deferred every {@link Signal#fire()}.
      * @return The created {@link Bind}
-     */
+    */
     public Bind addBinding(BindDefinition bind)
     {
         return addBinding(bind, BindType.DEFER, false);
@@ -60,7 +60,7 @@ final public class Signal
     /**
      * Bind to the signal with the specified {@link BindType}.
      * @return The created {@link Bind}
-     */
+    */
     public Bind addBinding(BindDefinition bind, BindType bindType)
     {
         return addBinding(bind, bindType, false);
@@ -72,7 +72,7 @@ final public class Signal
      * <p></p>
      * Fires only once. It is deferred and then unbinded afterward.
      * @return The created {@link Bind}
-     */
+    */
     public Bind addBindingOnce(BindDefinition bind)
     {
         return addBinding(bind, BindType.DEFER, true);
@@ -84,7 +84,7 @@ final public class Signal
      * <p></p>
      * Fires only once and then unbinded afterward.
      * @return The created {@link Bind}
-     */
+    */
     public Bind addBindingOnce(BindDefinition bind, BindType bindType)
     {
         return addBinding(bind, bindType, true);
@@ -93,7 +93,7 @@ final public class Signal
     
     /**
      * Helper method for adding binds.
-     */
+    */
     private Bind addBinding(BindDefinition bind, BindType bindType, boolean once)
     {
         Bind binding = new Bind();
@@ -111,7 +111,7 @@ final public class Signal
     
     /**
      * Helper method for firing binds.
-     */
+    */
     private void fireByType(BindType bindType)
     {
         for (int i = bindings.size - 1; i >= 0; i--)

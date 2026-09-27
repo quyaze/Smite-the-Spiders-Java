@@ -37,7 +37,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     
     /**
      * @return Game {@link State}
-     */
+    */
     public State getState()
     {
         return state;
@@ -63,7 +63,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     
     /**
      * @return Paused state
-     */
+    */
     public boolean isPaused()
     {
         return paused;
@@ -73,7 +73,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     /**
      * Set the game paused.
      * @return Was able to change the pause state (current state was not already the desired state)
-     */
+    */
     public boolean setGamePaused(boolean paused)
     {
         if (this.paused == paused) return false;
@@ -86,7 +86,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     /**
      * Toggle the paused state.
      * @return New paused state
-     */
+    */
     public boolean toggleGamePaused()
     {
         setGamePaused(!paused);

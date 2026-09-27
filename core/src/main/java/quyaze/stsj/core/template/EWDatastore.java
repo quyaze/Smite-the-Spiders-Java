@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.IntMap;
 /**
  * Plug-in for {@link EntityWorld}. Contains data for associated
  * entities.
- */
+*/
 public class EWDatastore<T>
 {
     /*  Fields  */
@@ -23,7 +23,7 @@ public class EWDatastore<T>
     
     /**
      * Associate {@code data} with the {@code entity}.
-     */
+    */
     public void put(int entity, T data)
     {
         if (data.getClass() != type)
@@ -35,7 +35,7 @@ public class EWDatastore<T>
     /**
      * Remove associated {@code entity}'s data.
      * @return Data or {@code null}
-     */
+    */
     public T remove(int entity)
     {
         return data.remove(entity);
@@ -45,7 +45,7 @@ public class EWDatastore<T>
     /**
      * Get {@code entity}'s associated data.
      * @return Data or {@code null}
-     */
+    */
     public T get(int entity)
     {
         return data.get(entity);
@@ -54,7 +54,7 @@ public class EWDatastore<T>
     
     /**
      * Is there data associated with the {@code entity}.
-     */
+    */
     public boolean contains(int entity)
     {
         return data.containsKey(entity);
@@ -75,7 +75,7 @@ public class EWDatastore<T>
      * {@code newEntity}. This is needed in entity
      * swap-removal.
      * @return The data that was transferred
-     */
+    */
     public T transfer(int oldEntity, int newEntity)
     {
         return data.put(newEntity, data.remove(oldEntity));
@@ -84,7 +84,7 @@ public class EWDatastore<T>
     
     /**
      * Clear all data.
-     */
+    */
     public void clear()
     {
         data.clear();

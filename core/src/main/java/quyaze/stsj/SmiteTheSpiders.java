@@ -30,7 +30,7 @@ final public class SmiteTheSpiders extends Game
     
     
     /*  Constructor  */
-    /** New game instance. */
+    /** <hr> New game instance. */
     public SmiteTheSpiders()
     {
         if (lock)
@@ -79,8 +79,9 @@ final public class SmiteTheSpiders extends Game
     
     
     /**
+     * <hr>
      * @return Global {@link SpriteBatch} for drawing
-     */
+    */
     public SpriteBatch getBatch()
     {
         return batch;
@@ -88,8 +89,9 @@ final public class SmiteTheSpiders extends Game
     
     
     /**
+     * <hr>
      * @return Global viewport ({@link ScreenViewport})
-     */
+    */
     public ScreenViewport getViewport()
     {
         return viewport;
@@ -97,8 +99,9 @@ final public class SmiteTheSpiders extends Game
     
     
     /**
+     * <hr>
      * @return Global {@link TextureAtlas} for texture lookup
-     */
+    */
     public TextureAtlas getAtlas()
     {
         return atlas;
@@ -106,8 +109,9 @@ final public class SmiteTheSpiders extends Game
     
     
     /**
+     * <hr>
      * @return Globally played {@link Music}
-     */
+    */
     public Music getMusic()
     {
         return music;
@@ -115,15 +119,16 @@ final public class SmiteTheSpiders extends Game
     
     
     /**
+     * <hr>
      * @return Global {@link GameText} utility
-     */
+    */
     public GameText getGameText()
     {
         return gameText;
     }
     
     
-    /** Switch to the {@link MainMenuScreen.} */
+    /** <hr> Switch to the {@link MainMenuScreen.} */
     public void toMainMenuScreen()
     {
         if (screen == mainMenuScreen) return;
@@ -131,7 +136,7 @@ final public class SmiteTheSpiders extends Game
     }
     
     
-    /** Switch to the {@link GameplayScreen}. */
+    /** <hr> Switch to the {@link GameplayScreen}. */
     public void toGameplayScreen()
     {
         if (screen == gameplayScreen) return;

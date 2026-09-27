@@ -58,7 +58,7 @@ final public class Event<T>
      * <p></p>
      * The binding will be deferred every {@link Event#fire(Object)}.
      * @return The created {@link Bind}
-     */
+    */
     public Bind<T> addBinding(BindDefinition<T> bind)
     {
         return addBinding(bind, BindType.DEFER, false);
@@ -68,7 +68,7 @@ final public class Event<T>
     /**
      * Bind to the event with the specified {@link BindType}.
      * @return The created {@link Bind}
-     */
+    */
     public Bind<T> addBinding(BindDefinition<T> bind, BindType bindType)
     {
         return addBinding(bind, bindType, false);
@@ -80,7 +80,7 @@ final public class Event<T>
      * <p></p>
      * Fires only once. It is deferred and then unbinded afterward.
      * @return The created {@link Bind}
-     */
+    */
     public Bind<T> addBindingOnce(BindDefinition<T> bind)
     {
         return addBinding(bind, BindType.DEFER, true);
@@ -92,7 +92,7 @@ final public class Event<T>
      * <p></p>
      * Fires only once and then unbinded afterward.
      * @return The created {@link Bind}
-     */
+    */
     public Bind<T> addBindingOnce(BindDefinition<T> bind, BindType bindType)
     {
         return addBinding(bind, bindType, true);
@@ -101,7 +101,7 @@ final public class Event<T>
     
     /**
      * Helper method for adding binds.
-     */
+    */
     private Bind<T> addBinding(BindDefinition<T> bind, BindType bindType, boolean once)
     {
         Bind<T> binding = new Bind<>();
@@ -119,7 +119,7 @@ final public class Event<T>
     
     /**
      * Helper method for firing binds.
-     */
+    */
     private void fireByType(BindType bindType, T args)
     {
         for (int i = bindings.size - 1; i >= 0; i--)

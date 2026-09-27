@@ -79,7 +79,7 @@ public class Mobility
     
     /**
      * @return A copy of the velocity
-     */
+    */
     public Vector2 getVelocity()
     {
         return velocity.cpy();
@@ -88,7 +88,7 @@ public class Mobility
     
     /**
      * @return x-velocity
-     */
+    */
     public float getVelocityX()
     {
         return velocity.x;
@@ -97,7 +97,7 @@ public class Mobility
     
     /**
      * @return y-velocity
-     */
+    */
     public float getVelocityY()
     {
         return velocity.y;
@@ -106,7 +106,7 @@ public class Mobility
     
     /**
      * @return Actual linear speed
-     */
+    */
     public float getSpeed()
     {
         return speed;

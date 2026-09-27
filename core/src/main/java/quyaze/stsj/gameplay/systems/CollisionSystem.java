@@ -16,7 +16,7 @@ import quyaze.stsj.screens.GameplayScreen;
 /**
  * Responsible for tracking all collidable entities.
  * {@link CollisionSolver} does the actual collision detection.
- */
+*/
 final public class CollisionSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */

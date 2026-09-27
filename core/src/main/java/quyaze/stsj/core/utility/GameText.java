@@ -41,7 +41,7 @@ final public class GameText implements Disposable
     
     /**
      * @return Generated glyph layout with the {@code textContent}
-     */
+    */
     public GlyphLayout generateGlyphRegular(String textContent)
     {
         return new GlyphLayout(regular, textContent);
