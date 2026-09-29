@@ -18,6 +18,7 @@ import quyaze.stsj.core.template.EWDatastore;
 import quyaze.stsj.core.template.ScreenContext;
 import quyaze.stsj.core.utility.Signal;
 import quyaze.stsj.core.utility.Utility;
+import quyaze.stsj.gameplay.GameplayState.State;
 import quyaze.stsj.screens.GameplayScreen;
 
 /**
@@ -109,6 +110,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         spawnBackground();
         spawnPlayer();
         spawnSpiders();
+        screen.state.setState(State.ROUND);
     }
     
     
@@ -449,6 +451,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             GAME_OVER_PHASE
         );
         screen.world.removeEntityRequest(player);
+        screen.state.setState(State.GAME_OVER);
         player = -1;
         onGameOver.fire();
     }

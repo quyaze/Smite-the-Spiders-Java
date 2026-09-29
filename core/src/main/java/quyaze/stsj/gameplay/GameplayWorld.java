@@ -22,6 +22,7 @@ import quyaze.stsj.core.template.EWDatastore;
 import quyaze.stsj.core.template.EWSystem;
 import quyaze.stsj.core.template.EntityWorld;
 import quyaze.stsj.core.utility.Event;
+import quyaze.stsj.gameplay.GameplayState.State;
 import quyaze.stsj.gameplay.events.OnEntityReassigned;
 import quyaze.stsj.gameplay.systems.AvatarSystem;
 import quyaze.stsj.gameplay.systems.CollisionSystem;
@@ -240,6 +241,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     private boolean input()
     {
         var state = screen.state;
+        
+        if (state.getState() == State.GAME_OVER) return true;
         
         final boolean paused = (
             Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?
