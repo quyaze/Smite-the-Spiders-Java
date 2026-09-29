@@ -11,6 +11,7 @@ public class Avatar
     public Vector2 position;
     private Vector2 trueSize;
     public float opacity = 1f;
+    public boolean gameOverFade;
     
     
     /*  Constructors  */

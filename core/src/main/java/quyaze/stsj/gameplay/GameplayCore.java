@@ -147,7 +147,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             background,
             world.getAvatarScaleToView(background)
         );
-        avatar.opacity = 1 / 0.2f;
+        avatar.opacity = 1 / 0.2f; // Pausing caused background to be transparent
         
         world.addEntity(
             (char) GameplayWorld.SYSFLAG_DRAW,
@@ -230,6 +230,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                 new TextureRegion(game.getAtlas().findRegion("spider")),
                 4f
             );
+            avatar.gameOverFade = true;
             
             switch (i)
             {
@@ -302,6 +303,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         avatar.position.set(
             playerCharacter.position.cpy().add(playerCharacter.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
         );
+        avatar.gameOverFade = true;
         
         mobility = new Mobility(
             1000f,
@@ -348,9 +350,10 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         avatar.position.set(
             spiderAvatar.position.cpy().add(spiderAvatar.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
         );
+        avatar.gameOverFade = true;
         
         mobility = new Mobility(
-            MathUtils.random(600, 800),
+            MathUtils.random(600f, 800f),
             playerCharacter.getCenter().sub(avatar.getCenter())
         );
         

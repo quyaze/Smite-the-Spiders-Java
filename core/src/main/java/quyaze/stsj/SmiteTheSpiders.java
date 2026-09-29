@@ -1,5 +1,7 @@
 package quyaze.stsj;
 
+import static java.io.File.separator;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -10,8 +12,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import quyaze.stsj.core.utility.GameText;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
-
-import static java.io.File.separator;
 
 /** The game entry point and definition. */
 final public class SmiteTheSpiders extends Game

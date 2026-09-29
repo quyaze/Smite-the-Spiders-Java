@@ -1,5 +1,7 @@
 package quyaze.stsj.gameplay.systems;
 
+import static quyaze.stsj.gameplay.GameplayCore.*;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
@@ -11,8 +13,6 @@ import quyaze.stsj.core.architecture.Player;
 import quyaze.stsj.core.template.EWSystem;
 import quyaze.stsj.core.template.WorldContext;
 import quyaze.stsj.gameplay.GameplayWorld;
-
-import static quyaze.stsj.gameplay.GameplayCore.*;
 
 /** System that enables {@link Player} action. */
 public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSystem

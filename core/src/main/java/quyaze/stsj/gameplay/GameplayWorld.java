@@ -153,11 +153,11 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 
                 case SYSFLAG_SPIDER:
                     iterating = spiderSystem;
-                    spiderSystem.render(dS);
                     break;
                 
                 case SYSFLAG_DRAW:
                     iterating = drawSystem;
+                    drawSystem.render(dS);
                     
                     SpriteBatch batch = game.getBatch();
                     ScreenViewport viewport = game.getViewport();

@@ -8,8 +8,7 @@ public class Mobility
 {
     /*  Fields  */
     private Vector2 velocity;
-    private float angle = 0;
-    private float speed = 0;
+    private float angle, speed;
     
     /*  Velocity and speed are in pixels per sceond
         Angle is in radians

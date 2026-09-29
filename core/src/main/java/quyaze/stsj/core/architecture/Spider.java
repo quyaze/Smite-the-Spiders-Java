@@ -37,7 +37,7 @@ public class Spider
         
         destination.set(
             MathUtils.random(
-                0,
+                0f,
                 width - avatar.getTrueWidth()
             ),
             MathUtils.random(
@@ -46,9 +46,9 @@ public class Spider
             )
         );
         mobility.setDirection(destination.cpy().sub(avatar.position));
-        mobility.setSpeed(MathUtils.random(180, 220));
+        mobility.setSpeed(MathUtils.random(180f, 220f));
         avatar.texture.flip(
-            (mobility.getVelocityX() < 0) == avatar.texture.isFlipX(),
+            (mobility.getVelocityX() < 0f) == avatar.texture.isFlipX(),
             false
         );
         
