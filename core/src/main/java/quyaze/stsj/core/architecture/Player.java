@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import quyaze.stsj.core.template.World;
 import quyaze.stsj.core.utility.Signal;
-import quyaze.stsj.core.utility.Utility;
 
 /** Represents the player. */
 public class Player
@@ -46,7 +45,7 @@ public class Player
     /** Set player character. */
     public void setAvatar(World<?> world, Avatar avatar)
     {
-        Vector2 worldSize = Utility.getWorldViewSize(world);
+        Vector2 worldSize = world.getWorldViewSize();
         
         upperScreenBounds.set(worldSize.sub(avatar.getTrueSize()));
         wizard = avatar;
@@ -60,8 +59,8 @@ public class Player
             throw new IllegalStateException("player has no set avatar");
         
         Vector2 location = new Vector2(
-            Utility.getWorldViewWidth(world) * 0.5f,
-            Utility.getWorldViewHeight(world) / 3f
+            world.getWorldViewWidth() * 0.5f,
+            world.getWorldViewHeight() / 3f
         );
         
         location.sub(wizard.getTrueSize().scl(0.5f));

@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import quyaze.stsj.core.template.World;
 import quyaze.stsj.core.utility.Signal;
-import quyaze.stsj.core.utility.Utility;
 
 /** Represents a spider. */
 public class Spider
@@ -33,8 +32,8 @@ public class Spider
     */
     public void newPath(World<?> world, Avatar avatar, Mobility mobility)
     {
-        final float width = Utility.getWorldViewWidth(world);
-        final float height = Utility.getWorldViewHeight(world);
+        final float width = world.getWorldViewWidth();
+        final float height = world.getWorldViewHeight();
         
         destination.set(
             MathUtils.random(

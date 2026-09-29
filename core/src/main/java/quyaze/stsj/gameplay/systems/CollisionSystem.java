@@ -8,7 +8,6 @@ import quyaze.stsj.core.architecture.Collision;
 import quyaze.stsj.core.architecture.Projectile;
 import quyaze.stsj.core.template.EWSystem;
 import quyaze.stsj.core.template.WorldContext;
-import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.gameplay.CollisionSolver;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.screens.GameplayScreen;
@@ -81,8 +80,8 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     public void resize(int width, int height)
     {
         screen.setSize(
-            Utility.getWorldViewWidth(world),
-            Utility.getWorldViewHeight(world)
+            world.getWorldViewWidth(),
+            world.getWorldViewHeight()
         );
     }
 }

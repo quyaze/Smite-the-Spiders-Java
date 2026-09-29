@@ -17,7 +17,6 @@ import quyaze.stsj.core.architecture.Spider;
 import quyaze.stsj.core.template.EWDatastore;
 import quyaze.stsj.core.template.ScreenContext;
 import quyaze.stsj.core.utility.Signal;
-import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.gameplay.GameplayState.State;
 import quyaze.stsj.screens.GameplayScreen;
 
@@ -146,7 +145,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         
         avatar = new Avatar(
             background,
-            Utility.getAvatarScaleToView(world, background)
+            world.getAvatarScaleToView(background)
         );
         avatar.opacity = 1 / 0.2f;
         

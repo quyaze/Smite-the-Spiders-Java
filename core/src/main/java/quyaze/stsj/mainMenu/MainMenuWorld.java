@@ -17,7 +17,6 @@ import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.architecture.Avatar;
 import quyaze.stsj.core.template.World;
 import quyaze.stsj.core.utility.GameText;
-import quyaze.stsj.core.utility.Utility;
 import quyaze.stsj.screens.MainMenuScreen;
 
 /** World for the main menu. */
@@ -105,9 +104,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
     /** On {@code MainMenuScreen.resize()}. */
     public void resize(int width, int height)
     {
-        backgroundAvatar.setScale(
-            Utility.getAvatarScaleToView(this, background)
-        );
+        backgroundAvatar.setScale(getAvatarScaleToView(background));
         titleAvatar.position.set(
             (width - titleAvatar.getTrueWidth()) * 0.5f,
             (height - titleAvatar.getTrueHeight()) * 0.5f
