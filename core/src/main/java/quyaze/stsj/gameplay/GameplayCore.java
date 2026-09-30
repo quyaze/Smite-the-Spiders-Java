@@ -178,11 +178,6 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         );
         player.setAvatar(world, avatar);
         player.spawnPlayer(world);
-        player.onCastFireball.addBinding(
-            () -> {
-                spawnFireball(avatar);
-            }
-        );
         
         mobility = new Mobility(0f);
         
@@ -202,6 +197,12 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                 world.collisionDatastore
             },
             player, avatar, mobility, collision
+        );
+        
+        player.onCastFireball.addBinding(
+            () -> {
+                spawnFireball(this.player);
+            }
         );
     }
     
@@ -286,7 +287,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     
     
     /** Cast a fireball spell. */
-    private void spawnFireball(Avatar playerCharacter)
+    private void spawnFireball(int player)
     {
         Avatar avatar;
         Mobility mobility;
@@ -295,6 +296,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         
         GameplayWorld world = screen.world;
         TextureRegion spellTexture = new TextureRegion(game.getAtlas().findRegion("spell"));
+        Avatar playerAvatar = world.avatarDatastore.get(player);
         spellTexture.flip(false, true);
         
         avatar = new Avatar(
@@ -302,12 +304,13 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             2f
         );
         avatar.position.set(
-            playerCharacter.position.cpy().add(playerCharacter.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
+            playerAvatar.position.cpy().add(playerAvatar.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
         );
         avatar.gameOverFade = true;
         
+        final float velY = world.mobilityDatastore.get(player).getVelocityY();
         mobility = new Mobility(
-            1000f,
+            1000f + Math.max(0f, velY),
             Vector2.Y.cpy()
         );
         
