@@ -15,7 +15,7 @@ public class Player
     public float maxSpeed = 600f;
     public Vector2 upperScreenBounds;
     public boolean[] keymap = new boolean[5];
-    public boolean respawn = true;
+    public boolean flagShouldRespawn = true;
     private Avatar wizard;
     
     public Signal onCastFireball; // Remove

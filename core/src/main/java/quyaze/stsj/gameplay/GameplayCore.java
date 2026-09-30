@@ -16,6 +16,7 @@ import quyaze.stsj.core.architecture.Projectile;
 import quyaze.stsj.core.architecture.Spider;
 import quyaze.stsj.core.template.EWDatastore;
 import quyaze.stsj.core.template.ScreenContext;
+import quyaze.stsj.core.utility.Event;
 import quyaze.stsj.core.utility.Signal;
 import quyaze.stsj.gameplay.GameplayState.State;
 import quyaze.stsj.screens.GameplayScreen;
@@ -36,7 +37,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     private int player;
     private boolean flagFinalSpider;
     
-    public Signal onPlayerHit;
+    public Event<Integer> onPlayerHit;
     public Signal onGameOver;
     
     final static public float GAME_OVER_PHASE = 1.8f;
@@ -55,7 +56,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /*  Constructor  */
     public GameplayCore()
     {
-        onPlayerHit = new Signal(1);
+        onPlayerHit = new Event<>(Integer.class);
         onGameOver = new Signal(1);
     }
     
@@ -347,9 +348,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             game.getAtlas().findRegion("web"),
             2f
         );
-        avatar.position.set(
-            spiderAvatar.position.cpy().add(spiderAvatar.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
-        );
+        avatar.position.set(spiderAvatar.getCenter().sub(avatar.getTrueSize().scl(0.5f)));
         avatar.gameOverFade = true;
         
         mobility = new Mobility(
@@ -423,20 +422,9 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         GameplayWorld world = screen.world;
         Collision playerCollision = world.collisionDatastore.get(player);
         
-        Timer.schedule(
-            new Task()
-            {
-                @Override public void run()
-                {
-                    playerCollision.skipSolving = false;
-                }
-            },
-            PLAYER_HIT_FX_PHASE
-        );
-        
         world.playerDatastore.get(player).spawnPlayer(world);
         playerCollision.skipSolving = true;
-        onPlayerHit.fire();
+        onPlayerHit.fire(player);
     }
     
     

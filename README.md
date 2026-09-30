@@ -1,14 +1,24 @@
-<p align="center"><img src="./assets/images/title.png"alt="Smite the Spiders"width="80%"></img></p>
-<p align="center"><img src="./.github/assets/cover.png"alt="Smite the Spiders"width="48%"></img></p>
+<div align="center">
+    <img align="center" src="./assets/images/title.png"alt="Smite the Spiders"width="80%"></img>
+    <p></p>
+    <img src="./.github/assets/cover.png"alt="Smite the Spiders"width="50%"></img>
+</div>
+
 <hr>
 
 ### Smite the Spiders (Java)
 
 A remake of "Shoot the Spiders" in CSC 132 (Louisiana Tech University). Originally written in Python using [Pygame](https://www.pygame.org/docs/), it is now developed in Java using LibGDX.
 
-You may generate a standlone application by running `./gradlew clean build jpackage`. This creates an application image in `lwjgl/build/jpackage` that you can run (e.g. "Smite the Spiders.exe"). Consult the [Gradle tasks](#gradle) down below for guidance.
+Download the game under the latest GitHub release! Alternatively, you may generate a standlone application by running
 
-Built with [JDK 26.0](https://www.oracle.com/java/technologies/downloads/#java26)
+```sh
+./gradlew clean build jpackage
+```
+
+This creates a runnable application image in <code><a href="./lwjgl3/">lwjgl/</a>build/jpackage</code> that you can run (e.g. "Smite the Spiders.exe"). Consult the [Gradle tasks](#gradle) down below for guidance.
+
+Built with [JDK 26.0](https://www.oracle.com/java/technologies/javase/jdk26-archive-downloads.html)
 
 <hr>
 

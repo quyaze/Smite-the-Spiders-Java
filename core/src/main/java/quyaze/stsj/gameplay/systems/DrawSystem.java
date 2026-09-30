@@ -21,9 +21,7 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     private GameplayWorld world;
     
     private boolean isGameOver;
-    private float opacityOverride;
-    /*  Opacity override is set in render() and iterate(). It is set
-    */
+    private float opacityFade;
     
     
     /*  Create  */
@@ -43,13 +41,13 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
                         @Override public void run()
                         {
                             isGameOver = false;
-                            opacityOverride = 1f;
+                            opacityFade = 1f;
                         }
                     },
                     GAME_OVER_PHASE
                 );
                 isGameOver = true;
-                opacityOverride = 1f;
+                opacityFade = 1f;
             }
         );
     }
@@ -64,10 +62,18 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
         SpriteBatch batch = getGameInstance().getBatch();
         GameplayState state = world.getScreen().state;
         
-        if (state.isPaused()) batch.setColor(1f, 1f, 1f, MathUtils.clamp(avatar.opacity * 0.2f, 0f, 1f));
-        else if (isGameOver && avatar.gameOverFade) batch.setColor(1f, 1f, 1f, opacityOverride);
-        else batch.setColor(1f, 1f, 1f, MathUtils.clamp(avatar.opacity, 0f, 1f));
+        final float opacity = (
+            //  Game paused?
+            state.isPaused() ? MathUtils.clamp(avatar.opacity * 0.2f, 0f, 1f) :
+            
+            //  Game over?
+            isGameOver && avatar.gameOverFade ? opacityFade :
+            
+            //  Default
+            MathUtils.clamp(avatar.opacity, 0f, 1f)
+        );
         
+        batch.setColor(1f, 1f, 1f, opacity);
         batch.draw(
             avatar.texture,
             avatar.position.x,
@@ -82,10 +88,10 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     /** On {@link GameplayWorld#render(float)}. */
     public void render(float dS)
     {
-        if (isGameOver && opacityOverride > 0)
+        if (isGameOver && opacityFade > 0)
         {
-            opacityOverride = Math.max(
-                opacityOverride - dS / GAME_OVER_PHASE,
+            opacityFade = Math.max(
+                opacityFade - dS / GAME_OVER_PHASE,
                 0f
             );
         }
