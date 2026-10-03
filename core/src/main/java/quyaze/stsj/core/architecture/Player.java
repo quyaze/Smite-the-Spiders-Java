@@ -60,7 +60,7 @@ public class Player
         
         Vector2 location = new Vector2(
             world.getWorldViewWidth() * 0.5f,
-            world.getWorldViewHeight() / 3f
+            world.getWorldViewHeight() * 0.333f
         );
         
         location.sub(wizard.getTrueSize().scl(0.5f));

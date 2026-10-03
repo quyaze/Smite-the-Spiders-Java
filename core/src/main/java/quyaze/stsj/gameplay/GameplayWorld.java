@@ -2,14 +2,10 @@ package quyaze.stsj.gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntSet;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.SmiteTheSpiders;
 import quyaze.stsj.core.architecture.Avatar;
@@ -129,59 +125,33 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             "debris" and are then removed at the very end of render().
         */
         
-        if (!input()) return;
-        EWSystem iterating;
+        if (!inputMaster()) return;
         
+        EWSystem iterating;
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
             if (screen.state.isPaused() && flag != SYSFLAG_DRAW) continue;
             
             switch (flag)
             {
-                case SYSFLAG_PLAYER:
-                    iterating = playerSystem;
-                    playerSystem.render(dS);
-                    break;
-                
-                case SYSFLAG_AVATAR:
-                    iterating = avatarSystem;
-                    break;
-                
-                case SYSFLAG_COLLISION:
-                    iterating = collisionSystem;
-                    break;
-                
-                case SYSFLAG_SPIDER:
-                    iterating = spiderSystem;
-                    break;
-                
-                case SYSFLAG_DRAW:
-                    iterating = drawSystem;
-                    drawSystem.render(dS);
-                    
-                    SpriteBatch batch = game.getBatch();
-                    ScreenViewport viewport = game.getViewport();
-                    
-                    ScreenUtils.clear(Color.BLACK);
-                    viewport.apply(true);
-                    batch.setProjectionMatrix(
-                        viewport.getCamera().combined
-                    );
-                    batch.begin();
-                    break;
-                
+                case SYSFLAG_PLAYER:    iterating = playerSystem;       break;
+                case SYSFLAG_AVATAR:    iterating = avatarSystem;       break;
+                case SYSFLAG_COLLISION: iterating = collisionSystem;    break;
+                case SYSFLAG_SPIDER:    iterating = spiderSystem;       break;
+                case SYSFLAG_DRAW:      iterating = drawSystem;         break;
                 default: throw new IllegalStateException("missing system");
             }
+            
+            iterating.render(dS);
             
             for (int entity = 0; entity < entities; entity++)
             {
                 if (isEntityDebris.contains(entity)) continue;
-                if ((entityFlags.get(entity) & flag) > 0) iterating.iterate(entity);
+                if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
             }
             
-            if (flag == SYSFLAG_DRAW) game.getBatch().end();
+            if (flag == SYSFLAG_DRAW) ((DrawSystem) iterating).postRender();
         }
-        iterating = null;
         
         /*  Deferred entity removal.
         */
@@ -228,7 +198,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     
     
     /** Mark an entity for deferred removal. */
-    public void removeEntityRequest(int entity)
+    public void removeEntityDeferred(int entity)
     {
         if (isEntityDebris.add(entity)) entityDebris.add(entity);
     }
@@ -238,7 +208,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
      * Input pre-entity-loop iteration.
      * @return Input logic requires aborting the entity-system iteration
     */
-    private boolean input()
+    private boolean inputMaster()
     {
         var state = screen.state;
         

@@ -1,14 +1,7 @@
 package quyaze.stsj.gameplay.systems;
 
-import static quyaze.stsj.gameplay.GameplayCore.*;
-
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 
-import quyaze.stsj.core.architecture.Avatar;
-import quyaze.stsj.core.architecture.Collision;
 import quyaze.stsj.core.architecture.Mobility;
 import quyaze.stsj.core.architecture.Player;
 import quyaze.stsj.core.template.EWSystem;
@@ -21,36 +14,12 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     /*  Fields  */
     private GameplayWorld world;
     
-    private boolean enablePlayerHitEffect;
-    private float opacityOverride = 1f;
-    private float playerHitEffectDirection = -1f;
-    
-    private Task taskPlayerRespawn;
-    private float timeToTaskPlayerRespawn;
-    
     
     /*  Create  */
     @Override
     public void create()
     {
         world = getWorld();
-        world.getScreen().core.onPlayerHit.addBinding(
-            arg -> {
-                Collision playerCollision = world.collisionDatastore.get(arg);
-                taskPlayerRespawn = new Task()
-                {
-                    @Override public void run()
-                    {
-                        opacityOverride = 1f;
-                        enablePlayerHitEffect = false;
-                        playerCollision.skipSolving = false;
-                    }
-                };
-                playerCollision.skipSolving = true;
-                enablePlayerHitEffect = true;
-                Timer.schedule(taskPlayerRespawn, PLAYER_HIT_FX_PHASE);
-            }
-        );
     }
     
     
@@ -59,7 +28,6 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     public void iterate(int entity)
     {
         Player player = world.playerDatastore.get(entity);
-        Avatar avatar = world.avatarDatastore.get(entity);
         Mobility mobility = world.mobilityDatastore.get(entity);
         
         Vector2 movementInput = player.movementInput;
@@ -81,8 +49,6 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
             player.spawnPlayer(world);
         }
         
-        avatar.opacity = opacityOverride;
-        
         //  Gamepad controllers coming soon
         final float inputStrength = movementInput.len2();
         float speed = 0f;
@@ -97,32 +63,7 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     }
     
     
-    /** On {@link GameplayWorld#render(float)}. */
-    public void render(final float dS)
-    {
-        if (!enablePlayerHitEffect || !taskPlayerRespawn.isScheduled()) return;
-        
-        final boolean paused = world.getScreen().state.isPaused();
-        if (paused && taskPlayerRespawn.isScheduled())
-        {
-            final long then = taskPlayerRespawn.getExecuteTimeMillis();
-            final long now = System.nanoTime() / 1000000;
-            timeToTaskPlayerRespawn = (then - now) * 0.001f;
-            taskPlayerRespawn.cancel();
-        }
-        else if (!paused && !taskPlayerRespawn.isScheduled())
-        {
-            Timer.schedule(taskPlayerRespawn, timeToTaskPlayerRespawn);
-            timeToTaskPlayerRespawn = 0f;
-        }
-        
-        if (opacityOverride <= PLAYER_HIT_FX_FADE) playerHitEffectDirection = 1f;
-        else if (opacityOverride >= 1f) playerHitEffectDirection = -1f;
-        
-        opacityOverride = MathUtils.clamp(
-            opacityOverride + dS * PLAYER_HIT_FX_STEP * playerHitEffectDirection,
-            PLAYER_HIT_FX_FADE,
-            1f
-        );
-    }
+    /*  Render  */
+    @Override
+    public void render(final float dS) {}
 }

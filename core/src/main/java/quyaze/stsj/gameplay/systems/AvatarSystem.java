@@ -53,4 +53,8 @@ public class AvatarSystem extends WorldContext<GameplayWorld> implements EWSyste
             )
         );
     }
+    
+    
+    /*  Render  */
+    @Override public void render(float dS) {}
 }

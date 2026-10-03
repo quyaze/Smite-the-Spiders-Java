@@ -63,7 +63,7 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
         */
         if (projectile != null && !collision.collisionBox.overlaps(screen))
         {
-            world.removeEntityRequest(entity);
+            world.removeEntityDeferred(entity);
             return;
         }
         
@@ -72,6 +72,10 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
         collidableEntityToIndex.put(entity, collidableEntities.size);
         collidableEntities.add(entity);
     }
+    
+    
+    /*  Render  */
+    @Override public void render(float dS) {}
     
     
     /**

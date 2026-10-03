@@ -5,20 +5,26 @@ import static quyaze.stsj.gameplay.GameplayCore.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.architecture.Avatar;
 import quyaze.stsj.core.template.EWSystem;
 import quyaze.stsj.core.template.WorldContext;
 import quyaze.stsj.gameplay.GameplayState;
 import quyaze.stsj.gameplay.GameplayWorld;
+import quyaze.stsj.gameplay.GameplayState.State;
 
 /** System that draws and renders {@link Avatar}s to the screen. */
 public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
 {
     /*  Fields  */
     private GameplayWorld world;
+    
+    private SpriteBatch batch;
+    private ScreenViewport viewport;
     
     private boolean isGameOver;
     private float opacityFade;
@@ -30,11 +36,16 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     {
         world = getWorld();
         
+        batch = getGameInstance().getBatch();
+        viewport = getGameInstance().getViewport();
+        
         /*  There are three ways of seeing if it is game over. Below is one
             way
         */
-        world.getScreen().core.onGameOver.addBinding(
-            () -> {
+        world.getScreen().state.onGameStateChanged.addBinding(
+            arg -> {
+                if (arg != State.GAME_OVER) return;
+                
                 Timer.schedule(
                     new Task()
                     {
@@ -85,9 +96,17 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     }
     
     
-    /** On {@link GameplayWorld#render(float)}. */
+    /*  Render  */
+    @Override
     public void render(float dS)
     {
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply(true);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.begin();
+        
+        /* Game over fade-out
+        */
         if (isGameOver && opacityFade > 0)
         {
             opacityFade = Math.max(
@@ -95,5 +114,12 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
                 0f
             );
         }
+    }
+    
+    
+    /** Called after {@link GameplayWorld} entity iteration. */
+    public void postRender()
+    {
+        getGameInstance().getBatch().end();
     }
 }

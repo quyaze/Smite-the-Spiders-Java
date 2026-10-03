@@ -17,7 +17,6 @@ import quyaze.stsj.core.architecture.Spider;
 import quyaze.stsj.core.template.EWDatastore;
 import quyaze.stsj.core.template.ScreenContext;
 import quyaze.stsj.core.utility.Event;
-import quyaze.stsj.core.utility.Signal;
 import quyaze.stsj.gameplay.GameplayState.State;
 import quyaze.stsj.screens.GameplayScreen;
 
@@ -38,7 +37,6 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     private boolean flagFinalSpider;
     
     public Event<Integer> onPlayerHit;
-    public Signal onGameOver;
     
     final static public float GAME_OVER_PHASE = 1.8f;
     
@@ -57,7 +55,6 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     public GameplayCore()
     {
         onPlayerHit = new Event<>(Integer.class);
-        onGameOver = new Signal(1);
     }
     
     
@@ -118,21 +115,20 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     public void render(final float dS)
     {
         if (flagFinalSpider) return;
-        if (screen.world.spiderDatastore.size() <= 1)
-        {
-            flagFinalSpider = true;
-            Timer.schedule(
-                    new Task()
-                    {
-                        @Override public void run()
-                        {
-                            flagFinalSpider = false;
-                            spawnSpiders();
-                        }
-                    },
-                    MathUtils.random(0.2f, 1.8f)
-                );
-        }
+        if (screen.world.spiderDatastore.size() > 1) return;
+        
+        flagFinalSpider = true;
+        Timer.schedule(
+            new Task()
+            {
+                @Override public void run()
+                {
+                    flagFinalSpider = false;
+                    spawnSpiders();
+                }
+            },
+            MathUtils.random(0.2f, 1.8f)
+        );
     }
     
     
@@ -386,7 +382,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         GameplayState state = screen.state;
         
         state.score += POINTS_WEB_HIT_PLAYER;
-        screen.world.removeEntityRequest(webEntity);
+        screen.world.removeEntityDeferred(webEntity);
         playerHit();
     }
     
@@ -408,8 +404,8 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         GameplayState state = screen.state;
         
         state.score += POINTS_SPELL_HIT_SPIDER;
-        world.removeEntityRequest(spellEntity);
-        world.removeEntityRequest(spiderEntity);
+        world.removeEntityDeferred(spellEntity);
+        world.removeEntityDeferred(spiderEntity);
     }
     
     
@@ -443,9 +439,8 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             },
             GAME_OVER_PHASE
         );
-        screen.world.removeEntityRequest(player);
+        screen.world.removeEntityDeferred(player);
         screen.state.setState(State.GAME_OVER);
         player = -1;
-        onGameOver.fire();
     }
 }

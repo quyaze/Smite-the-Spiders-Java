@@ -11,4 +11,8 @@ public interface EWSystem
 {
     /*  Iterate  */
     public void iterate(int entity);
+    
+    
+    /*  Render  */
+    public void render(float dS);
 }
