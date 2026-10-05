@@ -1,6 +1,6 @@
 <div align="center">
     <img align="center" src="./assets/images/title.png"alt="Smite the Spiders"width="80%"></img>
-    <p></p>
+    <p><strong>v1.0.2-alpha</strong></p>
     <img src="./.github/assets/cover.png"alt="Smite the Spiders"width="50%"></img>
 </div>
 
