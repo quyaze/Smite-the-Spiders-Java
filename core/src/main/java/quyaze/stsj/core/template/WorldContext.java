@@ -21,6 +21,6 @@ public abstract class WorldContext<T extends ScreenContext<?>> implements PostCo
     }
     public SmiteTheSpiders getGameInstance()
     {
-        return world.getGameInstance();
+        return getWorld().getGameInstance();
     }
 }

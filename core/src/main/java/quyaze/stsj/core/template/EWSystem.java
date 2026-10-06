@@ -5,7 +5,7 @@ package quyaze.stsj.core.template;
  * <p></p>
  * Allows implementing classes to define its interaction with
  * entities and associated data from the world and
- * {@link EWDatastore}.
+ * {@link EWDatastore} within {@link #iterate(int)}.
 */
 public interface EWSystem
 {
@@ -15,4 +15,8 @@ public interface EWSystem
     
     /*  Render  */
     public void render(float dS);
+    
+    
+    /*  Render  */
+    public void postEntityBatch();
 }

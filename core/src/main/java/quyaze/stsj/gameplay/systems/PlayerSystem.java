@@ -66,4 +66,8 @@ public class PlayerSystem extends WorldContext<GameplayWorld> implements EWSyste
     /*  Render  */
     @Override
     public void render(final float dS) {}
+    
+    
+    /*  Post Entity Batch  */
+    @Override public void postEntityBatch() {}
 }

@@ -23,6 +23,6 @@ public abstract class ScreenContext<T extends GameContext> implements PostConstr
     }
     public SmiteTheSpiders getGameInstance()
     {
-        return inst.getGameInstance();
+        return getScreen().getGameInstance();
     }
 }

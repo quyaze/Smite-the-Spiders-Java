@@ -132,15 +132,15 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         {
             if (screen.state.isPaused() && flag != SYSFLAG_DRAW) continue;
             
-            switch (flag)
+            iterating = switch(flag)
             {
-                case SYSFLAG_PLAYER:    iterating = playerSystem;       break;
-                case SYSFLAG_AVATAR:    iterating = avatarSystem;       break;
-                case SYSFLAG_COLLISION: iterating = collisionSystem;    break;
-                case SYSFLAG_SPIDER:    iterating = spiderSystem;       break;
-                case SYSFLAG_DRAW:      iterating = drawSystem;         break;
-                default: throw new IllegalStateException("missing system");
-            }
+                case SYSFLAG_PLAYER     -> playerSystem;
+                case SYSFLAG_AVATAR     -> avatarSystem;
+                case SYSFLAG_COLLISION  -> collisionSystem;
+                case SYSFLAG_SPIDER     -> spiderSystem;
+                case SYSFLAG_DRAW       -> drawSystem;
+                default                 -> throw new IllegalStateException("missing system");
+            };
             
             iterating.render(dS);
             
@@ -150,7 +150,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
                 if ((entityFlags.get(entity) & flag) != 0) iterating.iterate(entity);
             }
             
-            if (flag == SYSFLAG_DRAW) ((DrawSystem) iterating).postRender();
+            iterating.postEntityBatch();
         }
         
         /*  Deferred entity removal.

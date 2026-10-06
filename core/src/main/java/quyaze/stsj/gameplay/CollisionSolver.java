@@ -21,7 +21,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     /*  Fields  */
     private GameplayScreen screen;
     
-    public IntArray targetEntities;
+    private IntArray entities;
     private Collision collisionA, collisionB;
     private int entityA, entityB;
     
@@ -92,26 +92,33 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     }
     
     
+    /** Set the array of reference entities for the solver. */
+    public void setTargetEntities(IntArray entities)
+    {
+        this.entities = entities;
+    }
+    
+    
     /** Solve collision. */
     private void solve()
     {
-        if (targetEntities == null)
-            throw new IllegalStateException("reference to collision entities is not assigned");
+        if (entities == null)
+            throw new IllegalStateException("reference to collidable entities is not assigned");
         
         /*  Null guards exist because collidableEntities is not yet designed
             to be fully in sync with World entities. This allows the solver
             to receive deleted entities and deleted Collision data.
         */
         
-        for (int i = 0; i < targetEntities.size; i++)
+        for (int i = 0; i < entities.size; i++)
         {
-            entityA = targetEntities.get(i);
+            entityA = entities.get(i);
             collisionA = screen.world.collisionDatastore.get(entityA);
             if (collisionA == null || collisionA.skipSolving) continue;
             
-            for (int j = i + 1; j < targetEntities.size; j++)
+            for (int j = i + 1; j < entities.size; j++)
             {
-                entityB = targetEntities.get(j);
+                entityB = entities.get(j);
                 collisionB = screen.world.collisionDatastore.get(entityB);
                 if (collisionB == null || collisionB.skipSolving) continue;
                 
@@ -135,8 +142,8 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
     /** Solver cleanup. */
     private void clean()
     {
-        entityA = 0; entityB = 0;
-        collisionA = null; collisionB = null;
+        entityA = entityB = 0;
+        collisionA = collisionB = null;
         onSolverCleanup.fire();
     }
 }

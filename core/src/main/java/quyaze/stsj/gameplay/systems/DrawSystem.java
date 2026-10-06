@@ -117,8 +117,9 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     }
     
     
-    /** Called after {@link GameplayWorld} entity iteration. */
-    public void postRender()
+    /*  Post Entity Batch  */
+    @Override
+    public void postEntityBatch()
     {
         getGameInstance().getBatch().end();
     }

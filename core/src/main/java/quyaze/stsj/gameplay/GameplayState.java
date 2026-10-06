@@ -52,9 +52,9 @@ public class GameplayState extends ScreenContext<GameplayScreen>
             Cannot set state if GameOver
         */
         switch (this.state) {
-            case INTERMISSION: if (state != State.ROUND) return; break;
-            case ROUND: if (state != State.GAME_OVER) return; break;
-            default: return; 
+            case INTERMISSION: if (state != State.ROUND) return;
+            case ROUND: if (state != State.GAME_OVER) return;
+            default: break;
         }
         onGameStateChanged.fire(state);
         this.state = state;

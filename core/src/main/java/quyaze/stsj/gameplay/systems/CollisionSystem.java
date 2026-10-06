@@ -40,7 +40,7 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     public void create()
     {
         world = getWorld();
-        world.getScreen().solver.targetEntities = collidableEntities;
+        world.getScreen().solver.setTargetEntities(collidableEntities);
         world.getScreen().solver.onSolverCleanup.addBinding(
             () -> {
                 collidableEntityToIndex.clear();
@@ -74,10 +74,6 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     }
     
     
-    /*  Render  */
-    @Override public void render(float dS) {}
-    
-    
     /**
      * On {@link GameplayScreen#resize(int, int)}.
     */
@@ -88,4 +84,12 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
             world.getWorldViewHeight()
         );
     }
+    
+    
+    /*  Render  */
+    @Override public void render(float dS) {}
+    
+    
+    /*  Post Entity Batch  */
+    @Override public void postEntityBatch() {}
 }
