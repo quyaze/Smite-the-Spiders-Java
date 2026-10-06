@@ -14,8 +14,7 @@ import quyaze.stsj.screens.GameplayScreen;
 /**
  * A subsystem for {@link GameplayScreen}.
  * <p></p>
- * An engine that detects collision. Must access
- * {@code CollisionSystem.collidableEntities}.
+ * The engine that solves and detects collision.
 */
 public class CollisionSolver extends ScreenContext<GameplayScreen>
 {

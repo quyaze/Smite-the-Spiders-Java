@@ -15,12 +15,27 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class World<T extends GameContext> extends ScreenContext<T>
 {
     /*  Fields  */
+    private WorldTimer wt;
+    
     protected float unitsPerPixel = 1f;
     
     
-    /**
-     * @return World units per pixel
-    */
+    /* Constructor */
+    /** Create a new {@code World}. */
+    public World()
+    {
+        wt = new WorldTimer();
+    }
+    
+    
+    /** The {@link WorldTimer} of the world. */
+    public WorldTimer getTimer()
+    {
+        return wt;
+    }
+    
+    
+    /** @return World units per pixel */
     public float getUnitsPerPixel()
     {
         return unitsPerPixel;

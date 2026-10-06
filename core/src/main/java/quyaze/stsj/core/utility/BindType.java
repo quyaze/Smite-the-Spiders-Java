@@ -6,5 +6,5 @@ package quyaze.stsj.core.utility;
 */
 public enum BindType
 {
-    IMMEDIATE, DEFER//, DEFER_MANUAL
+    IMMEDIATE, DEFER//, DEFER_CUST
 }
