@@ -71,7 +71,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
             time after when it was supposed to run next. A small detail
             although it is highly unnoticeable since the solver is frame-
             scheduled.
-        */
+      */
         
         if (enabled == collisionSolveTask.isScheduled()) return;
         if (enabled)
@@ -108,7 +108,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
         /*  Null guards exist because collidableEntities is not yet designed
             to be fully in sync with World entities. This allows the solver
             to receive deleted entities and deleted Collision data.
-        */
+      */
         
         for (int i = 0; i < entities.size; i++)
         {
@@ -123,7 +123,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
                 if (collisionB == null || collisionB.skipSolving) continue;
                 
                 /*  Collision detection is calculated here.
-                */
+              */
                 if (collisionA.collisionBox.overlaps(collisionB.collisionBox))
                 {
                     onCollided.fire(

@@ -79,7 +79,7 @@ public class Player
             [2] Move down
             [3] Move left
             [4] Cast spell
-        */
+      */
        
         keymap[0] = (
             Gdx.input.isKeyPressed(Input.Keys.W) ||

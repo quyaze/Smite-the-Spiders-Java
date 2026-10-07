@@ -54,7 +54,7 @@ public class Spider
         
         /*  Chance for spiders to throw a web at the player when its set on
             a new path
-        */
+      */
         if (MathUtils.randomBoolean()) onThrowWeb.fire();
     }
 }

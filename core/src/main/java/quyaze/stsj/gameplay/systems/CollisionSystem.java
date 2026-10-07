@@ -60,7 +60,7 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
         collision.updatePosition();
         
         /*  Cull projectiles that have left the screen
-        */
+      */
         if (projectile != null && !collision.collisionBox.overlaps(screen))
         {
             world.removeEntityDeferred(entity);

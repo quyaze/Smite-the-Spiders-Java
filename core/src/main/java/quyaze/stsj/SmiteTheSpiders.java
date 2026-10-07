@@ -13,7 +13,10 @@ import quyaze.stsj.core.utility.GameText;
 import quyaze.stsj.screens.GameplayScreen;
 import quyaze.stsj.screens.MainMenuScreen;
 
-/** The game entry point and definition. */
+/**
+ * <hr>
+ * The global class, definition, and game of Smite the Spiders.
+*/
 final public class SmiteTheSpiders extends Game
 {
     /*  Fields  */
@@ -132,6 +135,7 @@ final public class SmiteTheSpiders extends Game
     public void toMainMenuScreen()
     {
         if (screen == mainMenuScreen) return;
+        
         setScreen(mainMenuScreen);
     }
     
@@ -140,6 +144,7 @@ final public class SmiteTheSpiders extends Game
     public void toGameplayScreen()
     {
         if (screen == gameplayScreen) return;
+        
         setScreen(gameplayScreen);
     }
 }

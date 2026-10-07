@@ -3,12 +3,15 @@ package quyaze.stsj.core.architecture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-/** Provides movement to {@link Avatar}s. */
+/**
+ * <hr>
+ * Provides movement capabilities.
+*/
 public class Mobility
 {
     /*  Fields  */
     private Vector2 velocity;
-    private float angle, speed;
+    private float angle, speed = 100f;
     
     /*  Velocity and speed are in pixels per sceond
         Angle is in radians
@@ -30,11 +33,10 @@ public class Mobility
     
     
     /*  Constructors  */
-    /** Set a speed of 100, going right. */
+    /** <hr> Set a speed of 100, going right. */
     public Mobility()
     {
         velocity = Vector2.Zero.cpy();
-        speed = 100f;
         applyDirection2D();
     }
     

@@ -50,7 +50,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
         /*  Intermission can only change into Round
             Round can only change into GameOver
             Cannot set state if GameOver
-        */
+      */
         switch (this.state) {
             case INTERMISSION: if (state != State.ROUND) return;
             case ROUND: if (state != State.GAME_OVER) return;

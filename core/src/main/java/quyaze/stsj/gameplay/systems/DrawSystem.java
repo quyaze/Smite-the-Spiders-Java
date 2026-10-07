@@ -41,7 +41,7 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
         
         /*  There are three ways of seeing if it is game over. Below is one
             way
-        */
+      */
         world.getScreen().state.onGameStateChanged.addBinding(
             arg -> {
                 if (arg != State.GAME_OVER) return;
@@ -106,7 +106,7 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
         batch.begin();
         
         /* Game over fade-out
-        */
+      */
         if (isGameOver && opacityFade > 0)
         {
             opacityFade = Math.max(

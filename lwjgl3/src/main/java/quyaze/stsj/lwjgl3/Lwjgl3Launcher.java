@@ -13,7 +13,7 @@ public class Lwjgl3Launcher {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         
         /*  Pack textures into an atlas during development
-        */
+      */
         if (1 == args.length && "--texture-packer".equals(args[0]))
         {
             TexturePacker.process("images", "packed", "packed");

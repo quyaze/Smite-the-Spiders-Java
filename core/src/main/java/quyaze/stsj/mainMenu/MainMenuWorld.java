@@ -19,7 +19,10 @@ import quyaze.stsj.core.template.World;
 import quyaze.stsj.core.utility.GameText;
 import quyaze.stsj.screens.MainMenuScreen;
 
-/** World for the main menu. */
+/**
+ * <hr>
+ * Dedicated {@link World} for the {@link MainMenuScreen}.
+*/
 public class MainMenuWorld extends World<MainMenuScreen>
 {
     /*  Fields  */
@@ -36,6 +39,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
     
     
     /*  Constructor  */
+    /** <hr> */
     public MainMenuWorld()
     {
         subtitlePosition = Vector2.Zero.cpy();
@@ -47,6 +51,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
     public void create()
     {
         game = getGameInstance();
+        
         TextureAtlas atlas = game.getAtlas();
         GameText gameText = game.getGameText();
         
@@ -70,9 +75,8 @@ public class MainMenuWorld extends World<MainMenuScreen>
     
     
     /**
-     * On {@code MainMenuScreen.show()}.
-     * <p></p>
-     * Starts the main menu.
+     * <hr>
+     * Call on {@link MainMenuScreen#show()}.
     */
     public void show()
     {
@@ -91,9 +95,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
     
     
     /**
-     * On {@code MainMenuScreen.hide()}.
-     * <p></p>
-     * Exits the main menu.
+     * Call on {@link MainMenuScreen#hide()}.
     */
     public void hide()
     {
@@ -101,7 +103,10 @@ public class MainMenuWorld extends World<MainMenuScreen>
     }
     
     
-    /** On {@code MainMenuScreen.resize()}. */
+    /**
+     * <hr>
+     * Call on {@code MainMenuScreen.resize()}.
+    */
     public void resize(int width, int height)
     {
         backgroundAvatar.setScale(getAvatarScaleToView(background));
@@ -138,7 +143,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
     private void logic(final float dS)
     {
         /*  "Smite the Spiders" fade-in
-        */
+      */
         if (titleAvatar.opacity < 1f)
         {
             titleAvatar.opacity = Math.min(

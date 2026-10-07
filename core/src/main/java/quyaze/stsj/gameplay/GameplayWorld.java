@@ -123,7 +123,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
             
             Entitiy removal is deferred. Systems can mark enities as
             "debris" and are then removed at the very end of render().
-        */
+      */
         
         if (!inputMaster()) return;
         
@@ -154,7 +154,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         }
         
         /*  Deferred entity removal.
-        */
+      */
         if (entityDebris.isEmpty()) return;
         entityDebris.sort();
         for (int i = entityDebris.size - 1; i >= 0; i--)

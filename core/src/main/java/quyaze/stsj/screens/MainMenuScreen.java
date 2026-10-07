@@ -1,18 +1,23 @@
 package quyaze.stsj.screens;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import quyaze.stsj.core.template.GameContext;
 import quyaze.stsj.mainMenu.MainMenuWorld;
 
-/** {@link Screen} for the main menu. */
-public class MainMenuScreen extends GameContext implements Screen
+/**
+ * <hr>
+ * {@link Screen} for the main menu.
+*/
+final public class MainMenuScreen extends GameContext implements Screen
 {
     /*  Fields  */
     private MainMenuWorld world;
     
     
     /*  Constructor  */
+    /** <hr> */
     public MainMenuScreen()
     {
         world = new MainMenuWorld();
@@ -57,7 +62,7 @@ public class MainMenuScreen extends GameContext implements Screen
     {
         if (width <= 0 || height <= 0) return;
         
-        var viewport = getGameInstance().getViewport();
+        ScreenViewport viewport = getGameInstance().getViewport();
         
         viewport.update(width, height, true);
         world.resize(width, height);
@@ -74,4 +79,14 @@ public class MainMenuScreen extends GameContext implements Screen
     
     /*  Dispose  */
     @Override public void dispose() {}
+    
+    
+    /**
+     * <hr>
+     * @return Dedicated {@link MainMenuWorld}
+    */
+    public MainMenuWorld getMMWorld()
+    {
+        return world;
+    }
 }

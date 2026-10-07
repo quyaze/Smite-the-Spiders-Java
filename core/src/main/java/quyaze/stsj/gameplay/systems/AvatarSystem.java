@@ -39,7 +39,7 @@ public class AvatarSystem extends WorldContext<GameplayWorld> implements EWSyste
         if (player == null) return;
         
         /*  Keep player from going off-screen
-        */
+      */
         avatar.position.set(
             MathUtils.clamp(
                 avatar.position.x,

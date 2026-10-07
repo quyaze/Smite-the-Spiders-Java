@@ -8,19 +8,23 @@ import quyaze.stsj.gameplay.GameplayCore;
 import quyaze.stsj.gameplay.GameplayState;
 import quyaze.stsj.gameplay.GameplayWorld;
 
-/** {@link Screen} for the gameplay. */
-public class GameplayScreen extends GameContext implements Screen
+/**
+ * <hr>
+ * {@link Screen} for the gameplay.
+*/
+final public class GameplayScreen extends GameContext implements Screen
 {
     /*  Fields  */
-    public GameplayWorld world;
-    public GameplayCore core;
-    public GameplayState state;
-    public CollisionSolver solver;
+    private GameplayWorld world;
+    private GameplayCore core;
+    private GameplayState state;
+    private CollisionSolver solver;
     
     private boolean resizedOnShow = true;
     
     
     /*  Constructor  */
+    /** <hr> */
     public GameplayScreen()
     {
         world = new GameplayWorld();
@@ -99,4 +103,44 @@ public class GameplayScreen extends GameContext implements Screen
     
     /*  Dispose  */
     @Override public void dispose() {}
+    
+    
+    /**
+     * <hr>
+     * @return Dedicated {@link CollisionSolver}
+    */
+    public CollisionSolver getGCollisionSolver()
+    {
+        return solver;
+    }
+    
+    
+    /**
+     * <hr>
+     * @return Dedicated {@link GameplayCore}
+    */
+    public GameplayCore getGCore()
+    {
+        return core;
+    }
+    
+    
+    /**
+     * <hr>
+     * @return Dedicated {@link GameplayState}
+    */
+    public GameplayState getGState()
+    {
+        return state;
+    }
+    
+    
+    /**
+     * <hr>
+     * @return Dedicated {@link GameplayWorld}
+    */
+    public GameplayWorld getGWorld()
+    {
+        return world;
+    }
 }

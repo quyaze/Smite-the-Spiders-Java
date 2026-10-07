@@ -224,7 +224,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             avatar = new Avatar(
                 /*  New copy so the spider Avatar can individually flip/orient to
                     horizontal movement
-                */
+              */
                 new TextureRegion(game.getAtlas().findRegion("spider")),
                 4f
             );
@@ -241,7 +241,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                 posX,
                 
                 /*  Spider should not spawn-clip off the screen
-                */
+              */
                 viewport.getWorldHeight() * 0.8f
             );
             
