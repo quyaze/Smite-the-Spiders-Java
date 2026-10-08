@@ -12,7 +12,15 @@ public class Collision
     /*  Fields  */
     private Rectangle collisionBox;
     private Vector2 position, size;
-    private boolean skipSolving;
+    
+    /** <hr>  */
+    public boolean skipSolving;
+    
+    /** <hr> The collision can change in position. */
+    public boolean dynamic;
+    
+    /** <hr> Describes if the collision can change in size. */
+    public boolean resizable;
     
     
     /*  Constructors  */
@@ -28,43 +36,79 @@ public class Collision
     public Collision(Avatar avatar)
     {
         this();
-        size.set(avatar.getTrueSize());
-        collisionBox.setPosition(position.set(avatar.getPosition()));
-        collisionBox.setSize(size.x, size.y);
+        updateCollision(avatar.getPosition(), avatar.getTrueSize());
     }
     
     
     public Collision(float x, float y, float width, float height)
     {
         this();
-        size.set(width, height);
-        collisionBox.setPosition(position.set(x, y));
-        collisionBox.setSize(size.x, size.y);
+        updateCollision(x, y, width, height);
     }
     
     
     /** Update the collision box to its avatar's position. */
-    public void updatePosition()
+    public void updatePosition(float x, float y)
     {
-        collisionBox.setPosition(avatar.getPosition());
+        collisionBox.setPosition(position.set(x, y));
+    }
+    
+    
+    public void updatePosition(Vector2 vec2)
+    {
+        collisionBox.setPosition(position.set(vec2));
     }
     
     
     /** Update the collision box to be its avatar's size. */
-    public void updateSize()
+    public void updateSize(float width, float height)
     {
-        collisionBox.setSize(avatar.getTrueWidth(), avatar.getTrueHeight());
+        size.set(width, height);
+        collisionBox.setSize(width, height);
     }
     
     
-    public boolean getSkipSolving()
+    public void updateSize(Vector2 vec2)
     {
-        return skipSolving;
+        size.set(vec2);
+        collisionBox.setSize(vec2.x, vec2.y);
     }
     
     
-    public void setSkipSolving(boolean skipSolving)
+    public void updateCollision(float x, float y, float width, float height)
     {
-        this.skipSolving = skipSolving;
+        updatePosition(x, y);
+        updateSize(width, height);
+    }
+    
+    
+    public void updateCollision(Vector2 vecPos, float width, float height)
+    {
+        updatePosition(vecPos);
+        updateSize(width, height);
+    }
+    
+    
+    public void updateCollision(float x, float y, Vector2 vecSize)
+    {
+        updatePosition(x, y);
+        updateSize(vecSize);
+    }
+    
+    
+    public void updateCollision(Vector2 vecPos, Vector2 vecSize)
+    {
+        updatePosition(vecPos);
+        updateSize(vecSize);
+    }
+    
+    
+    public void setCollision(Collision collision)
+    {
+        collisionBox.set(collision.collisionBox);
+        position.set(collision.position);
+        size.set(collision.size);
+        skipSolving = collision.skipSolving;
+        dynamic = collision.dynamic;
     }
 }

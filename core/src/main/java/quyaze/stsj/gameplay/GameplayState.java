@@ -16,17 +16,17 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     private boolean paused = true;
     public int score;
     public int lives;
-    private State state;
+    private GState state;
     
     public Event<Boolean> onPausedStateChanged;
-    public Event<State> onGameStateChanged;
+    public Event<GState> onGameStateChanged;
     
     
     /*  Constructor  */
     public GameplayState()
     {
         onPausedStateChanged = new Event<>(Boolean.class);
-        onGameStateChanged = new Event<>(State.class);
+        onGameStateChanged = new Event<>(GState.class);
         reset();
     }
     
@@ -38,22 +38,22 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     /**
      * @return Game {@link State}
     */
-    public State getState()
+    public GState getState()
     {
         return state;
     }
     
     
     /** Set the game state, which is controlled. */
-    public void setState(State state)
+    public void setState(GState state)
     {
         /*  Intermission can only change into Round
             Round can only change into GameOver
             Cannot set state if GameOver
       */
         switch (this.state) {
-            case INTERMISSION: if (state != State.ROUND) return;
-            case ROUND: if (state != State.GAME_OVER) return;
+            case INTERMISSION: if (state != GState.ROUND) return;
+            case ROUND: if (state != GState.GAME_OVER) return;
             default: break;
         }
         onGameStateChanged.fire(state);
@@ -97,7 +97,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     /*  Reset game data.  */
     public void reset()
     {
-        state = State.INTERMISSION;
+        state = GState.INTERMISSION;
         score = 0;
         lives = 3;
     }
@@ -111,7 +111,7 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     
     
     /** Game State. */
-    static public enum State
+    static public enum GState
     {
         INTERMISSION, ROUND, GAME_OVER
     }
