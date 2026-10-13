@@ -33,6 +33,7 @@ final public class SmiteTheSpiders extends Game
     
     
     /*  Constructor  */
+    
     /** <hr> New game instance. */
     public SmiteTheSpiders()
     {
@@ -134,17 +135,13 @@ final public class SmiteTheSpiders extends Game
     /** <hr> Switch to the {@link MainMenuScreen.} */
     public void toMainMenuScreen()
     {
-        if (screen == mainMenuScreen) return;
-        
-        setScreen(mainMenuScreen);
+        if (screen != mainMenuScreen) setScreen(mainMenuScreen);
     }
     
     
     /** <hr> Switch to the {@link GameplayScreen}. */
     public void toGameplayScreen()
     {
-        if (screen == gameplayScreen) return;
-        
-        setScreen(gameplayScreen);
+        if (screen != gameplayScreen) setScreen(gameplayScreen);
     }
 }

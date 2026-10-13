@@ -24,6 +24,7 @@ public class Collision
     
     
     /*  Constructors  */
+    
     /** <hr> Blank collision. */
     public Collision()
     {
@@ -32,7 +33,7 @@ public class Collision
         collisionBox = new Rectangle();
     }
     
-    /** <hr> Reference an {@link Avatar} for the collision. */
+    /** <hr> Reference an {@link Avatar} for creating the collision. */
     public Collision(Avatar avatar)
     {
         this();
@@ -40,6 +41,7 @@ public class Collision
     }
     
     
+    /** <hr> Create the collision at the position with the given size. */
     public Collision(float x, float y, float width, float height)
     {
         this();
@@ -48,6 +50,12 @@ public class Collision
     
     
     /** Update the collision box to its avatar's position. */
+    /**
+     * <hr>
+     * Update
+     * @param x
+     * @param y
+     */
     public void updatePosition(float x, float y)
     {
         collisionBox.setPosition(position.set(x, y));

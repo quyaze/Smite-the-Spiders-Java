@@ -1,5 +1,7 @@
 package quyaze.stsj.core.architecture;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -16,6 +18,7 @@ public class Avatar
     
     
     /*  Constructors  */
+    
     /** <hr> Blank avatar. */
     public Avatar()
     {
@@ -258,5 +261,18 @@ public class Avatar
     public Vector2 getTopRight()
     {
         return position.cpy().add(trueSize);
+    }
+    
+    
+    /**
+     * <hr>
+     * Draw the avatar.
+     * @param batch - use {@link quyaze.stsj.SmiteTheSpiders#getBatch() game's batch}
+     */
+    public void draw(SpriteBatch batch)
+    {
+        batch.setColor(1f, 1f, 1f, opacity);
+        batch.draw(texture, getX(), getY(), trueSize.x, trueSize.y);
+        batch.setColor(Color.WHITE);
     }
 }

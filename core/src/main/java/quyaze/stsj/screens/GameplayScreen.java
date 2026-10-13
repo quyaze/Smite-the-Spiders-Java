@@ -24,7 +24,8 @@ final public class GameplayScreen extends GameContext implements Screen
     
     
     /*  Constructor  */
-    /** <hr> */
+    
+    /** <hr> New gameplay screen. */
     public GameplayScreen()
     {
         world = new GameplayWorld();

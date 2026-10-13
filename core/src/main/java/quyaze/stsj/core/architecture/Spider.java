@@ -45,7 +45,7 @@ public class Spider
                 height - avatar.getTrueHeight()
             )
         );
-        mobility.setDirection(destination.cpy().sub(avatar.position));
+        mobility.setDirection(destination.cpy().sub(avatar.getPosition()));
         mobility.setSpeed(MathUtils.random(180f, 220f));
         avatar.texture.flip(
             (mobility.getVelocityX() < 0f) == avatar.texture.isFlipX(),

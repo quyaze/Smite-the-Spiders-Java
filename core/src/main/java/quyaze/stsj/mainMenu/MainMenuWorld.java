@@ -1,4 +1,7 @@
 package quyaze.stsj.mainMenu;
+
+import static com.badlogic.gdx.utils.ScreenUtils.clear;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -8,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -21,7 +23,7 @@ import quyaze.stsj.screens.MainMenuScreen;
 
 /**
  * <hr>
- * Dedicated {@link World} for the {@link MainMenuScreen}.
+ * {@link World} for the {@link MainMenuScreen}.
 */
 public class MainMenuWorld extends World<MainMenuScreen>
 {
@@ -39,7 +41,8 @@ public class MainMenuWorld extends World<MainMenuScreen>
     
     
     /*  Constructor  */
-    /** <hr> */
+    
+    /** <hr> New main menu world. */
     public MainMenuWorld()
     {
         subtitlePosition = Vector2.Zero.cpy();
@@ -90,7 +93,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
             },
             1f
         );
-        titleAvatar.opacity = 0f;
+        titleAvatar.setOpacity(0f);
     }
     
     
@@ -110,10 +113,10 @@ public class MainMenuWorld extends World<MainMenuScreen>
     public void resize(int width, int height)
     {
         backgroundAvatar.setScale(getAvatarScaleToView(background));
-        titleAvatar.position.set(
-            (width - titleAvatar.getTrueWidth()) * 0.5f,
-            (height - titleAvatar.getTrueHeight()) * 0.5f
-        );
+        titleAvatar.getPosition().set(
+            width - titleAvatar.getTrueWidth(),
+            height - titleAvatar.getTrueHeight()
+        ).scl(0.5f);
         titleAvatar.setScale(2f);
         subtitlePosition.set(
             (width - subtitle.width) * 0.5f,
@@ -143,12 +146,14 @@ public class MainMenuWorld extends World<MainMenuScreen>
     private void logic(final float dS)
     {
         /*  "Smite the Spiders" fade-in
-      */
-        if (titleAvatar.opacity < 1f)
+        */
+        final float opacity = titleAvatar.getOpacity();
+        if (opacity < 1f)
         {
-            titleAvatar.opacity = Math.min(
-                titleAvatar.opacity + dS * 1.25f, 1f
-            );
+            titleAvatar.setOpacity(Math.min(
+                opacity + dS * 1.25f,
+                1f
+            ));
         }   
     }
     
@@ -160,7 +165,7 @@ public class MainMenuWorld extends World<MainMenuScreen>
         SpriteBatch batch = game.getBatch();
         BitmapFont regularFont = game.getGameText().regular;
         
-        ScreenUtils.clear(Color.BLACK);
+        clear(Color.BLACK);
         viewport.apply(true);
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
@@ -172,11 +177,11 @@ public class MainMenuWorld extends World<MainMenuScreen>
             backgroundAvatar.getTrueWidth(),
             backgroundAvatar.getTrueHeight()
         );
-        batch.setColor(1f, 1f, 1f, titleAvatar.opacity);
+        batch.setColor(1f, 1f, 1f, titleAvatar.getOpacity());
         batch.draw(
             title,
-            titleAvatar.position.x,
-            titleAvatar.position.y,
+            titleAvatar.getX(),
+            titleAvatar.getY(),
             titleAvatar.getTrueWidth(),
             titleAvatar.getTrueHeight()
         );
