@@ -65,7 +65,7 @@ public class Player
         
         location.sub(wizard.getTrueSize().scl(0.5f));
         
-        wizard.position.set(location);
+        wizard.getPosition().set(location);
     }
     
     

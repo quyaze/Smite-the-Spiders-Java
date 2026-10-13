@@ -12,10 +12,12 @@ public class Spider
     /*  Fields  */
     public Vector2 destination;
     
+    /** <hr> */
     public Signal onThrowWeb;
     
     
     /*  Constructor  */
+    
     /** Create a spider and immediately move to its destination. */
     public Spider(World<?> world, Avatar avatar, Mobility mobility)
     {
@@ -46,15 +48,12 @@ public class Spider
             )
         );
         mobility.setDirection(destination.cpy().sub(avatar.getPosition()));
-        mobility.setSpeed(MathUtils.random(180f, 220f));
-        avatar.texture.flip(
-            (mobility.getVelocityX() < 0f) == avatar.texture.isFlipX(),
-            false
-        );
+        mobility.setSpeed(MathUtils.random(180, 220));
+        avatar.setFlippedX(mobility.getVelocityX() > 0f);
         
         /*  Chance for spiders to throw a web at the player when its set on
             a new path
-      */
+        */
         if (MathUtils.randomBoolean()) onThrowWeb.fire();
     }
 }

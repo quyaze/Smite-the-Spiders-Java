@@ -35,7 +35,8 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
 {
     /*  Fields  */
     private SmiteTheSpiders game;
-    private GameplayScreen screen;
+    private GameplayScreen gScreen;
+    private GameplayState gState;
     
     private CharArray entityFlags;
     private Array<EWDatastore<?>[]> entityDatastores;
@@ -97,7 +98,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     public void create()
     {
         game = getGameInstance();
-        screen = getScreen();
+        gScreen = getScreen();
         
         playerSystem.setWorld(this);
         avatarSystem.setWorld(this);
@@ -130,7 +131,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         EWSystem iterating;
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
-            if (screen.state.isPaused() && flag != SYSFLAG_DRAW) continue;
+            if (gScreen.state.isPaused() && flag != SYSFLAG_DRAW) continue;
             
             iterating = switch(flag)
             {
@@ -154,7 +155,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         }
         
         /*  Deferred entity removal.
-      */
+        */
         if (entityDebris.isEmpty()) return;
         entityDebris.sort();
         for (int i = entityDebris.size - 1; i >= 0; i--)
@@ -210,13 +211,11 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     */
     private boolean inputMaster()
     {
-        var state = screen.state;
-        
-        if (state.getState() == State.GAME_OVER) return true;
+        if (gState.getState() == State.GAME_OVER) return true;
         
         final boolean paused = (
             Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?
-            state.toggleGamePaused() : state.isPaused()
+            gState.toggleGamePaused() : gState.isPaused()
         );
         
         if (paused && Gdx.input.isButtonJustPressed(0))

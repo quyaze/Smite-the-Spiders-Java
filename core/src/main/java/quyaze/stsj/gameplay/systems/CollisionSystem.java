@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
+import quyaze.stsj.core.architecture.Avatar;
 import quyaze.stsj.core.architecture.Collision;
 import quyaze.stsj.core.architecture.Projectile;
 import quyaze.stsj.core.template.EWSystem;
@@ -40,8 +41,8 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     public void create()
     {
         world = getWorld();
-        world.getScreen().solver.setTargetEntities(collidableEntities);
-        world.getScreen().solver.onSolverCleanup.addBinding(
+        world.getScreen().getGCollisionSolver().setTargetEntities(collidableEntities);
+        world.getScreen().getGCollisionSolver().onSolverCleanup.addBinding(
             () -> {
                 collidableEntityToIndex.clear();
                 collidableEntities.clear();
@@ -54,14 +55,15 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
     @Override
     public void iterate(int entity)
     {
+        Avatar avatar = world.avatarDatastore.get(entity);
         Collision collision = world.collisionDatastore.get(entity);
         Projectile projectile = world.projectileDatastore.get(entity);
         
-        collision.updatePosition();
+        collision.updatePosition(avatar);
         
         /*  Cull projectiles that have left the screen
       */
-        if (projectile != null && !collision.collisionBox.overlaps(screen))
+        if (projectile != null && !collision.getCollisionBox().overlaps(screen))
         {
             world.removeEntityDeferred(entity);
             return;

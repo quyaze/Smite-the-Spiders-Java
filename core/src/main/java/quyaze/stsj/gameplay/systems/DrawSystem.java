@@ -41,8 +41,8 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
         
         /*  There are three ways of seeing if it is game over. Below is one
             way
-      */
-        world.getScreen().state.onGameStateChanged.addBinding(
+        */
+        world.getScreen().getGState().onGameStateChanged.addBinding(
             arg -> {
                 if (arg != State.GAME_OVER) return;
                 
@@ -70,25 +70,25 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     {
         Avatar avatar = world.avatarDatastore.get(entity);
         
-        SpriteBatch batch = getGameInstance().getBatch();
-        GameplayState state = world.getScreen().state;
+        GameplayState state = world.getScreen().getGState();
         
-        final float opacity = (
+        final float opacity =
+        (
             //  Game paused?
-            state.isPaused() ? MathUtils.clamp(avatar.opacity * 0.2f, 0f, 1f) :
+            state.isPaused() ? MathUtils.clamp(avatar.getOpacity() * 0.2f, 0f, 1f) :
             
             //  Game over?
-            isGameOver && avatar.gameOverFade ? opacityFade :
+            isGameOver ? opacityFade :
             
             //  Default
-            MathUtils.clamp(avatar.opacity, 0f, 1f)
+            MathUtils.clamp(avatar.getOpacity(), 0f, 1f)
         );
         
         batch.setColor(1f, 1f, 1f, opacity);
         batch.draw(
             avatar.texture,
-            avatar.position.x,
-            avatar.position.y,
+            avatar.getX(),
+            avatar.getY(),
             avatar.getTrueWidth(),
             avatar.getTrueHeight()
         );
@@ -106,7 +106,7 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
         batch.begin();
         
         /* Game over fade-out
-      */
+        */
         if (isGameOver && opacityFade > 0)
         {
             opacityFade = Math.max(

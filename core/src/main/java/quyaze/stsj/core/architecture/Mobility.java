@@ -37,7 +37,7 @@ public class Mobility
     public Mobility()
     {
         velocity = Vector2.Zero.cpy();
-        applyDirection2D();
+        applyDirection();
     }
     
     
@@ -46,7 +46,7 @@ public class Mobility
     {
         velocity = Vector2.Zero.cpy();
         this.speed = speed;
-        applyDirection2D();
+        applyDirection();
     }
     
     
@@ -74,7 +74,7 @@ public class Mobility
         this();
         this.speed = speed;
         angle = angleDeg * MathUtils.degreesToRadians;
-        applyDirection2D();
+        applyDirection();
     }
     
     
@@ -117,30 +117,30 @@ public class Mobility
     /** Set speed. */
     public void setSpeed(float speed)
     {
-        if (this.speed == 0f) this.speed = 1f;
-        velocity.scl(speed / this.speed);
-        this.speed = speed;
+        if (!Float.isFinite(speed)) return;
+        this.speed = Math.abs(speed);
+        if (speed < 0f) angle -= MathUtils.PI * Math.signum(angle);
+        applyDirection();
     }
-    
     
     /** Set angular direction with the given Vector2 coordinates. */
-    public void setDirection(Vector2 relative)
+    public void setDirection(Vector2 vecDir)
     {
-        angle = MathUtils.atan2(relative.y, relative.x);
-        applyDirection2D();
+        angle = MathUtils.atan2(vecDir.y, vecDir.x);
+        applyDirection();
     }
     
     
-    /** Set angular direction with the given x- and y-coordinates. */
-    public void setDirection(float relativeX, float relativeY)
+    /** Set angular direction in the x- and y-coordinates. */
+    public void setDirection(float dirX, float dirY)
     {
-        angle = MathUtils.atan2(relativeY, relativeX);
-        applyDirection2D();
+        angle = MathUtils.atan2(dirY, dirX);
+        applyDirection();
     }
     
     
-    /**  Apply direction with {@code angle} as is. */
-    private void applyDirection2D()
+    /*  Apply Direction  */
+    private void applyDirection()
     {
         velocity.set(MathUtils.cos(angle), MathUtils.sin(angle)).scl(speed);
     }

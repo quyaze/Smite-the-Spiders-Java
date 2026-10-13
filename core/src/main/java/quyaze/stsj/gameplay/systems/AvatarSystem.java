@@ -34,20 +34,20 @@ public class AvatarSystem extends WorldContext<GameplayWorld> implements EWSyste
         
         final float dS = Gdx.graphics.getDeltaTime();
         
-        avatar.position.add(mobility.getVelocity().scl(dS));
+        avatar.getPosition().add(mobility.getVelocity().scl(dS));
         
         if (player == null) return;
         
         /*  Keep player from going off-screen
-      */
-        avatar.position.set(
+        */
+        avatar.getPosition().clamp(
             MathUtils.clamp(
-                avatar.position.x,
+                avatar.getX(),
                 0,
                 player.upperScreenBounds.x
             ),
             MathUtils.clamp(
-                avatar.position.y,
+                avatar.getY(),
                 0,
                 player.upperScreenBounds.y
             )

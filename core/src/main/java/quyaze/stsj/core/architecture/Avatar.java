@@ -12,9 +12,11 @@ import com.badlogic.gdx.math.Vector2;
 public class Avatar
 {
     /*  Fields  */
-    private TextureRegion texture;
     private Vector2 position, trueSize;
     private float opacity = 1f;
+    
+    /** <hr> Avatar's {@link TextureRegion texture} */
+    public TextureRegion texture;
     
     
     /*  Constructors  */
@@ -274,5 +276,27 @@ public class Avatar
         batch.setColor(1f, 1f, 1f, opacity);
         batch.draw(texture, getX(), getY(), trueSize.x, trueSize.y);
         batch.setColor(Color.WHITE);
+    }
+    
+    
+    /**
+     * <hr>
+     * Set the avatar to be horizontally flipped.
+     * @param flipped
+    */
+    public void setFlippedX(boolean flipped)
+    {
+        texture.flip(flipped != texture.isFlipX(), false);
+    }
+    
+    
+    /**
+     * <hr>
+     * Set the avatar to be horizontally flipped
+     * @param flipped
+    */
+    public void setFlippedY(boolean flipped)
+    {
+        texture.flip(false, flipped != texture.isFlipY());
     }
 }
