@@ -30,7 +30,7 @@ public class SpiderSystem extends WorldContext<GameplayWorld> implements EWSyste
         Mobility mobility = world.mobilityDatastore.get(entity);
         Spider spider = world.spiderDatastore.get(entity);
         
-        if (avatar.position.dst2(spider.destination.cpy()) < 36f)
+        if (avatar.getPosition().dst2(spider.destination) < 36f)
         {
             spider.newPath(
                 world,

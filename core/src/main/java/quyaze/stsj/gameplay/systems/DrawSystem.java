@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import quyaze.stsj.core.architecture.Avatar;
 import quyaze.stsj.core.template.EWSystem;
 import quyaze.stsj.core.template.WorldContext;
-import quyaze.stsj.gameplay.GameplayState;
 import quyaze.stsj.gameplay.GameplayWorld;
 import quyaze.stsj.gameplay.GameplayState.State;
 
@@ -70,12 +69,10 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
     {
         Avatar avatar = world.avatarDatastore.get(entity);
         
-        GameplayState state = world.getScreen().getGState();
-        
-        final float opacity =
+        avatar.setOpacity
         (
             //  Game paused?
-            state.isPaused() ? MathUtils.clamp(avatar.getOpacity() * 0.2f, 0f, 1f) :
+            world.getScreen().getGState().isPaused() ? MathUtils.clamp(avatar.getOpacity() * 0.2f, 0f, 1f) :
             
             //  Game over?
             isGameOver ? opacityFade :
@@ -83,16 +80,7 @@ public class DrawSystem extends WorldContext<GameplayWorld> implements EWSystem
             //  Default
             MathUtils.clamp(avatar.getOpacity(), 0f, 1f)
         );
-        
-        batch.setColor(1f, 1f, 1f, opacity);
-        batch.draw(
-            avatar.texture,
-            avatar.getX(),
-            avatar.getY(),
-            avatar.getTrueWidth(),
-            avatar.getTrueHeight()
-        );
-        batch.setColor(Color.WHITE);
+        avatar.draw(batch);
     }
     
     

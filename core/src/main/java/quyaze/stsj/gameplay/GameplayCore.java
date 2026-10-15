@@ -140,14 +140,13 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     {
         Avatar avatar;
         
-        GameplayWorld gWorld = gWorld;
         AtlasRegion background = game.getAtlas().findRegion("bg");
         
         avatar = new Avatar(
             background,
             gWorld.getAvatarScaleToView(background)
         );
-        avatar.opacity = 1 / 0.2f; // Pausing caused background to be transparent
+        avatar.setOpacity(1 / 0.2f); // Pausing caused background to be transparent
         
         gWorld.addEntity(
             (char) GameplayWorld.SYSFLAG_DRAW,
@@ -178,7 +177,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         
         mobility = new Mobility(0f);
         
-        collision = new Collision(avatar);
+        collision = new Collision();
         
         this.player = gWorld.addEntity(
             (char) (
@@ -219,7 +218,6 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             Spider spider;
             
             ScreenViewport viewport = game.getViewport();
-            float posX = viewport.getWorldWidth();
             
             avatar = new Avatar(
                 /*  New copy so the spider Avatar can individually flip/orient to
@@ -228,15 +226,13 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
                 new TextureRegion(game.getAtlas().findRegion("spider")),
                 4f
             );
-            avatar.gameOverFade = true;
             
-            switch (i)
+            float posX = viewport.getWorldWidth() * switch (i)
             {
-                case 0: posX *= 0.50f; break;
-                case 1: posX *= 0.25f; break;
-                case 2: posX *= 0.75f; break;
-            }
-            posX -= avatar.getTrueWidth() * 0.5f;
+                case 1  -> 0.25f; // Left spider
+                case 2  -> 0.75f; // Right spider
+                default -> 0.50f; // Center spider, default 0
+            } - avatar.getWidth() * 0.5f;
             avatar.getPosition().set(
                 posX,
                 
@@ -247,7 +243,10 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             
             mobility = new Mobility();
             
-            collision = new Collision(avatar);
+            collision = new Collision();
+            collision.dynamic = true;
+            collision.cBox.setPosition(avatar.getPosition());
+            collision.cBox.setSize(avatar.getWidth(), avatar.getHeight());
             
             spider = new Spider(
                 gWorld,
@@ -290,7 +289,6 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         Collision collision;
         Projectile projectile;
         
-        GameplayWorld gWorld = screen.gWorld;
         TextureRegion spellTexture = new TextureRegion(game.getAtlas().findRegion("spell"));
         Avatar playerAvatar = gWorld.avatarDatastore.get(player);
         spellTexture.flip(false, true);
@@ -299,10 +297,10 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             spellTexture,
             2f
         );
-        avatar.position.set(
-            playerAvatar.position.cpy().add(playerAvatar.getTrueSize().sub(avatar.getTrueSize()).scl(0.5f))
+        avatar.getPosition().set(
+            playerAvatar.readPosition().add(playerAvatar.getSize().sub(avatar.getSize()).scl(0.5f))
         );
-        avatar.gameOverFade = true;
+        // avatar.gameOverFade = true;
         
         final float velY = gWorld.mobilityDatastore.get(player).getVelocityY();
         mobility = new Mobility(
@@ -310,7 +308,9 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             Vector2.Y.cpy()
         );
         
-        collision = new Collision(avatar);
+        collision = new Collision();
+        collision.cBox.setPosition(avatar.getPosition());
+        collision.cBox.setSize(avatar.getWidth(), avatar.getHeight());
         
         projectile = new Projectile("spell");
         
@@ -341,21 +341,21 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
         Collision collision;
         Projectile projectile;
         
-        GameplayWorld gWorld = screen.gWorld;
-        
         avatar = new Avatar(
             game.getAtlas().findRegion("web"),
             2f
         );
-        avatar.position.set(spiderAvatar.getCenter().sub(avatar.getTrueSize().scl(0.5f)));
-        avatar.gameOverFade = true;
+        avatar.getPosition().set(spiderAvatar.getCenter().sub(avatar.getSize().scl(0.5f)));
+        // avatar.gameOverFade = true;
         
         mobility = new Mobility(
             MathUtils.random(600f, 800f),
             playerCharacter.getCenter().sub(avatar.getCenter())
         );
         
-        collision = new Collision(avatar);
+        collision = new Collision();
+        collision.cBox.setPosition(avatar.getPosition());
+        collision.cBox.setSize(avatar.getWidth(), avatar.getHeight());
         
         projectile = new Projectile("web");
         
@@ -379,10 +379,10 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /** Player is hit by a web. */
     private void onWebHitPlayer(int webEntity)
     {
-        GameplayState state = screen.state;
+        GameplayState state = gState;
         
         state.score += POINTS_WEB_HIT_PLAYER;
-        screen.gWorld.removeEntityDeferred(webEntity);
+        gWorld.removeEntityDeferred(webEntity);
         playerHit();
     }
     
@@ -390,7 +390,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /** Player runs into a spider. */
     private void onSpiderHitPlayer(int spiderEntity)
     {
-        GameplayState state = screen.state;
+        GameplayState state = gState;
         
         state.score += POINTS_SPIDER_HIT_PLAYER;
         playerHit();
@@ -400,10 +400,7 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /** A spider is hit by the player's spell. */
     private void onSpellHitSpider(int spellEntity, int spiderEntity)
     {
-        GameplayWorld gWorld = screen.gWorld;
-        GameplayState state = screen.state;
-        
-        state.score += POINTS_SPELL_HIT_SPIDER;
+        gState.score += POINTS_SPELL_HIT_SPIDER;
         gWorld.removeEntityDeferred(spellEntity);
         gWorld.removeEntityDeferred(spiderEntity);
     }
@@ -412,13 +409,12 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
     /** Player is hit. */
     private void playerHit()
     {
-        if (--screen.state.lives < 1)
+        if (--gState.lives < 1)
         {
             gameOver();
             return;
         }
         
-        GameplayWorld gWorld = screen.gWorld;
         Collision playerCollision = gWorld.collisionDatastore.get(player);
         
         gWorld.playerDatastore.get(player).spawnPlayer(gWorld);
@@ -439,8 +435,8 @@ public class GameplayCore extends ScreenContext<GameplayScreen>
             },
             GAME_OVER_PHASE
         );
-        screen.gWorld.removeEntityDeferred(player);
-        screen.state.setState(State.GAME_OVER);
+        gWorld.removeEntityDeferred(player);
+        gState.setState(State.GAME_OVER);
         player = -1;
     }
 }

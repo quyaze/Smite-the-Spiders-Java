@@ -40,11 +40,11 @@ public class Spider
         destination.set(
             MathUtils.random(
                 0f,
-                width - avatar.getTrueWidth()
+                width - avatar.getWidth()
             ),
             MathUtils.random(
                 height * 0.5f,
-                height - avatar.getTrueHeight()
+                height - avatar.getHeight()
             )
         );
         mobility.setDirection(destination.cpy().sub(avatar.getPosition()));

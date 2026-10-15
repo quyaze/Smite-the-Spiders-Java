@@ -44,6 +44,17 @@ public class GameplayState extends ScreenContext<GameplayScreen>
     }
     
     
+    /**
+     * TODO
+     * @param state
+     * @return
+     */
+    public boolean isState(State state)
+    {
+        return this.state == state;
+    }
+    
+    
     /** Set the game state, which is controlled. */
     public void setState(State state)
     {

@@ -59,11 +59,11 @@ final public class CollisionSystem extends WorldContext<GameplayWorld> implement
         Collision collision = world.collisionDatastore.get(entity);
         Projectile projectile = world.projectileDatastore.get(entity);
         
-        collision.updatePosition(avatar);
+        collision.cBox.setPosition(avatar.getPosition());
         
         /*  Cull projectiles that have left the screen
-      */
-        if (projectile != null && !collision.getCollisionBox().overlaps(screen))
+        */
+        if (projectile != null && !collision.cBox.overlaps(screen))
         {
             world.removeEntityDeferred(entity);
             return;

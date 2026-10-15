@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Avatar
 {
     /*  Fields  */
-    private Vector2 position, trueSize;
+    private Vector2 position, size;
     private float opacity = 1f;
     
     /** <hr> Avatar's {@link TextureRegion texture} */
@@ -25,7 +25,7 @@ public class Avatar
     public Avatar()
     {
         position = Vector2.Zero.cpy();
-        trueSize = Vector2.Zero.cpy();
+        size = Vector2.Zero.cpy();
     }
     
     /** <hr> Set the avatar's texture. */
@@ -102,7 +102,7 @@ public class Avatar
     */
     public Vector2 readPosition()
     {
-        return position;
+        return position.cpy();
     }
     
     
@@ -128,31 +128,31 @@ public class Avatar
     
     /**
      * <hr>
-     * @return A copy of the true size
+     * @return A copy of avatar's world size
     */
-    public Vector2 getTrueSize()
+    public Vector2 getSize()
     {
-        return trueSize.cpy();
+        return size.cpy();
     }
     
     
     /**
      * <hr>
-     * @return Original texture width with its scale applied; the actual world length that the end user sees
+     * @return World length of the avatar: <br> {@code texture width * x-scale}
     */
-    public float getTrueWidth()
+    public float getWidth()
     {
-        return trueSize.x;
+        return size.x;
     }
     
     
     /**
      * <hr>
-     * @return Original texture height with its scale applied; the actual world length that the end user sees
+     * @return World height of the avatar: <br> {@code texture height * y-scale}
     */
-    public float getTrueHeight()
+    public float getHeight()
     {
-        return trueSize.y;
+        return size.y;
     }
     
     
@@ -185,7 +185,7 @@ public class Avatar
     */
     public void setScale(float scale)
     {
-        trueSize.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(scale);
+        size.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(scale);
     }
     
     
@@ -200,7 +200,7 @@ public class Avatar
     */
     public void setScale(Vector2 vecScl)
     {
-        trueSize.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(vecScl);
+        size.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(vecScl);
     }
     
     
@@ -208,15 +208,15 @@ public class Avatar
      * <hr>
      * Set the scale of the texture with an x- and y-scalar.
      * <br>
-     * {@code sX * width}
+     * {@code sclX * width}
      * <br>
-     * {@code sY * height}
-     * @param sX - scalar for width
-     * @param sY - scalar for height
+     * {@code sclY * height}
+     * @param sclX - scalar for width
+     * @param sclY - scalar for height
     */
     public void setScale(float sclX, float sclY)
     {
-        trueSize.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(sclX, sclY);
+        size.set(texture.getRegionWidth(), texture.getRegionHeight()).scl(sclX, sclY);
     }
     
     
@@ -229,7 +229,7 @@ public class Avatar
     */
     public void setScaleX(float scale)
     {
-        trueSize.x = scale * texture.getRegionWidth();
+        size.x = scale * texture.getRegionWidth();
     }
     
     
@@ -242,27 +242,27 @@ public class Avatar
     */
     public void setScaleY(float scale)
     {
-        trueSize.y = scale * texture.getRegionHeight();
+        size.y = scale * texture.getRegionHeight();
     }
     
     
     /**
      * <hr>
-     * @return The avatar's center coordinate
+     * @return The avatar's center world-coordinate
     */
     public Vector2 getCenter()
     {
-        return position.cpy().add(trueSize.cpy().scl(0.5f));
+        return readPosition().add(getSize().scl(0.5f));
     }
     
     
     /**
      * <hr>
-     * @return The avatar's top right coordinate; opposite corner from its position
+     * @return The avatar's top right world-coordinate; opposite corner from its position
     */
     public Vector2 getTopRight()
     {
-        return position.cpy().add(trueSize);
+        return position.cpy().add(size);
     }
     
     
@@ -274,7 +274,7 @@ public class Avatar
     public void draw(SpriteBatch batch)
     {
         batch.setColor(1f, 1f, 1f, opacity);
-        batch.draw(texture, getX(), getY(), trueSize.x, trueSize.y);
+        batch.draw(texture, getX(), getY(), size.x, size.y);
         batch.setColor(Color.WHITE);
     }
     
@@ -292,7 +292,7 @@ public class Avatar
     
     /**
      * <hr>
-     * Set the avatar to be horizontally flipped
+     * Set the avatar to be horizontally flipped.
      * @param flipped
     */
     public void setFlippedY(boolean flipped)

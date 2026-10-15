@@ -54,7 +54,7 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
                 solve();
             }
         };
-        screen.state.onPausedStateChanged.addBinding(
+        screen.getGState().onPausedStateChanged.addBinding(
             arg -> {
                 setSolverEnabled(!arg);
             }
@@ -113,18 +113,18 @@ public class CollisionSolver extends ScreenContext<GameplayScreen>
         for (int i = 0; i < entities.size; i++)
         {
             entityA = entities.get(i);
-            collisionA = screen.world.collisionDatastore.get(entityA);
+            collisionA = screen.getGWorld().collisionDatastore.get(entityA);
             if (collisionA == null || collisionA.skipSolving) continue;
             
             for (int j = i + 1; j < entities.size; j++)
             {
                 entityB = entities.get(j);
-                collisionB = screen.world.collisionDatastore.get(entityB);
+                collisionB = screen.getGWorld().collisionDatastore.get(entityB);
                 if (collisionB == null || collisionB.skipSolving) continue;
                 
                 /*  Collision detection is calculated here.
               */
-                if (collisionA.collisionBox.overlaps(collisionB.collisionBox))
+                if (collisionA.cBox.overlaps(collisionB.cBox))
                 {
                     onCollided.fire(
                         new OnCollided(entityA, entityB, collisionA, collisionB)

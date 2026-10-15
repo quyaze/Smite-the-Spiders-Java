@@ -99,6 +99,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     {
         game = getGameInstance();
         gScreen = getScreen();
+        gState = gScreen.getGState();
         
         playerSystem.setWorld(this);
         avatarSystem.setWorld(this);
@@ -131,7 +132,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
         EWSystem iterating;
         for (char flag = 1; flag <= SYSFLAG_DRAW; flag <<= 1)
         {
-            if (gScreen.state.isPaused() && flag != SYSFLAG_DRAW) continue;
+            if (gScreen.getGState().isPaused() && flag != SYSFLAG_DRAW) continue;
             
             iterating = switch(flag)
             {
@@ -211,7 +212,7 @@ public class GameplayWorld extends EntityWorld<GameplayScreen>
     */
     private boolean inputMaster()
     {
-        if (gState.getState() == State.GAME_OVER) return true;
+        if (gState.isState(State.GAME_OVER)) return true;
         
         final boolean paused = (
             Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ?

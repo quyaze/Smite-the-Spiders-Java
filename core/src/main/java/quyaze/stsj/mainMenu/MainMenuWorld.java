@@ -114,8 +114,8 @@ public class MainMenuWorld extends World<MainMenuScreen>
     {
         backgroundAvatar.setScale(getAvatarScaleToView(background));
         titleAvatar.getPosition().set(
-            width - titleAvatar.getTrueWidth(),
-            height - titleAvatar.getTrueHeight()
+            width - titleAvatar.getWidth(),
+            height - titleAvatar.getHeight()
         ).scl(0.5f);
         titleAvatar.setScale(2f);
         subtitlePosition.set(
@@ -174,16 +174,16 @@ public class MainMenuWorld extends World<MainMenuScreen>
             background,
             0f,
             0f,
-            backgroundAvatar.getTrueWidth(),
-            backgroundAvatar.getTrueHeight()
+            backgroundAvatar.getWidth(),
+            backgroundAvatar.getHeight()
         );
         batch.setColor(1f, 1f, 1f, titleAvatar.getOpacity());
         batch.draw(
             title,
             titleAvatar.getX(),
             titleAvatar.getY(),
-            titleAvatar.getTrueWidth(),
-            titleAvatar.getTrueHeight()
+            titleAvatar.getWidth(),
+            titleAvatar.getHeight()
         );
         batch.setColor(Color.WHITE);
         if (enableInput)

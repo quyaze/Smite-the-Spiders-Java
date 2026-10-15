@@ -47,7 +47,7 @@ public class Player
     {
         Vector2 worldSize = world.getWorldViewSize();
         
-        upperScreenBounds.set(worldSize.sub(avatar.getTrueSize()));
+        upperScreenBounds.set(worldSize.sub(avatar.getSize()));
         wizard = avatar;
     }
     
@@ -63,7 +63,7 @@ public class Player
             world.getWorldViewHeight() * 0.333f
         );
         
-        location.sub(wizard.getTrueSize().scl(0.5f));
+        location.sub(wizard.getSize().scl(0.5f));
         
         wizard.getPosition().set(location);
     }
@@ -79,7 +79,7 @@ public class Player
             [2] Move down
             [3] Move left
             [4] Cast spell
-      */
+        */
        
         keymap[0] = (
             Gdx.input.isKeyPressed(Input.Keys.W) ||
